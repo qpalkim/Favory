@@ -81,9 +81,6 @@ export default function MainBanner() {
         <h2 className="absolute top-[65%] md:top-[70%] lg:text-4xl md:left-18 left-9 lg:left-6 text-lg md:text-2xl text-white font-semibold">
           내 취향을 담은 나만의 공간
         </h2>
-        <button className="absolute top-[80%] md:left-18 left-9 lg:left-6 w-60 md:w-100 py-1 md:py-2 text-md md:text-lg font-semibold text-white bg-green-500 rounded-md flex justify-center items-center">
-          지금 시작하기
-        </button>
       </div>
     </motion.main>
   );
