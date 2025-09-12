@@ -44,6 +44,10 @@
   --color-error-100: #ff6577;
 }
 
+.font-leferiBold {
+  font-family: var(--font-leferiBold);
+}
+
 body {
   font-family: var(--font-pretendard);
   min-width: 375px;

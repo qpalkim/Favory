@@ -5,3 +5,9 @@ export const Pretendard = localFont({
   display: "swap",
   variable: "--font-pretendard",
 });
+
+export const LeferiBold = localFont({
+  src: "../font/LeferiBaseBold.ttf",
+  display: "swap",
+  variable: "--font-leferiBold",
+});

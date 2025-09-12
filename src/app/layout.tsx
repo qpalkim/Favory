@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Pretendard } from "@/font";
+import { Pretendard, LeferiBold } from "@/font";
 import Header from "@/components/Header";
 import "./globals.css";
 
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={Pretendard.variable}>
+    <html lang="ko" className={`${Pretendard.variable} ${LeferiBold.variable}`}>
       <body>
         <Header />
         {children}
