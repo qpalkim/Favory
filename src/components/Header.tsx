@@ -5,7 +5,7 @@ import logo from "@/assets/logo/logo_white.svg";
 export default function Header() {
   return (
     <header className="w-full bg-green-500 z-50 shadow-xl">
-      <div className="relative max-w-[1400px] mx-auto lg:h-14 md:h-12 h-10 flex items-center justify-between md:px-18 px-6">
+      <div className="relative max-w-[1448px] mx-auto lg:h-14 md:h-12 h-10 flex items-center justify-between px-6 transition-all">
         <Link href="/">
           <Image
             src={logo}
