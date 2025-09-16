@@ -2,7 +2,6 @@ import { BookOpen, Clapperboard, Music4, Tv } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 function SkeletonRow({ Icon, label }: { Icon: LucideIcon; label: string }) {
-  const barWidths = [32, 20, 132, 120];
   return (
     <div className="flex min-h-[32px] min-w-[215px] gap-2 rounded-md bg-white shadow-md md:h-[50px] md:w-[336px] lg:h-[72px] lg:w-[479px]">
       <div className="flex min-h-[32px] min-w-[32px] items-center justify-center rounded-tl-md rounded-bl-md bg-gray-300 md:w-[50px] lg:w-[72px]">
@@ -13,12 +12,10 @@ function SkeletonRow({ Icon, label }: { Icon: LucideIcon; label: string }) {
         />
       </div>
       <div className="py-1 md:py-2 lg:py-3">
-        {barWidths.map((w, i) => (
-          <div
-            key={i}
-            className={`mt-${i === 0 ? "[0]" : "[2px]"} h-[4px] w-[${w}px] rounded-md bg-gray-300 md:h-[${i === 1 ? 4 : 5}px] md:w-[${i === 1 ? 24 : i === 2 ? 208 : i === 3 ? 180 : 52}px] lg:h-[${i === 1 ? 6 : 8}px] lg:w-[${i === 1 ? 48 : i === 2 ? 296 : i === 3 ? 232 : 73}px]`}
-          ></div>
-        ))}
+        <div className="h-[4px] w-[32px] rounded-md bg-gray-300 md:h-[5px] md:w-[52px] lg:h-[8px] lg:w-[73px]"></div>
+        <div className="mt-[2px] h-[3px] w-[20px] rounded-md bg-gray-300 md:mt-1 md:h-[4px] md:w-[24px] lg:h-[6px] lg:w-[48px]"></div>
+        <div className="mt-1 h-[4px] w-[132px] rounded-md bg-gray-300 md:h-[5px] md:w-[208px] lg:mt-2 lg:h-[8px] lg:w-[296px]"></div>
+        <div className="mt-[2px] h-[4px] w-[120px] rounded-md bg-gray-300 md:mt-1 md:h-[4px] md:w-[180px] lg:h-[6px] lg:w-[232px]"></div>
       </div>
     </div>
   );
