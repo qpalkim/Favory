@@ -1,21 +1,21 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import logo from "@/assets/logo/logo_white.svg";
 
 export default function Header() {
   return (
-    <header className="w-full bg-green-500 z-50 shadow-xl">
-      <div className="relative max-w-[1448px] mx-auto lg:h-14 md:h-12 h-10 flex items-center justify-between px-6 transition-all">
+    <header className="z-50 w-full bg-green-500 shadow-xl">
+      <div className="relative mx-auto flex h-10 max-w-[1448px] items-center justify-between px-6 transition-all md:h-12 lg:h-14">
         <Link href="/">
           <Image
             src={logo}
             alt="헤더 로고"
-            className="w-[73px] md:w-[92px] lg:w-[110px] hover:opacity-80 transition-opacity"
+            className="w-[73px] transition-opacity hover:opacity-80 md:w-[92px] lg:w-[110px]"
           />
         </Link>
         <Link
           href="/login"
-          className="font-semibold text-white text-md md:text-lg lg:text-2lg hover:opacity-80 transition-opacity"
+          className="text-md lg:text-2lg font-semibold text-white transition-opacity hover:opacity-80 md:text-lg"
           aria-label="로그인 페이지로 이동"
         >
           로그인
