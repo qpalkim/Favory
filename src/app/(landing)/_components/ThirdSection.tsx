@@ -41,7 +41,7 @@ export default function ThirdSection() {
         </div>
       </div>
       <h1 className="mt-6 text-lg font-semibold text-white md:mt-[52px] md:text-xl lg:mt-0 lg:text-2xl">
-        내가 좋아할 만함 <br />
+        내가 좋아할 만한 <br />
         맞춤 작품을 추천해 드려요
       </h1>
     </section>
