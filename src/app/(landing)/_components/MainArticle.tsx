@@ -5,8 +5,8 @@ import ThirdSection from "./ThirdSection";
 
 export default function MainArticle() {
   return (
-    <article className="from-black-500 h-full min-h-[2800px] bg-gradient-to-b via-green-500 to-green-100">
-      <section className="mx-auto max-w-[1168px] min-w-[312px] space-y-[210px]">
+    <article className="from-black-500 bg-gradient-to-b via-green-500 to-green-100">
+      <section className="mx-auto max-w-[1168px] min-w-[312px] space-y-[210px] pb-40 lg:space-y-[400px] lg:pb-60">
         <HeroSection />
         <FirstSection />
         <SecondSection />
