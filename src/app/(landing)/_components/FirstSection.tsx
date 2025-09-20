@@ -12,7 +12,7 @@ function SkeletonRow({ Icon, label }: { Icon: LucideIcon; label: string }) {
         visible: { opacity: 1, y: 0 },
       }}
     >
-      <div className="flex min-h-[32px] min-w-[32px] animate-pulse items-center justify-center rounded-tl-md rounded-bl-md bg-gray-300 md:w-[50px] lg:w-[72px]">
+      <div className="flex min-h-[32px] min-w-[32px] items-center justify-center rounded-tl-md rounded-bl-md bg-gray-300 md:w-[50px] lg:w-[72px]">
         <Icon
           strokeWidth={1}
           className="h-[14px] w-[14px] md:h-[19px] md:w-[19px] lg:h-[28px] lg:w-[28px]"
@@ -39,7 +39,7 @@ export default function FirstSection() {
 
   return (
     <motion.section
-      className="mx-auto flex w-fit flex-col justify-center px-4 pt-[210px] lg:w-full lg:flex-row lg:items-center lg:justify-between"
+      className="mx-auto flex w-fit flex-col justify-center px-4 lg:w-full lg:flex-row-reverse lg:items-center lg:justify-between"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
