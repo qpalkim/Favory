@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Pretendard, LeferiBold } from "@/font";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,9 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${Pretendard.variable} ${LeferiBold.variable}`}>
-      <body>
+      <body className="flex min-h-screen flex-col">
         <Header />
-        {children}
+        <main className="flex-grow">{children}</main>
+        <Footer />
       </body>
     </html>
   );
