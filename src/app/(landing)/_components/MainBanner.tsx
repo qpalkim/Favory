@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 
 export default function MainBanner() {
   return (
-    <motion.main
+    <motion.section
       className="relative h-68 w-full md:h-[600px] lg:h-[800px]"
       animate={{
         background: [
@@ -90,6 +90,6 @@ export default function MainBanner() {
           지금 시작하기
         </Button>
       </div>
-    </motion.main>
+    </motion.section>
   );
 }
