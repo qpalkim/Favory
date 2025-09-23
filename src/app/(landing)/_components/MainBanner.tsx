@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import star from "@/assets/vector/star.svg";
 import logo from "@/assets/logo/logo.svg";
+import Button from "@/components/Button";
 
 export default function MainBanner() {
   return (
@@ -81,6 +82,13 @@ export default function MainBanner() {
         <h2 className="absolute top-[65%] left-9 text-lg font-semibold text-white md:top-[70%] md:left-18 md:text-2xl lg:left-6 lg:text-4xl">
           내 취향을 담은 나만의 공간
         </h2>
+        <Button
+          href="/favories"
+          className="absolute top-[79%] w-[240px] md:left-18 md:w-[400px] lg:left-6 lg:w-[500px]"
+          ariaLabel="페이보리 목록 페이지로 이동하기"
+        >
+          지금 시작하기
+        </Button>
       </div>
     </motion.main>
   );
