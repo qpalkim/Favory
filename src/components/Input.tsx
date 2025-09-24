@@ -4,7 +4,7 @@ import {
   LabelHTMLAttributes,
   PropsWithChildren,
 } from "react";
-import { cva } from "class-variance-authority";
+import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 export function Label({
@@ -39,12 +39,6 @@ export function Error({ children }: { children: ReactNode }) {
   );
 }
 
-export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  label?: string;
-  error?: string;
-  inputRef?: Ref<HTMLInputElement>;
-};
-
 const inputVariants = cva(
   "mt-2 h-[32px] w-full rounded-md border bg-white p-3 text-sm text-black placeholder:text-black-200 focus:outline-none transition-colors duration-150 md:h-[38px] lg:h-[40px] lg:text-md disabled:opacity-50 disabled:bg-black-200/7 disabled:cursor-not-allowed",
   {
@@ -62,6 +56,14 @@ const inputVariants = cva(
   },
 );
 
+export interface InputProps
+  extends InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof inputVariants> {
+  label?: string;
+  error?: string;
+  inputRef?: Ref<HTMLInputElement>;
+}
+
 export default function Input({
   label,
   error,
@@ -69,6 +71,7 @@ export default function Input({
   inputRef,
   required,
   disabled,
+  state,
   ...props
 }: InputProps) {
   const id = useId();
@@ -83,13 +86,12 @@ export default function Input({
       <input
         id={id}
         ref={inputRef}
-        className={inputVariants({
-          state: error ? "error" : "default",
-          className,
-        })}
-        aria-invalid={!!error}
-        required={required}
         disabled={disabled}
+        required={required}
+        aria-invalid={!!error}
+        className={cn(
+          inputVariants({ state: error ? "error" : state, className }),
+        )}
         {...props}
       />
       {error && <Error>{error}</Error>}
