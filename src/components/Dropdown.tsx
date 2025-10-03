@@ -30,7 +30,7 @@ export default function Dropdown({ options, trigger }: DropdownProps) {
           {options.map((option, idx) => (
             <li key={option.label}>
               <button
-                className={`md:text-md hover:bg-black-200/7 block w-full cursor-pointer px-6 py-2 text-center text-sm transition-all lg:px-8 lg:text-lg ${
+                className={`md:text-md hover-text-shadow hover:bg-black-200/7 block w-full cursor-pointer px-6 py-2 text-center text-sm transition-colors duration-200 ease-in-out lg:px-8 lg:text-lg ${
                   idx === 0 ? "rounded-t-xl" : ""
                 } ${
                   idx === options.length - 1
