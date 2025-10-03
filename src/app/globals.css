@@ -48,6 +48,14 @@
   font-family: var(--font-leferiBold);
 }
 
+.hover-text-shadow {
+  transition: text-shadow 0.2s ease-in-out; /* 부드럽게 변화 */
+}
+
+.hover-text-shadow:hover {
+  text-shadow: 0 0 3px rgba(7, 102, 83, 0.4);
+}
+
 body {
   font-family: var(--font-pretendard);
   min-width: 375px;
