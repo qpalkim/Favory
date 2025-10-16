@@ -2,47 +2,43 @@ import Image from "next/image";
 import Link from "next/link";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
-import logo from "@/assets/logo/logo.svg";
+import logo from "@/assets/logo/logo_green_vertical.svg";
 
 export default function LoginForm() {
   return (
-    <main className="mx-auto max-w-[660px] min-w-[344px] rounded-[16px] bg-white shadow-lg">
-      <form className="space-y-12 px-5 py-10 md:px-6 md:py-15 lg:px-10 lg:py-18">
-        <div className="mb-11 flex flex-col items-center">
+    <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
+      <form className="space-y-[42px] px-4 py-[42px] lg:space-y-[52px] lg:px-6 lg:py-[52px]">
+        <div className="flex flex-col items-center">
           <Link href="/" className="inline-block text-center">
             <Image
               src={logo}
               alt="로고 아이콘"
-              className="w-16 drop-shadow-lg md:w-20 lg:w-26"
+              className="w-[62px] drop-shadow-md md:w-[83px] lg:w-[110px]"
             />
-            <h1 className="font-leferiBold hover-text-shadow mt-3 text-center text-[18px] text-green-600 md:text-xl md:text-[24px] lg:mt-5 lg:text-[28px]">
-              Favory
-            </h1>
           </Link>
-          <p className="text-md lg:text-2lg mt-3 text-center md:text-lg lg:mt-4">
+          <p className="text-md text-black-500 mt-4 text-center md:text-lg lg:text-xl">
             오늘도 만나서 반가워요!
           </p>
         </div>
-        <div className="space-y-5">
-          <Input placeholder="이메일을 입력해 주세요" label="이메일" required />
+        <div className="space-y-6">
+          <Input placeholder="이메일을 입력해 주세요" label="이메일" />
           <Input
             placeholder="비밀번호를 입력해 주세요"
             type="password"
             label="비밀번호"
-            required
           />
         </div>
-        <div>
-          <Button className="mb-2 w-full" type="submit">
-            로그인하기
-          </Button>
-          <Button variant="outline" className="w-full">
-            Google 간편 로그인하기
-          </Button>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="bg-black-100 h-px flex-1"></div>
-          <p className="lg:text-md text-center text-sm">
+
+        <Button size="lg" type="submit" className="mb-2">
+          로그인하기
+        </Button>
+        <Button size="lg" variant="outline">
+          Google 간편 로그인하기
+        </Button>
+
+        <div className="mb-8 flex items-center gap-2 md:gap-4 lg:mb-10 lg:gap-6">
+          <div className="bg-black-100 h-px flex-1 rounded"></div>
+          <p className="lg:text-md text-black-500 text-center text-xs md:text-sm">
             회원이 아니신가요?&nbsp;
             <Link
               href="/signup"
@@ -51,7 +47,7 @@ export default function LoginForm() {
               회원가입하기
             </Link>
           </p>
-          <div className="bg-black-100 h-px flex-1"></div>
+          <div className="bg-black-100 h-px flex-1 rounded"></div>
         </div>
       </form>
     </main>
