@@ -3,18 +3,18 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 
 const buttonVariants = cva(
-  "cursor-pointer transition-all duration-200 flex items-center justify-center whitespace-nowrap font-semibold",
+  " flex items-center justify-center cursor-pointer transition-colors duration-200 ease-in-out whitespace-nowrap font-semibold rounded-md",
   {
     variants: {
       variant: {
         primary:
-          "bg-green-500 text-white  hover:bg-green-600 disabled:bg-black-100",
-        outline: "bg-white text-green-600 border border-line-200",
+          "bg-green-500 text-white hover:bg-green-600 disabled:bg-black-100",
+        outline: "bg-white text-green-600 border border-green-600",
       },
       size: {
-        sm: "h-[32px] lg:h-[42px] text-sm lg:text-md px-3 rounded-[6px]",
-        md: "h-[36px] md:h-[42px] lg:h-[52px] text-md md:text-lg px-6 rounded-[8px]",
-        lg: "w-full max-w-[580px] h-[52px] lg:h-[56px] text-lg lg:text-2lg rounded-[8px]",
+        sm: "h-[32px] md:h-[36px] lg:h-[42px] text-md md:text-[15px] lg:text-lg px-3 md:px-4 lg:px-6 w-max",
+        md: "h-[36px] md:h-[38px] lg:h-[42px] gap-[8px] text-md md:text-[15px] lg:text-lg px-3 lg:px-4 w-max",
+        lg: "w-full h-[38px] md:h-[42px] lg:h-[52px] text-md md:text-[15px] lg:text-2lg",
       },
     },
     defaultVariants: {
@@ -29,11 +29,10 @@ interface ButtonProps extends VariantProps<typeof buttonVariants> {
   onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
-  isRoundedFull?: boolean;
   href?: string;
   ariaLabel?: string;
-  className?: string;
   target?: string;
+  className?: string;
 }
 
 export default function Button({
@@ -41,18 +40,16 @@ export default function Button({
   onClick,
   type = "button",
   disabled = false,
-  isRoundedFull = false,
   href,
   ariaLabel,
+  target,
+  className,
   variant,
   size,
-  className,
-  target,
 }: ButtonProps) {
   const finalClassName = cn(
     buttonVariants({ variant, size }),
-    disabled ? "cursor-not-allowed opacity-70" : "hover:shadow-md",
-    isRoundedFull && "rounded-full",
+    disabled ? "cursor-not-allowed" : "hover:shadow-md",
     className,
   );
 
