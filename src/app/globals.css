@@ -26,13 +26,15 @@
   --text-xs--line-height: 20px;
 
   /* Black */
+  --color-black-10: #f5f5f5;
   --color-black-100: #d9d9d9;
   --color-black-200: #777777;
   --color-black-300: #4b4b4b;
   --color-black-400: #333333;
-  --color-black-500: #000000;
+  --color-black-500: #121212;
 
   /* Green */
+  --color-green-10: #edf4f3;
   --color-green-100: #e3ea8f;
   --color-green-200: #c3e956;
   --color-green-300: #62aa1b;

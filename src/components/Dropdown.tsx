@@ -26,15 +26,15 @@ export default function Dropdown({ options, trigger }: DropdownProps) {
       </div>
 
       {isOpen && (
-        <ul className="border-black-200 absolute right-0 z-10 mt-1 cursor-pointer list-none overflow-hidden rounded-xl border bg-white whitespace-nowrap drop-shadow-sm">
+        <ul className="border-black-200 absolute right-0 z-10 mt-1 cursor-pointer list-none overflow-hidden rounded-lg border bg-white whitespace-nowrap drop-shadow-md md:mt-2">
           {options.map((option, idx) => (
             <li key={option.label}>
               <button
-                className={`md:text-md hover-text-shadow hover:bg-black-200/7 block w-full cursor-pointer px-6 py-2 text-center text-sm transition-colors duration-200 ease-in-out lg:px-8 lg:text-lg ${
-                  idx === 0 ? "rounded-t-xl" : ""
+                className={`md:text-md text-black-500 hover:bg-black-10 w-full cursor-pointer px-5 py-2 text-center text-xs transition-colors duration-200 ease-in-out md:px-6 lg:text-[15px] ${
+                  idx === 0 ? "rounded-t-lg" : ""
                 } ${
                   idx === options.length - 1
-                    ? "rounded-b-xl"
+                    ? "rounded-b-lg"
                     : "border-black-200 border-b"
                 }`}
                 onClick={() => {
