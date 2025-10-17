@@ -85,7 +85,7 @@ export default function MainBanner() {
             size="lg"
             href="/favories"
             className="w-[240px] md:w-[368px] lg:w-[612px]"
-            ariaLabel="페이보리 목록 페이지로 이동하기"
+            ariaLabel="Favory 목록 페이지로 이동하기"
           >
             지금 시작하기
           </Button>
