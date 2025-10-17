@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { Pretendard, LeferiBold } from "@/font";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/ui/Header";
+import Footer from "@/components/ui/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
