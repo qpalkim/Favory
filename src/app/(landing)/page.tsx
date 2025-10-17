@@ -1,5 +1,5 @@
-import MainBanner from "./_components/MainBanner";
-import MainArticle from "./_components/MainArticle";
+import MainBanner from "@/components/landing/MainBanner";
+import MainArticle from "@/components/landing/MainArticle";
 
 export default function Home() {
   return (

@@ -6,24 +6,24 @@ import type { LucideIcon } from "lucide-react";
 function SkeletonRow({ Icon, label }: { Icon: LucideIcon; label: string }) {
   return (
     <motion.div
-      className="flex h-[32px] w-[215px] gap-2 rounded-md bg-white shadow-md md:h-[50px] md:w-[336px] lg:h-[72px] lg:w-[479px]"
+      className="flex h-[32px] w-[215px] gap-2 rounded-md bg-white shadow-md md:h-[50px] md:w-[336px]"
       variants={{
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
       }}
     >
-      <div className="flex min-h-[32px] min-w-[32px] items-center justify-center rounded-tl-md rounded-bl-md bg-gray-300 md:w-[50px] lg:w-[72px]">
+      <div className="bg-black-100 flex min-h-[32px] min-w-[32px] items-center justify-center rounded-tl-md rounded-bl-md md:w-[50px]">
         <Icon
           strokeWidth={1}
-          className="h-[14px] w-[14px] md:h-[19px] md:w-[19px] lg:h-[28px] lg:w-[28px]"
+          className="h-[14px] w-[14px] md:h-[19px] md:w-[19px]"
           aria-label={`${label} 아이콘`}
         />
       </div>
       <div className="py-1 md:py-2 lg:py-3">
-        <div className="h-[4px] w-[32px] animate-pulse rounded-md bg-gray-300 md:h-[5px] md:w-[52px] lg:h-[8px] lg:w-[73px]"></div>
-        <div className="mt-[2px] h-[3px] w-[20px] animate-pulse rounded-md bg-gray-300 md:mt-1 md:h-[4px] md:w-[24px] lg:h-[6px] lg:w-[48px]"></div>
-        <div className="mt-1 h-[4px] w-[132px] animate-pulse rounded-md bg-gray-300 md:h-[5px] md:w-[208px] lg:mt-2 lg:h-[8px] lg:w-[296px]"></div>
-        <div className="mt-[2px] h-[4px] w-[120px] animate-pulse rounded-md bg-gray-300 md:mt-1 md:h-[4px] md:w-[180px] lg:h-[6px] lg:w-[232px]"></div>
+        <div className="bg-black-100 h-[4px] w-[32px] animate-pulse rounded-md md:h-[5px] md:w-[52px]"></div>
+        <div className="bg-black-100 mt-[2px] h-[3px] w-[20px] animate-pulse rounded-md md:mt-1 md:h-[4px] md:w-[24px]"></div>
+        <div className="bg-black-100 mt-1 h-[4px] w-[132px] animate-pulse rounded-md md:h-[5px] md:w-[208px]"></div>
+        <div className="bg-black-100 mt-[2px] h-[4px] w-[120px] animate-pulse rounded-md md:mt-1 md:h-[4px] md:w-[180px]"></div>
       </div>
     </motion.div>
   );
@@ -39,19 +39,18 @@ export default function FirstSection() {
 
   return (
     <motion.section
-      className="mx-auto flex w-fit flex-col justify-center px-4 lg:w-full lg:flex-row-reverse lg:items-center lg:justify-between"
+      className="mx-auto flex w-fit flex-col justify-center lg:w-full lg:flex-row-reverse lg:items-center lg:justify-between lg:px-6"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 1, ease: "easeOut" }}
     >
       <motion.div
-        className="flex h-[210px] w-[312px] flex-col items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-b from-green-100 to-green-500 p-3 shadow-2xl transition-transform duration-300 hover:scale-105 md:h-[290px] md:w-[488px] md:p-6 lg:h-[412px] lg:w-[694px]"
+        className="flex h-[210px] w-[312px] flex-col items-center gap-2 overflow-hidden rounded-lg bg-gradient-to-b from-green-100 to-green-500 p-3 shadow-2xl transition-transform duration-300 hover:scale-105 md:h-[290px] md:w-[488px] md:p-6"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         variants={{
-          hidden: {},
           visible: {
             transition: {
               staggerChildren: 0.4,

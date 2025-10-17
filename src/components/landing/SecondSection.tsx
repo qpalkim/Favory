@@ -7,27 +7,27 @@ import logo from "@/assets/logo/logo_white.svg";
 const icons = [
   {
     component: Music4,
-    position: "top-[25%] left-[55%]",
+    position: "top-[20%] left-[56%]",
     color: "#1f4b2c",
     bg: "bg-green-100",
   },
   {
     component: Clapperboard,
-    position: "top-[62%] left-[30%]",
-    color: "#c3e956",
+    position: "top-[62%] left-[32%]",
+    color: "#076653",
     bg: "bg-white",
   },
   {
     component: Tv,
-    position: "top-[50%] left-[77%]",
+    position: "top-[45%] left-[78%]",
     color: "white",
     bg: "bg-green-500",
   },
   {
     component: BookOpen,
-    position: "top-[80%] left-[68%]",
+    position: "top-[78%] left-[68%]",
     color: "#1f4b2c",
-    bg: "bg-green-100",
+    bg: "bg-green-200",
   },
   {
     component: User,
@@ -41,20 +41,20 @@ const icons = [
 export default function SecondSection() {
   return (
     <motion.section
-      className="mx-auto flex w-fit flex-col justify-center px-4 lg:w-full lg:flex-row lg:items-center lg:justify-between"
+      className="mx-auto flex w-fit flex-col justify-center lg:w-full lg:flex-row lg:items-center lg:justify-between lg:px-6"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 1, ease: "easeOut" }}
     >
-      <div className="relative flex h-[210px] w-[312px] items-center justify-center overflow-hidden rounded-xl bg-white bg-radial from-green-600 to-green-500 shadow-2xl transition-transform duration-300 hover:scale-105 md:h-[290px] md:w-[488px] lg:h-[412px] lg:w-[694px]">
-        <div className="border-black-200 absolute aspect-square w-[100px] rounded-full border border-dashed md:w-[160px] lg:w-[232px]"></div>
-        <div className="border-black-200 absolute aspect-square w-[200px] rounded-full border md:w-[312px] lg:w-[432px]"></div>
-        <div className="border-black-200 absolute aspect-square w-[280px] rounded-full border md:w-[450px] lg:w-[632px]"></div>
+      <div className="relative flex h-[210px] w-[312px] items-center justify-center overflow-hidden rounded-lg bg-white bg-radial from-green-600 to-green-500 shadow-2xl transition-transform duration-300 hover:scale-105 md:h-[290px] md:w-[488px]">
+        <div className="border-black-200 absolute aspect-square w-[100px] rounded-full border border-dashed md:w-[160px]"></div>
+        <div className="border-black-200 absolute aspect-square w-[200px] rounded-full border md:w-[312px]"></div>
+        <div className="border-black-200 absolute aspect-square w-[280px] rounded-full border md:w-[450px]"></div>
         <Image
           src={logo}
           alt="로고 아이콘"
-          className="z-50 w-[92px] md:w-[127px] lg:w-[182px]"
+          className="z-50 w-[92px] md:w-[127px]"
         />
         {icons.map((IconObj, i) => {
           const Icon = IconObj.component;
@@ -62,8 +62,9 @@ export default function SecondSection() {
             <motion.div
               key={i}
               className={`absolute ${IconObj.position} rounded-full border shadow-md ${IconObj.bg} ${
-                IconObj.big ? "p-2 md:p-3 lg:p-4" : "p-2 md:p-3"
+                IconObj.big ? "p-2 md:p-3" : "p-2 md:p-3"
               }`}
+              style={{ borderColor: IconObj.color }}
               initial={{ opacity: 0, scale: 0.3, rotate: -20 }}
               whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
               viewport={{ once: true }}
@@ -77,8 +78,8 @@ export default function SecondSection() {
               <Icon
                 className={`${
                   IconObj.big
-                    ? "h-[24px] w-[24px] md:h-[36px] md:w-[36px] lg:h-[52px] lg:w-[52px]"
-                    : "h-[15px] w-[15px] md:h-[19px] md:w-[19px] lg:h-[28px] lg:w-[28px]"
+                    ? "h-[24px] w-[24px] md:h-[36px] md:w-[36px]"
+                    : "h-[15px] w-[15px] md:h-[19px] md:w-[19px]"
                 }`}
                 color={IconObj.color}
                 strokeWidth={1}

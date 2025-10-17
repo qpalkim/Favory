@@ -18,7 +18,7 @@ function SectionCard({
   return (
     <motion.div initial="initial" whileHover="hover">
       <div
-        className={`relative aspect-square w-[116px] overflow-hidden rounded-2xl ${gradient} px-3 py-2 shadow-2xl transition-transform duration-300 hover:scale-105 md:w-[218px] md:px-4 md:py-4`}
+        className={`relative aspect-square w-[116px] overflow-hidden rounded-lg md:rounded-xl ${gradient} px-3 py-2 shadow-2xl transition-transform duration-300 hover:scale-105 md:w-[218px] md:px-4 md:py-4`}
       >
         <h4 className="text-2lg font-medium text-white md:text-2xl">{title}</h4>
         {children}
@@ -30,7 +30,7 @@ function SectionCard({
 export default function HeroSection() {
   return (
     <motion.section
-      className="mx-auto flex w-fit flex-col justify-center px-4 pt-[210px] lg:w-full lg:flex-row lg:items-center lg:justify-between"
+      className="mx-auto flex w-fit flex-col justify-center pt-[210px] lg:w-full lg:flex-row lg:items-center lg:justify-between lg:px-6"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -234,7 +234,7 @@ export default function HeroSection() {
         </SectionCard>
       </div>
       <h1 className="mt-6 text-right text-lg font-semibold text-white md:mt-[52px] md:text-xl lg:mt-0 lg:text-2xl">
-        내가 좋아하는 음악, 영화, 드라마, 책을
+        내가 좋아하는 음악, 영화, 드라마, 서적을
         <br />한 곳에 모아 저장해 보세요
       </h1>
     </motion.section>

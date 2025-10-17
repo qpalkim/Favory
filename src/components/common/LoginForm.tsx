@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import logo from "@/assets/logo/logo_green_vertical.svg";
 
 export default function LoginForm() {

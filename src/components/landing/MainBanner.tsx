@@ -3,16 +3,14 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import star from "@/assets/vector/star.svg";
 import logo from "@/assets/logo/logo.svg";
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 
 export default function MainBanner() {
   return (
     <motion.section
-      className="relative h-68 w-full md:h-[600px] lg:h-[800px]"
+      className="relative h-[272px] w-full md:h-[600px] lg:h-[820px]"
       animate={{
         background: [
-          "linear-gradient(to bottom, #1f4b2c 0%, #076653 25%, #e3ea8f 100%)",
-          "linear-gradient(to bottom, #1f4b2c 0%, #076653 25%, #c0e890 100%)",
           "linear-gradient(to bottom, #1f4b2c 0%, #076653 25%, #e3ea8f 100%)",
         ],
       }}
@@ -57,7 +55,7 @@ export default function MainBanner() {
           <Image src={star} alt="별 아이콘" fill loading="lazy" />
         </motion.div>
         <motion.div
-          className="absolute top-1/4 right-8 h-19 w-19 -translate-y-1/2 md:h-40 md:w-40 lg:top-[30%] lg:h-56 lg:w-56"
+          className="absolute top-1/4 right-8 h-19 w-19 -translate-y-1/2 md:h-40 md:w-40 lg:top-[30%] lg:right-16 lg:h-56 lg:w-56"
           animate={{
             opacity: [1, 0.8, 1],
             filter: [
@@ -76,19 +74,22 @@ export default function MainBanner() {
         >
           <Image src={logo} alt="로고 아이콘" fill priority loading="eager" />
         </motion.div>
-        <h1 className="font-leferiBold absolute top-[52%] left-9 text-[24px] text-white md:top-[57%] md:left-18 md:text-[48px] lg:top-[55%] lg:left-6 lg:text-[72px]">
-          Favory
-        </h1>
-        <h2 className="absolute top-[65%] left-9 text-lg font-semibold text-white md:top-[70%] md:left-18 md:text-2xl lg:left-6 lg:text-4xl">
-          내 취향을 담은 나만의 공간
-        </h2>
-        <Button
-          href="/favories"
-          className="absolute top-[79%] w-[240px] md:left-18 md:w-[400px] lg:left-6 lg:w-[500px]"
-          ariaLabel="페이보리 목록 페이지로 이동하기"
-        >
-          지금 시작하기
-        </Button>
+        <div className="absolute bottom-8 space-y-1.5 md:bottom-25 md:left-18 md:space-y-2 lg:space-y-3">
+          <h1 className="font-leferiBold text-[24px] text-white md:text-[48px] lg:text-[68px]">
+            Favory
+          </h1>
+          <h2 className="text-lg font-semibold text-white md:text-2xl lg:text-3xl">
+            내 취향을 담은 나만의 공간
+          </h2>
+          <Button
+            size="lg"
+            href="/favories"
+            className="w-[240px] md:w-[368px] lg:w-[612px]"
+            ariaLabel="Favory 목록 페이지로 이동하기"
+          >
+            지금 시작하기
+          </Button>
+        </div>
       </div>
     </motion.section>
   );
