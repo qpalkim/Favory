@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 
 const buttonVariants = cva(
-  " flex items-center justify-center cursor-pointer transition-colors duration-200 ease-in-out whitespace-nowrap font-semibold rounded-md",
+  "flex items-center justify-center cursor-pointer transition-colors duration-200 ease-in-out whitespace-nowrap font-semibold rounded-md",
   {
     variants: {
       variant: {
@@ -47,7 +47,7 @@ export default function Button({
   variant,
   size,
 }: ButtonProps) {
-  const finalClassName = cn(
+  const classes = cn(
     buttonVariants({ variant, size }),
     disabled ? "cursor-not-allowed" : "hover:shadow-md",
     className,
@@ -58,7 +58,7 @@ export default function Button({
       <Link
         href={href}
         target={target}
-        className={finalClassName}
+        className={classes}
         aria-label={ariaLabel}
       >
         {children}
@@ -71,7 +71,7 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={finalClassName}
+      className={classes}
       aria-label={ariaLabel}
     >
       {children}
