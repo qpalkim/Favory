@@ -2,7 +2,7 @@ import {
   ReactNode,
   Ref,
   useId,
-  InputHTMLAttributes,
+  TextareaHTMLAttributes,
   LabelHTMLAttributes,
   PropsWithChildren,
 } from "react";
@@ -35,16 +35,20 @@ export function Label({
 
 export function Error({ children }: { children: ReactNode }) {
   return (
-    <span className="text-error-100 lg:text-md mt-2 ml-3 block text-xs">
+    <span className="text-error-100 lg:text-md ml-3 block text-xs">
       {children}
     </span>
   );
 }
 
-const inputVariants = cva(
-  "w-full h-[36px] md:h-[38px] lg:h-[46px] px-3 text-sm md:text-md lg:text-lg text-black-500 placeholder:text-black-200 rounded-md bg-white border hover:bg-black-10 focus:outline-none transition-colors duration-200 ease-in-out",
+const textareaVariants = cva(
+  "w-full h-[100px] md:h-[132px] lg:h-[172px] text-black-500 placeholder:text-black-200 rounded-md bg-white border hover:bg-black-10 focus:outline-none transition-colors duration-200 ease-in-out",
   {
     variants: {
+      size: {
+        sm: "text-sm md:text-md lg:text-lg px-3 pt-3",
+        lg: "text-md md:text-lg lg:text-2lg px-3 md:px-4 pt-3 md:pt-4",
+      },
       state: {
         default:
           "border-black-200 focus:border-green-600 focus:bg-green-500/7 focus:shadow-[0_0_0_3px_rgba(7,102,83,0.4)]",
@@ -53,28 +57,30 @@ const inputVariants = cva(
       },
     },
     defaultVariants: {
+      size: "lg",
       state: "default",
     },
   },
 );
 
-export interface InputProps
-  extends InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
+export interface TextareaProps
+  extends TextareaHTMLAttributes<HTMLTextAreaElement>,
+    VariantProps<typeof textareaVariants> {
   label?: string;
   error?: string;
-  ref?: Ref<HTMLInputElement>;
+  ref?: Ref<HTMLTextAreaElement>;
 }
 
-export default function Input({
+export default function Textarea({
   label,
   required,
   error,
   ref,
   state,
   className,
+  size,
   ...props
-}: InputProps) {
+}: TextareaProps) {
   const id = useId();
 
   return (
@@ -84,13 +90,13 @@ export default function Input({
           {label}
         </Label>
       )}
-      <input
+      <textarea
         id={id}
         ref={ref}
         required={required}
         aria-invalid={!!error}
         className={cn(
-          inputVariants({ state: error ? "error" : state }),
+          textareaVariants({ size, state: error ? "error" : state }),
           className,
         )}
         {...props}
