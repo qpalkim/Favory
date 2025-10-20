@@ -16,6 +16,7 @@ function SkeletonRow({ Icon, label }: { Icon: LucideIcon; label: string }) {
         <Icon
           strokeWidth={1}
           className="h-[14px] w-[14px] md:h-[19px] md:w-[19px]"
+          color="#1f4b2c"
           aria-label={`${label} 아이콘`}
         />
       </div>

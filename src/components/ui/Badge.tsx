@@ -10,7 +10,7 @@ const badgeVariants = cva(
         lg: "text-md px-[6px] py-1 lg:text-2lg font-medium",
       },
       clickable: {
-        true: "hover:opacity-80 cursor-pointer",
+        true: "cursor-pointer transition-opacity duration-200 hover:opacity-80",
         false: "cursor-default",
       },
     },
