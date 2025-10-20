@@ -1,5 +1,7 @@
-import { ReactNode, Ref, useId } from "react";
 import {
+  ReactNode,
+  Ref,
+  useId,
   InputHTMLAttributes,
   LabelHTMLAttributes,
   PropsWithChildren,
@@ -61,15 +63,14 @@ export interface InputProps
     VariantProps<typeof inputVariants> {
   label?: string;
   error?: string;
-  inputRef?: Ref<HTMLInputElement>;
+  ref?: Ref<HTMLInputElement>;
 }
 
 export default function Input({
   label,
   required,
   error,
-  inputRef,
-  disabled,
+  ref,
   state,
   className,
   ...props
@@ -77,7 +78,7 @@ export default function Input({
   const id = useId();
 
   return (
-    <div>
+    <>
       {label && (
         <Label required={required} htmlFor={id}>
           {label}
@@ -85,16 +86,16 @@ export default function Input({
       )}
       <input
         id={id}
-        ref={inputRef}
-        disabled={disabled}
+        ref={ref}
         required={required}
         aria-invalid={!!error}
         className={cn(
-          inputVariants({ state: error ? "error" : state, className }),
+          inputVariants({ state: error ? "error" : state }),
+          className,
         )}
         {...props}
       />
       {error && <Error>{error}</Error>}
-    </div>
+    </>
   );
 }
