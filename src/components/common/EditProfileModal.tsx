@@ -16,7 +16,9 @@ export default function EditProfileModal({
 }: EditProfileModalProps) {
   return (
     <div className="space-y-6 md:space-y-8">
-      <h4 className="text-black-500 text-lg font-semibold">프로필 수정하기</h4>
+      <h4 className="text-black-500 text-lg font-semibold md:text-[20px]">
+        프로필 수정하기
+      </h4>
       <div className="flex items-center gap-3 md:gap-4">
         <ProfileImg src={src} size="lg" />
         <Button variant="outline">
