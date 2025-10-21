@@ -15,10 +15,9 @@ export default function CategoryFilterModal({
       <div className="flex items-center justify-between">
         <h4 className="text-black-500 text-lg font-semibold">필터</h4>
         <X
-          className="h-5 w-5 cursor-pointer"
+          className="text-black-200 h-5 w-5 cursor-pointer"
           onClick={onClose}
           aria-label="모달 닫기 아이콘"
-          color="#777777"
           strokeWidth={2}
         />
       </div>

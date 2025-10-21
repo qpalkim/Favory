@@ -17,10 +17,9 @@ export default function UserProfileModal({
     <div className="space-y-6">
       <div className="flex justify-end">
         <X
-          className="h-5 w-5 cursor-pointer md:h-6 md:w-6"
+          className="text-black-200 h-5 w-5 cursor-pointer md:h-6 md:w-6"
           onClick={onClose}
           aria-label="모달 닫기 아이콘"
-          color="#777777"
           strokeWidth={2}
         />
       </div>

@@ -38,8 +38,7 @@ export default function SelectOption({
             {selected.label}
           </p>
           <ChevronDown
-            className="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6"
-            color="#1f4b2c"
+            className="h-4 w-4 text-green-600 md:h-5 md:w-5 lg:h-6 lg:w-6"
             strokeWidth={2}
           />
         </button>

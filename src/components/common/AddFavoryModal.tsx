@@ -9,10 +9,9 @@ export default function AddFavoryModal({ onClose }: { onClose: () => void }) {
           새 Favory 작성하기
         </h4>
         <X
-          className="h-5 w-5 cursor-pointer md:h-6 md:w-6"
+          className="text-black-200 h-5 w-5 cursor-pointer md:h-6 md:w-6"
           onClick={onClose}
           aria-label="모달 닫기 아이콘"
-          color="#777777"
           strokeWidth={2}
         />
       </div>

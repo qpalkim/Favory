@@ -22,7 +22,7 @@ export default function Dropdown({ options, trigger }: DropdownProps) {
   return (
     <div ref={ref} className="relative inline-block">
       <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-        {trigger ?? <EllipsisVertical color="#777777" />}
+        {trigger ?? <EllipsisVertical className="text-black-200" />}
       </div>
 
       {isOpen && (

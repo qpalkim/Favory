@@ -76,9 +76,8 @@ export default function HeroSection() {
             }}
           />
           <Music4
-            color="white"
             strokeWidth={1}
-            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] md:h-[52px] md:w-[52px]"
+            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] text-white md:h-[52px] md:w-[52px]"
           />
         </SectionCard>
 
@@ -138,9 +137,8 @@ export default function HeroSection() {
             }}
           />
           <Clapperboard
-            color="white"
             strokeWidth={1}
-            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] md:h-[52px] md:w-[52px]"
+            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] text-white md:h-[52px] md:w-[52px]"
           />
         </SectionCard>
 
@@ -183,9 +181,8 @@ export default function HeroSection() {
             }}
           />
           <Tv
-            color="white"
             strokeWidth={1}
-            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] md:h-[52px] md:w-[52px]"
+            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] text-white md:h-[52px] md:w-[52px]"
           />
         </SectionCard>
 
@@ -227,9 +224,8 @@ export default function HeroSection() {
             }}
           />
           <BookOpen
-            color="white"
             strokeWidth={1}
-            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] md:h-[52px] md:w-[52px]"
+            className="absolute right-3 bottom-2 z-50 h-[28px] w-[28px] text-white md:h-[52px] md:w-[52px]"
           />
         </SectionCard>
       </div>

@@ -16,9 +16,8 @@ export default function DeleteItemModal({
     <div className="space-y-4 md:space-y-6">
       <div className="flex justify-center">
         <AlertCircle
-          className="h-6 w-6 md:h-8 md:w-8"
+          className="text-black-200 h-6 w-6 md:h-8 md:w-8"
           aria-label="삭제 경고 아이콘"
-          color="#777777"
           strokeWidth={2}
         />
       </div>
