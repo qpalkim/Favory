@@ -1,4 +1,4 @@
-import { FileUp, Upload } from "lucide-react";
+import { FileUp } from "lucide-react";
 import Button from "../ui/Button";
 import ProfileImg from "../ui/ProfileImg";
 import Input from "../ui/Input";
