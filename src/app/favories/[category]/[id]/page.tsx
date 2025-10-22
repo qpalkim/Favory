@@ -5,7 +5,7 @@ interface PageProps {
   };
 }
 
-export default function Page({ params }: PageProps) {
+export default async function Page({ params }: PageProps) {
   const { category, id } = params;
 
   return (
