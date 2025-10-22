@@ -1,11 +1,8 @@
-interface PageProps {
-  params: {
-    category: string;
-    id: string;
-  };
-}
-
-export default async function Page({ params }: PageProps) {
+export default async function Page({
+  params,
+}: {
+  params: { category: string; id: string };
+}) {
   const { category, id } = params;
 
   return (
