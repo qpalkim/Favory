@@ -57,11 +57,11 @@ export default function FeedCard({ favoryDetail }: FeedCardProps) {
               size="sm"
               className="pointer-events-none"
             />
-            <div className="flex min-w-0 flex-col gap-1">
-              <p className="text-black-500 md:text-md truncate text-xs leading-none lg:text-lg">
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <p className="text-black-500 md:text-md truncate text-xs leading-tight lg:text-lg">
                 {favoryDetail.nickname}
               </p>
-              <p className="text-black-200 lg:text-md truncate text-[9px] leading-none md:text-xs">
+              <p className="text-black-200 lg:text-md truncate text-[10px] leading-tight md:text-xs">
                 {favoryDetail.createdAt}
               </p>
             </div>
