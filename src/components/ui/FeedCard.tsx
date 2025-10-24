@@ -46,7 +46,7 @@ export default function FeedCard({ favoryDetail }: FeedCardProps) {
             <h3 className="lg:text-2lg text-black-500 truncate text-sm leading-tight font-medium md:text-lg">
               {favoryDetail.favoryTitle}
             </h3>
-            <p className="text-blck-500 text-md mt-1 hidden truncate leading-tight md:block lg:text-lg">
+            <p className="text-black-500 text-md mt-1 hidden truncate leading-tight md:block lg:text-lg">
               {favoryDetail.content}
             </p>
             <div className="mt-1 flex items-center gap-1 md:mt-2 md:gap-2">
