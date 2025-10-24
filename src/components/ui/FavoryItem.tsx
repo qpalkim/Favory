@@ -5,19 +5,19 @@ import ProfileImg from "./ProfileImg";
 
 interface FavoryItemProps {
   favoryDetail: FavoryDetail; // 임시 타입 import
-  search?: boolean;
+  profile?: boolean;
 }
 
 export default function FavoryItem({
   favoryDetail,
-  search = false,
+  profile = false,
 }: FavoryItemProps) {
   return (
     <Link
       href={`/favories/${favoryDetail.category}/${favoryDetail.id}`}
-      className="border-black-100 flex cursor-pointer gap-[10px] overflow-hidden border-b py-4 last:border-b-0 md:gap-4 md:px-4 md:py-6 lg:max-w-[660px] lg:p-6"
+      className="border-black-100 flex cursor-pointer gap-[10px] overflow-hidden border-b px-2 py-4 last:border-b-0 md:gap-4 md:px-4 md:py-6 lg:max-w-[660px] lg:p-6"
     >
-      {search && (
+      {!profile && (
         <ProfileImg
           src={favoryDetail.profileImg}
           className="pointer-events-none flex-shrink-0"
