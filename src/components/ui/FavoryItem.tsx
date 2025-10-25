@@ -15,7 +15,7 @@ export default function FavoryItem({
   return (
     <Link
       href={`/favories/${favoryDetail.category}/${favoryDetail.id}`}
-      className="border-black-100 flex cursor-pointer gap-[10px] overflow-hidden border-b px-2 py-4 last:border-b-0 md:gap-4 md:px-4 md:py-6 lg:max-w-[660px] lg:p-6"
+      className="border-black-100 flex gap-[10px] overflow-hidden border-b py-4 last:border-b-0 md:gap-4 md:py-6 lg:max-w-[660px]"
     >
       {!profile && (
         <ProfileImg
