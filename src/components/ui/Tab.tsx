@@ -18,10 +18,6 @@ const tabVariants = cva(
   },
 );
 
-const tabListVariants = cva(
-  "flex justify-evenly border-b border-black-100 gap-3",
-);
-
 interface TabItem {
   id: string;
   label: string;
@@ -39,24 +35,30 @@ export default function Tab({ items, className }: TabProps) {
 
   return (
     <div className={cn("w-full", className)}>
-      <div className={cn(tabListVariants(), "mb-4")} role="tablist">
-        {items.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setActiveTab(item.id)}
-            className={cn(
-              tabVariants({
-                variant: activeTab === item.id ? "active" : "default",
-              }),
-            )}
-            role="tab"
-            aria-selected={activeTab === item.id}
-            aria-controls={`tab-panel-${item.id}`}
-            id={`tab-${item.id}`}
-          >
-            {item.label}
-          </button>
-        ))}
+      <div className="relative w-full">
+        <div className="border-black-100 absolute bottom-0 left-0 w-full border-b" />
+        <div
+          className="relative mx-auto mb-4 flex max-w-[660px] justify-evenly"
+          role="tablist"
+        >
+          {items.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={cn(
+                tabVariants({
+                  variant: activeTab === item.id ? "active" : "default",
+                }),
+              )}
+              role="tab"
+              aria-selected={activeTab === item.id}
+              aria-controls={`tab-panel-${item.id}`}
+              id={`tab-${item.id}`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {activeTabItem && (
