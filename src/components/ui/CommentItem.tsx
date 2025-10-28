@@ -1,4 +1,4 @@
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImg from "./ProfileImg";
 
 // 추후 타입 정의 필요
 export interface Comment {

@@ -1,7 +1,7 @@
-import { FavoryDetail } from "../ui/FeedCard";
+import { FavoryDetail } from "./FeedCard";
 import Image from "next/image";
 import Link from "next/link";
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImg from "./ProfileImg";
 
 interface FavoryItemProps {
   favoryDetail: FavoryDetail; // 임시 타입 import

@@ -1,12 +1,12 @@
 import Link from "next/link";
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImg from "./ProfileImg";
 
 // 추후 타입 정의 필요
 interface User {
   id: number;
-  nickname: string; // 유저 닉네임
-  bio: string | null; // 유저 한 줄 소개
-  profileImg: string | null; // 유저 프로필 이미지
+  nickname: string; // 사용자 닉네임
+  bio: string | null; // 사용자 한 줄 소개
+  profileImg: string | null; // 사용자 프로필 이미지
 }
 
 interface ProfileItemProps {
