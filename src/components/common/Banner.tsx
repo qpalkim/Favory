@@ -47,7 +47,10 @@ export default function Banner({
   const label = CATEGORY_BUTTON[category].text;
 
   const content = (
-    <div className="relative h-[222px] w-full overflow-hidden bg-gradient-to-b from-green-600 via-green-500 to-green-100 px-6 md:h-[416px] md:px-8 lg:h-[456px] lg:px-0">
+    <section
+      aria-label={type === "ai" ? "맞춤형 추천 배너" : "최신 Favory"}
+      className="relative h-[222px] w-full overflow-hidden bg-gradient-to-b from-green-600 via-green-500 to-green-100 px-6 md:h-[416px] md:px-8 lg:h-[456px] lg:px-0"
+    >
       <Image
         src={CATEGORY_BANNER[category]}
         alt={`${category} 배너`}
@@ -55,24 +58,28 @@ export default function Banner({
         priority
         className="absolute inset-0 top-0 h-full w-full object-cover"
       />
-
       <div className="relative z-10 mx-auto flex h-full items-center justify-between lg:max-w-[1000px]">
         <div>
-          <p className="md:text-md text-[10px] font-medium text-white lg:text-lg">
+          <small className="md:text-md text-[10px] font-medium text-white lg:text-lg">
             {type === "ai" ? "맞춤형 추천 콘텐츠" : "최신 Favory"}
-          </p>
-          <p className="text-lg font-semibold text-white md:text-3xl">
+          </small>
+          <h2 className="text-lg font-semibold text-white md:text-3xl">
             {/* 추후 구현 가능 시, 수정 필요 */}
             {type === "ai" ? "회원님의 취향에 꼭 맞는 작품" : favoryTitle}
-          </p>
-          <p className="text-md mt-2 font-semibold text-white md:text-2xl lg:mt-3">
+          </h2>
+          <h3 className="text-md mt-2 font-semibold text-white md:text-2xl lg:mt-3">
             {title}
-          </p>
+          </h3>
           <p className="md:text-md text-[10px] font-medium text-white lg:text-lg">
-            {creator} • {year}
+            <span>{creator}</span>
+            {" • "}
+            <time dateTime={year}>{year}</time>
           </p>
           {type === "ai" ? (
-            <Button className="mt-2 lg:mt-3">
+            <Button
+              className="mt-2 lg:mt-3"
+              ariaLabel={`${category} ${label.replace("지금 ", "")}`}
+            >
               <Icon className="h-4 w-4 text-white md:h-[18px] md:w-[18px] lg:h-[20px] lg:w-[20px]" />
               {label}
             </Button>
@@ -87,7 +94,7 @@ export default function Banner({
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 
   return type === "ai" ? (
