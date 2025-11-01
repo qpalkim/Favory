@@ -58,6 +58,22 @@
   text-shadow: 0 0 3px rgba(7, 102, 83, 0.4);
 }
 
+@keyframes soft-glow {
+  0%,
+  100% {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 1px rgba(255, 255, 255, 0.3));
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.5) drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+  }
+}
+
+.animate-soft-glow {
+  animation: soft-glow 3s ease-in-out infinite;
+}
+
 body {
   font-family: var(--font-pretendard);
   min-width: 375px;
