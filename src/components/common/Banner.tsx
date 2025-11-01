@@ -16,7 +16,7 @@ interface BannerProps {
   creator: string;
   year: string;
   favoryTitle: string;
-  coverImg: StaticImageData;
+  coverImg: string | StaticImageData;
 }
 
 const CATEGORY_BANNER = {
