@@ -85,7 +85,7 @@ export default function Banner({
             </Button>
           ) : null}
         </div>
-        <div className="relative flex h-[82px] items-center justify-center overflow-visible rounded-sm transition-transform duration-200 md:h-[182px] md:rounded-md lg:h-[232px]">
+        <div className="relative flex aspect-square h-[82px] items-center justify-center rounded-sm transition-transform duration-200 md:h-[182px] md:rounded-md lg:h-[232px]">
           <div className="absolute h-full w-full bg-white opacity-70 blur-md md:blur-lg" />
           <Image
             src={coverImg}
