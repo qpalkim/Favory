@@ -56,7 +56,7 @@ export default function Banner({
         alt={`${category} 배너`}
         fill
         priority
-        className="absolute inset-0 top-0 h-full w-full object-cover"
+        className="animate-soft-glow absolute inset-0 top-0 h-full w-full object-cover"
       />
       <div className="relative z-10 mx-auto flex h-full items-center justify-between lg:max-w-[1000px]">
         <div>
