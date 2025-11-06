@@ -3,13 +3,14 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 
 const buttonVariants = cva(
-  "flex items-center justify-center cursor-pointer transition-colors duration-200 ease-in-out whitespace-nowrap font-semibold rounded-md",
+  "flex items-center justify-center cursor-pointer duration-200 ease-in-out whitespace-nowrap font-semibold rounded-md",
   {
     variants: {
       variant: {
         primary:
-          "bg-green-500 text-white hover:bg-green-600 disabled:bg-black-100",
-        outline: "bg-white text-green-600 border border-green-600",
+          "bg-green-500 text-white hover:bg-green-600 disabled:bg-black-100  transition-colors",
+        outline:
+          "bg-white text-green-600 border border-green-600 transition-shadow",
       },
       size: {
         sm: "h-[32px] md:h-[36px] lg:h-[42px] text-md md:text-[15px] lg:text-lg px-3 md:px-4 lg:px-6 w-max",
