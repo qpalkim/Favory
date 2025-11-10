@@ -29,10 +29,10 @@ export default function CommentItem({
         className="pointer-events-none"
       />
       <div className="flex min-w-0 flex-1 flex-col">
-        <p className="text-black-500 md:text-md truncate text-xs leading-tight lg:text-lg">
+        <p className="text-black-500 md:text-md truncate text-sm leading-tight font-medium lg:text-lg">
           {comment.writer.nickname}
         </p>
-        <p className="text-black-200 lg:text-md mt-0.5 truncate text-[10px] leading-tight md:text-xs">
+        <p className="text-black-200 lg:text-md mt-0.5 truncate text-xs leading-tight font-light md:text-sm">
           {comment.createdAt}
         </p>
         <p

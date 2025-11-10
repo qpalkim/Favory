@@ -15,6 +15,12 @@ export interface FavoryDetail {
   nickname: string; // 작성자 닉네임
   profileImg: string | null; // 작성자 프로필 이미지
   createdAt: string; // 감상평 생성 일시
+  tag:
+    | {
+        id: number;
+        name: string;
+      }[]
+    | null;
 }
 
 interface FeedCardProps {
@@ -61,7 +67,7 @@ export default function FeedCard({ favoryDetail }: FeedCardProps) {
               <p className="text-black-500 md:text-md truncate text-xs leading-tight lg:text-lg">
                 {favoryDetail.nickname}
               </p>
-              <p className="text-black-200 lg:text-md truncate text-[10px] leading-tight md:text-xs">
+              <p className="text-black-200 lg:text-md truncate text-[10px] leading-tight font-light md:text-xs">
                 {favoryDetail.createdAt}
               </p>
             </div>
