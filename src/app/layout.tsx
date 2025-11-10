@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${Pretendard.variable} ${LeferiBold.variable}`}>
-      <body className="flex min-h-screen flex-col">
+      <body className="flex min-h-screen flex-col bg-[#fafafa]">
         <Header />
         <main className="z-0 flex-grow pt-10 md:pt-12 lg:pt-14">
           {children}
