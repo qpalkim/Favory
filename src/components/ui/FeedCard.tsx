@@ -15,6 +15,12 @@ export interface FavoryDetail {
   nickname: string; // 작성자 닉네임
   profileImg: string | null; // 작성자 프로필 이미지
   createdAt: string; // 감상평 생성 일시
+  tag:
+    | {
+        id: number;
+        name: string;
+      }[]
+    | null;
 }
 
 interface FeedCardProps {
