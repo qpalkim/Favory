@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -8,6 +10,7 @@ import MusicSelector from "@/components/ui/MusicSelector";
 import MovieSelector from "@/components/ui/MovieSelector";
 import DramaSelector from "@/components/ui/DramaSelector";
 import BookSelector from "@/components/ui/BookSelector";
+import Badge from "../ui/Badge";
 
 const categoryMap: Record<string, string> = {
   music: "음악",
@@ -17,7 +20,25 @@ const categoryMap: Record<string, string> = {
 };
 
 export default function AddFavoryForm({ category }: { category: string }) {
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const koreanCategory = categoryMap[category] || category;
+
+  // 추후 API 연동 및 조건/에러 처리 필요
+  const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const trimmed = tagInput.trim();
+
+      if (!trimmed) return;
+      if (tags.includes(trimmed)) return;
+      if (/\s/.test(trimmed)) return;
+
+      setTags((prev) => [...prev, trimmed]);
+      setTagInput("");
+    }
+  };
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
@@ -49,7 +70,33 @@ export default function AddFavoryForm({ category }: { category: string }) {
             size="sm"
             required
           />
-          <Input placeholder="태그를 작성해 보세요" label="태그" />
+          <div>
+            <Input
+              placeholder="태그를 작성해 보세요"
+              label="태그"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={onKeyDownTag}
+            />
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tags.map((tag, index) => (
+                <Badge
+                  key={tag}
+                  clickable={false}
+                  className="flex items-center gap-1"
+                >
+                  {tag}
+                  <X
+                    className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
+                    strokeWidth={2}
+                    onClick={() =>
+                      setTags((prev) => prev.filter((_, i) => i !== index))
+                    }
+                  />
+                </Badge>
+              ))}
+            </div>
+          </div>
         </div>
 
         <Button size="lg" disabled>
