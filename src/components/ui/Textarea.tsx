@@ -42,12 +42,12 @@ export function Error({ children }: { children: ReactNode }) {
 }
 
 const textareaVariants = cva(
-  "w-full h-[100px] md:h-[132px] lg:h-[172px] text-black-500 placeholder:text-black-200 rounded-md bg-white border hover:bg-black-10 focus:outline-none transition-colors duration-200 ease-in-out",
+  "w-full min-h-[100px] md:min-h-[132px] text-black-500 placeholder:text-black-200 rounded-md bg-white border hover:bg-black-10 focus:outline-none transition-colors duration-200 ease-in-out",
   {
     variants: {
-      size: {
-        sm: "text-sm md:text-md lg:text-lg px-3 pt-3",
-        lg: "text-md md:text-lg lg:text-2lg px-3 md:px-4 pt-3 md:pt-4",
+      variant: {
+        default: "text-sm md:text-md px-3 pt-2",
+        form: "text-sm md:text-md lg:text-lg px-3 pt-3",
       },
       state: {
         default:
@@ -57,7 +57,7 @@ const textareaVariants = cva(
       },
     },
     defaultVariants: {
-      size: "lg",
+      variant: "default",
       state: "default",
     },
   },
@@ -78,7 +78,7 @@ export default function Textarea({
   ref,
   state,
   className,
-  size,
+  variant,
   ...props
 }: TextareaProps) {
   const id = useId();
@@ -96,7 +96,10 @@ export default function Textarea({
         required={required}
         aria-invalid={!!error}
         className={cn(
-          textareaVariants({ size, state: error ? "error" : state }),
+          textareaVariants({
+            variant: variant,
+            state: error ? "error" : state,
+          }),
           className,
         )}
         {...props}

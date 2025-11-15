@@ -67,7 +67,7 @@ export default function AddFavoryForm({ category }: { category: string }) {
           <Textarea
             placeholder="감상평을 자유롭게 작성해 주세요"
             label="내용"
-            size="sm"
+            variant="form"
             required
           />
           <div>
