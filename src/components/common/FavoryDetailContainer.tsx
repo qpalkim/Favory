@@ -1,4 +1,4 @@
-import { Music4, Share } from "lucide-react";
+import { ImageOff, Music4, Share } from "lucide-react";
 import { FavoryDetailResponse } from "@/lib/types/favories";
 import { CommentListResponse } from "@/lib/types/comments";
 import Image from "next/image";
@@ -92,13 +92,19 @@ export default function FavoryDetailContainer() {
     <div className="mx-auto flex justify-between gap-6 lg:max-w-[1200px] lg:px-6">
       {/* Favory 상세 정보 */}
       <div className="relative w-full lg:max-w-[660px]">
-        {media.coverImg && (
+        {media.coverImg ? (
           <Image
             src={media.coverImg}
-            className="max-h-[375px] w-full object-cover md:max-h-[768px] lg:max-h-[660px]"
             alt={media.title}
-            fill
+            className="max-h-[375px] w-full object-cover md:max-h-[768px] lg:max-h-[660px]"
           />
+        ) : (
+          <div className="bg-black-10 flex h-[375px] w-full flex-col items-center justify-center md:h-[768px] lg:h-[660px]">
+            <ImageOff className="text-black-100 h-[32px] w-[32px] md:h-[52px] md:w-[52px]" />
+            <p className="text-black-200 md:text-md mt-2 text-sm">
+              작품 이미지가 없습니다
+            </p>
+          </div>
         )}
         <div className="relative z-10 -mt-6 space-y-6 rounded-t-3xl bg-white p-6 shadow-lg md:-mt-18 md:p-8">
           <div className="flex items-center gap-2">
