@@ -1,4 +1,5 @@
 import { cva, VariantProps } from "class-variance-authority";
+import clsx from "clsx";
 import Link from "next/link";
 
 const badgeVariants = cva(
@@ -27,6 +28,7 @@ interface BadgeProps extends VariantProps<typeof badgeVariants> {
   href?: string;
   ariaLabel?: string;
   clickable?: boolean;
+  className?: string;
 }
 
 export default function Badge({
@@ -36,16 +38,18 @@ export default function Badge({
   ariaLabel,
   size,
   clickable = true,
+  className,
 }: BadgeProps) {
-  const classes = badgeVariants({ size, clickable });
+  const classes = clsx(badgeVariants({ size, clickable }), className);
 
   if (href) {
     return (
-      <Link href={href} aria-label={ariaLabel}>
+      <Link href={href} aria-label={ariaLabel} className={classes}>
         {children}
       </Link>
     );
   }
+
   return (
     <button
       onClick={clickable ? onClick : undefined}

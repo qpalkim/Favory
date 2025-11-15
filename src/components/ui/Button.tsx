@@ -33,10 +33,13 @@ interface ButtonProps extends VariantProps<typeof buttonVariants> {
   href?: string;
   ariaLabel?: string;
   target?: string;
+  isLoading?: boolean;
   className?: string;
 }
 
 export default function Button({
+  variant,
+  size,
   children,
   onClick,
   type = "button",
@@ -44,17 +47,24 @@ export default function Button({
   href,
   ariaLabel,
   target,
+  isLoading = false,
   className,
-  variant,
-  size,
 }: ButtonProps) {
   const classes = cn(
     buttonVariants({ variant, size }),
-    disabled ? "cursor-not-allowed" : "hover:shadow-md",
+    disabled || isLoading ? "cursor-not-allowed" : "hover:shadow-md",
     className,
   );
 
-  if (href && !disabled) {
+  const content = isLoading ? (
+    <div className="flex items-center justify-center">
+      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent md:h-5 md:w-5" />
+    </div>
+  ) : (
+    children
+  );
+
+  if (href && !disabled && !isLoading) {
     return (
       <Link
         href={href}
@@ -71,11 +81,11 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       className={classes}
       aria-label={ariaLabel}
     >
-      {children}
+      {content}
     </button>
   );
 }
