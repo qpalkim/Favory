@@ -8,14 +8,15 @@ import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Textarea from "../ui/Textarea";
 import CommentItem from "../ui/CommentItem";
+import Empty from "./Empty";
 
 const tempFavories: FavoryDetailResponse = {
   id: 1,
   category: "music",
   media: {
     title: "Myself",
-    creator: "Post Malone",
-    year: "2019",
+    creator: null,
+    year: null,
     coverImg: null,
   },
   favoryTitle: "드라이브할 때 꼭 들어야 하는 노래",
@@ -100,7 +101,7 @@ export default function FavoryDetailContainer() {
           />
         ) : (
           <div className="bg-black-10 flex h-[375px] w-full flex-col items-center justify-center md:h-[768px] lg:h-[660px]">
-            <ImageOff className="text-black-100 h-[32px] w-[32px] md:h-[52px] md:w-[52px]" />
+            <ImageOff className="text-black-100 h-[42px] w-[42px] stroke-1 md:h-[52px] md:w-[52px]" />
             <p className="text-black-200 md:text-md mt-2 text-sm">
               작품 이미지가 없습니다
             </p>
@@ -123,7 +124,8 @@ export default function FavoryDetailContainer() {
               {media.title}
             </h2>
             <p className="text-black-200 text-md md:text-lg">
-              {media.creator} • {media.year}
+              {media.creator || "가수 정보 없음"} •&nbsp;
+              {media.year || "연도 정보 없음"}
             </p>
             <hr className="border-black-100 my-3 md:my-4" />
             <h3 className="text-black-500 md:text-2lg text-lg font-medium">
@@ -178,7 +180,7 @@ export default function FavoryDetailContainer() {
           {/* 모바일/태블릿 환경 댓글 목록 영역 */}
           <div className="lg:hidden">
             <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
-              댓글 3개
+              댓글 {tempComments.length}개
             </h5>
             <div className="mt-6 flex gap-2">
               <ProfileImg src={null} />
@@ -190,15 +192,21 @@ export default function FavoryDetailContainer() {
               </Button>
             </div>
             <hr className="border-black-100 mt-6" />
-            {tempComments.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
-            ))}
+            {tempComments.length === 0 ? (
+              <div className="my-12">
+                <Empty type="comment" />
+              </div>
+            ) : (
+              tempComments.map((comment) => (
+                <CommentItem key={comment.id} comment={comment} />
+              ))
+            )}
           </div>
         </div>
       </div>
 
       {/* PC 환경 댓글 목록 영역 */}
-      <div className="mt-[52px] hidden lg:block lg:max-w-[416px]">
+      <div className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]">
         <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
           댓글 3개
         </h5>
@@ -212,9 +220,15 @@ export default function FavoryDetailContainer() {
           </Button>
         </div>
         <hr className="border-black-100 mt-6" />
-        {tempComments.map((comment) => (
-          <CommentItem key={comment.id} comment={comment} />
-        ))}
+        {tempComments.length === 0 ? (
+          <div className="my-12">
+            <Empty type="comment" />
+          </div>
+        ) : (
+          tempComments.map((comment) => (
+            <CommentItem key={comment.id} comment={comment} />
+          ))
+        )}
       </div>
     </div>
   );
