@@ -7,7 +7,7 @@ const badgeVariants = cva(
   {
     variants: {
       size: {
-        sm: "text-sm px-[6px] py-1 md:text-md lg:text-lg",
+        sm: "text-sm px-[6px] py-1 md:text-md",
         lg: "text-md px-[6px] py-1 lg:text-2lg font-medium",
       },
       clickable: {
