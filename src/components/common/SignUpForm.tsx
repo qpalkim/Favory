@@ -1,19 +1,46 @@
 "use client";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import Image from "next/image";
+import { AxiosError } from "axios";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSignUp } from "@/lib/hooks/useAuth";
+import { SignUpRequest, signUpRequestSchema } from "@/lib/types/auth";
 import Link from "next/link";
+import Image from "next/image";
+import logo from "@/assets/logo/logo_green_vertical.svg";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import logo from "@/assets/logo/logo_green_vertical.svg";
 
 export default function SignUpForm() {
+  const { mutateAsync: signUp } = useSignUp();
   const [showPw, setShowPw] = useState(false);
   const [showPwConfirm, setShowPwConfirm] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<SignUpRequest>({
+    resolver: zodResolver(signUpRequestSchema),
+    mode: "onChange",
+  });
+
+  // 추후 토스트 성공/실패 알림 처리
+  const onSubmit = async (data: SignUpRequest) => {
+    try {
+      await signUp(data);
+      console.log("회원가입에 성공했습니다");
+    } catch (err) {
+      const error = err as AxiosError;
+      const status = error?.response?.status;
+      console.error(status, "회원가입에 실패했습니다");
+    }
+  };
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <form className="space-y-[42px] px-4 py-[42px] lg:space-y-[52px] lg:px-6 lg:py-[52px]">
+      <div className="space-y-[42px] px-4 py-[42px] lg:space-y-[52px] lg:px-6 lg:py-[52px]">
         <div className="flex flex-col items-center">
           <Link href="/" className="inline-block text-center">
             <Image
@@ -27,14 +54,27 @@ export default function SignUpForm() {
           </p>
         </div>
 
-        <div className="space-y-6">
-          <Input placeholder="이메일을 입력해 주세요" label="이메일" />
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-6">
+            <Input
+              label="이메일"
+              placeholder="이메일을 입력해 주세요"
+              type="email"
+              {...register("email")}
+              error={errors.email?.message}
+            />
+          </div>
+
+          <div className="mb-6 space-y-2">
             <div className="relative">
               <Input
+                label="비밀번호"
                 placeholder="비밀번호를 입력해 주세요"
                 type={showPw ? "text" : "password"}
-                label="비밀번호"
+                {...register("password", {
+                  onBlur: () => trigger("password"),
+                })}
+                error={errors.password?.message}
               />
               <button
                 type="button"
@@ -59,6 +99,10 @@ export default function SignUpForm() {
               <Input
                 placeholder="비밀번호를 한번 더 입력해 주세요"
                 type={showPwConfirm ? "text" : "password"}
+                {...register("passwordConfirmation", {
+                  onBlur: () => trigger("passwordConfirmation"),
+                })}
+                error={errors.passwordConfirmation?.message}
               />
               <button
                 type="button"
@@ -80,15 +124,30 @@ export default function SignUpForm() {
               </button>
             </div>
           </div>
-          <Input placeholder="닉네임을 입력해 주세요" label="닉네임" />
-        </div>
 
-        <Button size="lg" type="submit" className="mb-2" disabled>
-          회원가입하기
-        </Button>
-        <Button size="lg" variant="outline">
-          Google 간편 가입하기
-        </Button>
+          <div className="mb-[42px]">
+            <Input
+              label="닉네임"
+              placeholder="닉네임을 입력해 주세요"
+              type="text"
+              {...register("nickname")}
+              error={errors.nickname?.message}
+            />
+          </div>
+
+          <Button
+            size="lg"
+            type="submit"
+            className="mb-2"
+            disabled={!isValid}
+            isLoading={isSubmitting}
+          >
+            회원가입하기
+          </Button>
+          <Button size="lg" variant="outline">
+            Google 간편 가입하기
+          </Button>
+        </form>
 
         <div className="mb-8 flex items-center gap-2 md:gap-4 lg:mb-10 lg:gap-6">
           <div className="bg-black-100 h-px flex-1 rounded"></div>
@@ -103,7 +162,7 @@ export default function SignUpForm() {
           </p>
           <div className="bg-black-100 h-px flex-1 rounded"></div>
         </div>
-      </form>
+      </div>
     </main>
   );
 }
