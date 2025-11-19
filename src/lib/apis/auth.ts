@@ -1,6 +1,9 @@
 import { axiosClientHelper } from "../network/axiosClientHelper";
 import { safeResponse } from "../network/safeResponse";
 import {
+  LoginRequest,
+  LoginResponse,
+  loginResponseSchema,
   SignUpRequest,
   SignUpResponse,
   signUpResponseSchema,
@@ -13,4 +16,10 @@ export const signUp = async (data: SignUpRequest) => {
     data,
   );
   return safeResponse(response.data, signUpResponseSchema);
+};
+
+// 로그인 요청 API
+export const login = async (data: LoginRequest) => {
+  const response = await axiosClientHelper.post<LoginResponse>("/login", data);
+  return safeResponse(response.data, loginResponseSchema);
 };

@@ -45,3 +45,32 @@ export const signUpResponseSchema = z.object({
 });
 
 export type SignUpResponse = z.infer<typeof signUpResponseSchema>;
+
+// 로그인 요청 API 타입
+export const loginRequestSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "이메일은 필수 입력입니다" })
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+      message: "유효한 이메일 형식이 아닙니다",
+    }),
+  password: z
+    .string()
+    .min(1, { message: "비밀번호는 필수 입력입니다" })
+    .min(8, { message: "최소 8자 이상 입력해 주세요" })
+    .regex(/(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*]).+/, {
+      message: "영문, 숫자, 특수문자 포함 입력해 주세요",
+    }),
+});
+
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
+
+// 로그인 응답 API 타입
+// 추후 유저 정보 반환 수정 필요
+export const loginResponseSchema = z.object({
+  accessToken: z.string().optional(),
+  refreshToken: z.string().optional(),
+  tokenType: z.string(),
+});
+
+export type LoginResponse = z.infer<typeof loginResponseSchema>;
