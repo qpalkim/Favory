@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { Pretendard, LeferiBold } from "@/font";
+import QueryClientProvider from "@/lib/network/QueryClientProvider";
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import "./globals.css";
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${Pretendard.variable} ${LeferiBold.variable}`}>
       <body className="flex min-h-screen flex-col bg-[#fafafa]">
-        <Header />
-        <main className="z-0 flex-grow pt-10 md:pt-12">{children}</main>
-        <Footer />
+        <QueryClientProvider>
+          <Header />
+          <main className="z-0 flex-grow pt-10 md:pt-12">{children}</main>
+          <Footer />
+        </QueryClientProvider>
       </body>
     </html>
   );
