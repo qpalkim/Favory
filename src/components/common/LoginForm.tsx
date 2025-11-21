@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/lib/hooks/useAuth";
 import { LoginRequest, loginRequestSchema } from "@/lib/types/auth";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green_vertical.svg";
@@ -14,6 +15,7 @@ import Button from "@/components/ui/Button";
 
 export default function LoginForm() {
   const { mutateAsync: login } = useLogin();
+  const router = useRouter();
   const [showPw, setShowPw] = useState(false);
   const {
     register,
@@ -28,7 +30,9 @@ export default function LoginForm() {
   // 추후 토스트 성공/실패 알림 처리
   const onSubmit = async (data: LoginRequest) => {
     try {
-      await login(data);
+      const res = await login(data);
+      localStorage.setItem("userId", String(res.user.id)); // 추후 내 정보 조회 적용 시, 제거 예정
+      router.push("/favories");
       console.log("로그인에 성공했습니다");
     } catch (err) {
       const error = err as AxiosError;
