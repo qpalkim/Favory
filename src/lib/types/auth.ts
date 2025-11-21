@@ -66,11 +66,17 @@ export const loginRequestSchema = z.object({
 export type LoginRequest = z.infer<typeof loginRequestSchema>;
 
 // 로그인 응답 API 타입
-// 추후 유저 정보 반환 수정 필요
 export const loginResponseSchema = z.object({
   accessToken: z.string().optional(),
   refreshToken: z.string().optional(),
   tokenType: z.string(),
+  user: z.object({
+    id: z.number().min(1),
+    email: z.string().min(1),
+    nickname: z.string().min(1).max(10),
+    createdAt: z.string().transform((str) => new Date(str).toISOString()),
+    updatedAt: z.string().transform((str) => new Date(str).toISOString()),
+  }),
 });
 
 export type LoginResponse = z.infer<typeof loginResponseSchema>;
