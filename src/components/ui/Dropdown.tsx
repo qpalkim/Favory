@@ -26,7 +26,7 @@ export default function Dropdown({ options, trigger }: DropdownProps) {
       </div>
 
       {isOpen && (
-        <ul className="border-black-200 absolute right-0 z-10 mt-1 cursor-pointer list-none overflow-hidden rounded-lg border bg-white whitespace-nowrap drop-shadow-md md:mt-2">
+        <ul className="border-black-200 absolute right-0 z-10 mt-1 cursor-pointer list-none overflow-hidden rounded-lg border bg-white whitespace-nowrap drop-shadow-md">
           {options.map((option, idx) => (
             <li key={option.label}>
               <button
