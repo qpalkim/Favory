@@ -150,7 +150,7 @@ export default function SignUpForm() {
         </form>
 
         <div className="mb-8 flex items-center gap-2 md:gap-4 lg:mb-10 lg:gap-6">
-          <div className="bg-black-100 h-px flex-1 rounded"></div>
+          <div className="bg-black-100 h-px flex-1 rounded" />
           <p className="lg:text-md text-black-500 text-center text-xs md:text-sm">
             이미 회원이신가요?&nbsp;
             <Link
@@ -160,7 +160,7 @@ export default function SignUpForm() {
               로그인하기
             </Link>
           </p>
-          <div className="bg-black-100 h-px flex-1 rounded"></div>
+          <div className="bg-black-100 h-px flex-1 rounded" />
         </div>
       </div>
     </main>

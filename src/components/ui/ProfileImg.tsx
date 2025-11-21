@@ -7,7 +7,7 @@ import defaultProfile from "@/assets/icon/defaultProfile.svg";
 const profileImgVariants = cva("relative rounded-full", {
   variants: {
     size: {
-      sm: "w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:w-[36px] lg:h-[36px]",
+      sm: "w-[24px] h-[24px] md:w-[32px] md:h-[32px]",
       md: "w-[32px] h-[32px] md:w-[36px] md:h-[36px]",
       lg: "w-[60px] h-[60px] md:w-[85px] md:h-[85px]",
       xl: "w-[72px] h-[72px] md:w-[112px] md:h-[112px]",
