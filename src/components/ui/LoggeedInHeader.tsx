@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import { logout } from "@/lib/actions/logoutAction";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,15 +24,11 @@ export default function LoggedInHeader({
       label: "로그아웃",
       onClick: async () => {
         try {
-          const res = await logout();
-          if (res.status) {
-            localStorage.removeItem("userId"); // 추후 내 정보 조회 적용 시, 제거 예정
-            console.log("로그아웃에 성공했습니다");
-          } else {
-            console.error("로그아웃에 실패했습니다");
-          }
-        } catch (err) {
-          console.error("알 수 없는 에러", err);
+          await logout();
+          localStorage.removeItem("userId"); // 추후 내 정보 조회 적용 시, 제거 예정
+          toast.success("로그아웃에 성공했습니다");
+        } catch {
+          toast.error("로그아웃에 실패했습니다");
         }
       },
     },
