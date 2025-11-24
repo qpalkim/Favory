@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/lib/hooks/useAuth";
 import { LoginRequest, loginRequestSchema } from "@/lib/types/auth";
@@ -14,26 +15,31 @@ import Button from "@/components/ui/Button";
 
 export default function LoginForm() {
   const { mutateAsync: login } = useLogin();
+  const router = useRouter();
   const [showPw, setShowPw] = useState(false);
   const {
     register,
     handleSubmit,
     trigger,
+    setError,
     formState: { errors, isSubmitting, isValid },
   } = useForm<LoginRequest>({
     resolver: zodResolver(loginRequestSchema),
     mode: "onChange",
   });
 
-  // 추후 토스트 성공/실패 알림 처리
   const onSubmit = async (data: LoginRequest) => {
     try {
-      await login(data);
-      console.log("로그인에 성공했습니다");
-    } catch (err) {
-      const error = err as AxiosError;
-      const status = error?.response?.status;
-      console.error(status, "로그인에 실패했습니다");
+      const res = await login(data);
+      localStorage.setItem("userId", String(res.user.id)); // 추후 내 정보 조회 적용 시, 제거 예정
+      toast.success("로그인에 성공했습니다");
+      router.push("/favories");
+    } catch {
+      setError("email", {
+        type: "manual",
+        message: "이메일 혹은 비밀번호를 확인해 주세요",
+      });
+      toast.error("로그인에 실패했습니다");
     }
   };
 

@@ -1,26 +1,18 @@
-import Link from "next/link";
-import Image from "next/image";
-import logo from "@/assets/logo/logo_white.svg";
+"use client";
+import { useUserData } from "@/lib/hooks/useUser";
+import LoggedInHeader from "./LoggeedInHeader";
+import LoggedOutHeader from "./LoggedOutHeader";
 
 export default function Header() {
-  return (
-    <header className="fixed z-50 w-full bg-green-500 shadow-lg">
-      <div className="relative mx-auto flex h-10 max-w-[1448px] items-center justify-between px-6 transition-all md:h-12">
-        <Link href="/">
-          <Image
-            src={logo}
-            alt="헤더 로고"
-            className="w-[86px] transition-opacity hover:opacity-80 md:w-[101px]"
-          />
-        </Link>
-        <Link
-          href="/login"
-          className="text-md md:text-2lg font-semibold text-white transition-opacity hover:opacity-80"
-          aria-label="로그인 페이지로 이동"
-        >
-          로그인
-        </Link>
-      </div>
-    </header>
+  // 추후 내 정보 조회 적용 시, 제거 예정
+  const storedId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const userId = storedId ? Number(storedId) : undefined;
+  const { data: user } = useUserData(userId);
+
+  return user?.id ? (
+    <LoggedInHeader image={user.profileImageUrl} nickname={user.nickname} />
+  ) : (
+    <LoggedOutHeader />
   );
 }

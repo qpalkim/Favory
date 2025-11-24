@@ -3,8 +3,10 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSignUp } from "@/lib/hooks/useAuth";
+import { useLogin, useSignUp } from "@/lib/hooks/useAuth";
 import { SignUpRequest, signUpRequestSchema } from "@/lib/types/auth";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,29 +14,54 @@ import logo from "@/assets/logo/logo_green_vertical.svg";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
+type SignUpErrorResponse = {
+  message: string;
+  details: null;
+};
+
 export default function SignUpForm() {
   const { mutateAsync: signUp } = useSignUp();
+  const { mutateAsync: login } = useLogin();
+  const router = useRouter();
   const [showPw, setShowPw] = useState(false);
   const [showPwConfirm, setShowPwConfirm] = useState(false);
   const {
     register,
     handleSubmit,
     trigger,
+    setError,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SignUpRequest>({
     resolver: zodResolver(signUpRequestSchema),
     mode: "onChange",
   });
 
-  // 추후 토스트 성공/실패 알림 처리
   const onSubmit = async (data: SignUpRequest) => {
     try {
-      await signUp(data);
-      console.log("회원가입에 성공했습니다");
+      const res = await signUp(data);
+      localStorage.setItem("userId", String(res.id)); // 추후 내 정보 조회 적용 시, 제거 예정
+      const { email, password } = data;
+      await login({ email, password });
+      toast.success("회원가입에 성공했습니다");
+      router.push("/favories");
     } catch (err) {
-      const error = err as AxiosError;
-      const status = error?.response?.status;
-      console.error(status, "회원가입에 실패했습니다");
+      const error = err as AxiosError<SignUpErrorResponse>;
+      const msg = error?.response?.data?.message;
+
+      // 추후 이메일/중복 처리 분기 처리 필요
+      if (msg?.includes("이메일")) {
+        setError("email", {
+          type: "manual",
+          message: "이미 존재하는 이메일입니다",
+        });
+      } else if (msg?.includes("닉네임")) {
+        setError("nickname", {
+          type: "manual",
+          message: "이미 존재하는 닉네임입니다",
+        });
+      } else {
+        toast.error("회원가입에 실패했습니다");
+      }
     }
   };
 

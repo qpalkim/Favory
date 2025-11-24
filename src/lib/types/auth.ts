@@ -40,8 +40,8 @@ export const signUpResponseSchema = z.object({
   id: z.number().min(1),
   email: z.string().min(1),
   nickname: z.string().min(1).max(10),
-  profileImageUrl: z.string().url().nullable(),
-  profileMessage: z.string().nullable(),
+  createdAt: z.string().transform((str) => new Date(str).toISOString()),
+  updatedAt: z.string().transform((str) => new Date(str).toISOString()),
 });
 
 export type SignUpResponse = z.infer<typeof signUpResponseSchema>;
