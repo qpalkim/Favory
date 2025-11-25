@@ -53,6 +53,7 @@ export const favorySchema = z.object({
   coverImg: z.string().nullable(), // 추가
   title: z.string(),
   content: z.string(),
+  tags: z.array(tagSchema), // 추가
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),
