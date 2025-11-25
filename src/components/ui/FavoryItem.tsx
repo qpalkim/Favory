@@ -1,60 +1,67 @@
-import { FavoryDetail } from "./FeedCard";
+import { ImageOff } from "lucide-react";
+import { Favory } from "@/lib/types/favories";
 import Image from "next/image";
 import Link from "next/link";
 import ProfileImg from "./ProfileImg";
 import Badge from "./Badge";
 
 interface FavoryItemProps {
-  favoryDetail: FavoryDetail; // 임시 타입 import
+  favory: Favory;
   profile?: boolean;
 }
 
 export default function FavoryItem({
-  favoryDetail,
+  favory: favory,
   profile = false,
 }: FavoryItemProps) {
   return (
     <Link
-      href={`/favories/${favoryDetail.category}/${favoryDetail.id}`}
+      href={`/favories/${favory.type}/${favory.id}`}
       className="border-black-100 flex gap-[10px] overflow-hidden border-b py-4 last:border-b-0 md:gap-4 md:py-6 lg:max-w-[660px]"
     >
       {!profile && (
         <ProfileImg
-          src={favoryDetail.profileImg}
+          src={favory.userProfileImage}
           className="pointer-events-none flex-shrink-0"
         />
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-black-500 lg:text-2lg text-sm leading-tight font-semibold md:text-lg">
-            {favoryDetail.title}
+          <h2 className="text-black-500 text-sm leading-tight font-semibold md:text-lg">
+            {favory.mediaTitle}
           </h2>
-          <p className="text-black-200 lg:text-md truncate text-[10px] leading-tight font-light md:text-xs">
-            {favoryDetail.createdAt}
+          <p className="text-black-200 truncate text-[10px] leading-tight font-light md:text-xs">
+            {favory.createdAt}
           </p>
         </div>
-        <p className="text-black-200 md:text-md mt-1 truncate text-xs leading-tight lg:text-lg">
-          {favoryDetail.creator} • {favoryDetail.year}
+        <p className="text-black-200 md:text-md mt-1 truncate text-xs leading-tight">
+          {favory.creator || "정보 없음"} • {favory.year || "연도 정보 없음"}
         </p>
-        <h3 className="text-black-500 lg:text-2lg text-md mt-2 truncate leading-tight font-medium md:text-lg">
-          {favoryDetail.favoryTitle}
+        <h3 className="text-black-500 mt-2 truncate text-sm leading-tight font-medium md:text-lg">
+          {favory.title}
         </h3>
-        <p className="text-black-500 md:text-md mt-1 truncate text-sm leading-tight lg:text-lg">
-          {favoryDetail.content}
+        <p className="text-black-500 md:text-md mt-1 truncate text-sm leading-tight">
+          {favory.content}
         </p>
         <div className="mt-2 flex flex-wrap gap-1 overflow-hidden md:gap-2">
-          {(favoryDetail.tag ?? []).map((tag) => (
+          {(favory.tags ?? []).map((tag) => (
             <Badge key={tag.id} onClick={() => {}}>
               #{tag.name}
             </Badge>
           ))}
         </div>
       </div>
-      <Image
-        src={favoryDetail.coverImg}
-        alt={favoryDetail.title}
-        className="h-[72px] w-auto flex-shrink-0 rounded-sm object-cover md:h-[92px] md:rounded-md lg:h-[100px]"
-      />
+      {favory.coverImg ? (
+        <Image
+          src={favory.coverImg}
+          alt={favory.title}
+          className="h-[72px] w-auto flex-shrink-0 rounded-sm object-cover md:h-[92px] md:rounded-md"
+        />
+      ) : (
+        <div className="bg-black-10 flex h-[72px] w-[72px] flex-col items-center justify-center rounded-sm object-cover md:h-[92px] md:w-[92px] md:rounded-md">
+          <ImageOff className="text-black-100 h-[24px] w-[24px] stroke-1 md:h-[32px] md:w-[32px]" />
+        </div>
+      )}
     </Link>
   );
 }
