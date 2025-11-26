@@ -6,11 +6,11 @@ export default function Footer() {
       <div className="mx-auto flex max-w-[1400px] items-center justify-between">
         <Link
           href="/"
-          className="font-leferiBold text-lg text-white md:text-xl"
+          className="font-leferiBold md:text-2lg text-lg text-white"
         >
           Favory
         </Link>
-        <p className="text-black-200 text-xs md:text-lg">@qpalkim - 2025</p>
+        <p className="text-black-200 text-sm md:text-lg">@qpalkim - 2025</p>
       </div>
     </footer>
   );
