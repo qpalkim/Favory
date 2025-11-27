@@ -1,3 +1,11 @@
+import BannerWrapper from "@/components/common/BannerWrapper";
+import FavoryListContainer from "@/components/common/FavoryListContainer";
+
 export default function Page() {
-  return <div>Favory 목록 페이지</div>;
+  return (
+    <>
+      <BannerWrapper />
+      <FavoryListContainer />
+    </>
+  );
 }
