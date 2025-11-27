@@ -10,9 +10,10 @@ import Textarea from "../ui/Textarea";
 import CommentItem from "../ui/CommentItem";
 import Empty from "./Empty";
 
+// 추후 Favory 상세 조회 타입 정의
 const tempFavories: FavoryDetailResponse = {
   id: 1,
-  category: "music",
+  category: "MUSIC",
   media: {
     title: "Myself",
     creator: null,
