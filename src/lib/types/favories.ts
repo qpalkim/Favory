@@ -1,7 +1,7 @@
 import z from "zod";
 
 // 공통 카테고리 API 타입
-const typeSchema = z.enum(["music", "movie", "drama", "book"]);
+const mediaTypeSchema = z.enum(["MUSIC", "MOVIE", "DRAMA", "BOOK"]);
 
 // 공통 작품 정보 API 타입
 const mediaSchema = z.object({
@@ -20,7 +20,7 @@ const tagSchema = z.object({
 // 테스트 공통 Favory API 타입
 const tempFavorySchema = z.object({
   id: z.number().min(1),
-  category: typeSchema,
+  category: mediaTypeSchema,
   media: mediaSchema,
   favoryTitle: z.string().min(1).max(20),
   content: z.string().min(1).max(500),
@@ -44,16 +44,16 @@ export const favorySchema = z.object({
   id: z.number().min(1),
   userId: z.number().min(1),
   userNickname: z.string(),
-  userProfileImage: z.string().nullable(), // 추가
+  userImageUrl: z.string().nullable(),
   mediaId: z.number(),
   mediaTitle: z.string(),
-  creator: z.string().nullable(), // 추가
-  year: z.string().nullable(), // 추가
-  type: typeSchema, // 추가
-  coverImg: z.string().nullable(), // 추가
+  mediaCreator: z.string().nullable(),
+  mediaYear: z.number().nullable(),
+  mediaType: mediaTypeSchema,
+  mediaImageUrl: z.string().nullable(),
   title: z.string(),
   content: z.string(),
-  tags: z.array(tagSchema), // 추가
+  tags: z.array(tagSchema).optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),

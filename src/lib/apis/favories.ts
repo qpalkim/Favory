@@ -8,8 +8,9 @@ import {
 
 // Favory 목록 조회 API
 export const getFavoryList = async (params: GetFavoryListParams) => {
-  const response = await axiosClientHelper.get<FavoryListResponse>("/favorys", {
-    params,
-  });
+  const response = await axiosClientHelper.get<FavoryListResponse>(
+    "/favories",
+    { params },
+  );
   return safeResponse(response.data, favoryListResponseSchema);
 };

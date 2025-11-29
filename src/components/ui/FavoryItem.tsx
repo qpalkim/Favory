@@ -2,6 +2,7 @@ import { ImageOff } from "lucide-react";
 import { Favory } from "@/lib/types/favories";
 import Image from "next/image";
 import Link from "next/link";
+import formatTime from "@/lib/utils/formatTime";
 import ProfileImg from "./ProfileImg";
 import Badge from "./Badge";
 
@@ -16,12 +17,12 @@ export default function FavoryItem({
 }: FavoryItemProps) {
   return (
     <Link
-      href={`/favories/${favory.type}/${favory.id}`}
+      href={`/favories/${favory.mediaType.toLowerCase()}/${favory.id}`}
       className="border-black-100 flex gap-[10px] overflow-hidden border-b py-4 last:border-b-0 md:gap-4 md:py-6 lg:max-w-[660px]"
     >
       {!profile && (
         <ProfileImg
-          src={favory.userProfileImage}
+          src={favory.userImageUrl}
           className="pointer-events-none flex-shrink-0"
         />
       )}
@@ -31,11 +32,12 @@ export default function FavoryItem({
             {favory.mediaTitle}
           </h2>
           <p className="text-black-200 truncate text-[10px] leading-tight font-light md:text-xs">
-            {favory.createdAt}
+            {formatTime(favory.updatedAt || favory.createdAt)}
           </p>
         </div>
         <p className="text-black-200 md:text-md mt-1 truncate text-xs leading-tight">
-          {favory.creator || "정보 없음"} • {favory.year || "연도 정보 없음"}
+          {favory.mediaCreator || "정보 없음"} •{" "}
+          {favory.mediaYear || "연도 정보 없음"}
         </p>
         <h3 className="text-black-500 mt-2 truncate text-sm leading-tight font-medium md:text-lg">
           {favory.title}
@@ -51,9 +53,9 @@ export default function FavoryItem({
           ))}
         </div>
       </div>
-      {favory.coverImg ? (
+      {favory.mediaImageUrl ? (
         <Image
-          src={favory.coverImg}
+          src={favory.mediaImageUrl}
           alt={favory.title}
           className="h-[72px] w-auto flex-shrink-0 rounded-sm object-cover md:h-[92px] md:rounded-md"
         />

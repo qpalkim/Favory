@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Dropdown from "./Dropdown";
 
 export interface Option {
@@ -20,12 +20,14 @@ export default function SelectOption({
   const [selected, setSelected] = useState<Option>(
     options.find((opt) => opt.label === "최신순") || options[0],
   );
+  const [isOpen, setIsOpen] = useState(false);
 
   const dropdownOptions = options.map((opt) => ({
     label: opt.label,
     onClick: () => {
       setSelected(opt);
       onSelect(opt);
+      setIsOpen(false);
     },
   }));
 
@@ -33,14 +35,24 @@ export default function SelectOption({
     <Dropdown
       options={dropdownOptions}
       trigger={
-        <button className="flex cursor-pointer items-center gap-2">
-          <p className="hover-text-shadow text-sm font-semibold text-green-600 md:text-[15px] lg:text-lg">
+        <button
+          className="flex cursor-pointer items-center gap-2"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <p className="text-sm font-semibold text-green-600 md:text-[15px]">
             {selected.label}
           </p>
-          <ChevronDown
-            className="h-4 w-4 text-green-600 md:h-5 md:w-5 lg:h-6 lg:w-6"
-            strokeWidth={2}
-          />
+          {isOpen ? (
+            <ChevronUp
+              className="h-4 w-4 text-green-600 md:h-5 md:w-5"
+              strokeWidth={2}
+            />
+          ) : (
+            <ChevronDown
+              className="h-4 w-4 text-green-600 md:h-5 md:w-5"
+              strokeWidth={2}
+            />
+          )}
         </button>
       }
     ></Dropdown>
