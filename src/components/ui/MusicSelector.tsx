@@ -1,50 +1,46 @@
 "use client";
 import { useRef, useState } from "react";
-import { useClickOutside } from "@/lib/utils/useClickOutside";
 import { X } from "lucide-react";
+import { MediaItem } from "@/lib/types/media";
+import { useMediaSearch } from "@/lib/hooks/useMedia";
+import { useClickOutside } from "@/lib/utils/useClickOutside";
+import Image from "next/image";
 import Input from "./Input";
 
-// 추후 타입 정의 필요
-interface Track {
-  id: string;
-  name: string;
-  artists: { name: string }[];
-  album: {
-    images: { url: string }[];
-    release_date: string;
-  };
+interface MusicSelectorProps {
+  onSelect?: (item: MediaItem | null) => void;
 }
 
-export default function MusicSelector() {
+export default function MusicSelector({ onSelect }: MusicSelectorProps) {
   const [query, setQuery] = useState("");
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [selected, setSelected] = useState<Track | null>(null);
+  const [selected, setSelected] = useState<MediaItem | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useClickOutside(ref, () => setIsOpen(false));
 
-  // 백엔드 연동 필요
-  const handleSearch = async () => {
-    const mockTracks: Track[] = [
-      {
-        id: "1",
-        name: "Sample Song",
-        artists: [{ name: "Artist Name" }],
-        album: {
-          images: [{ url: "https://via.placeholder.com/150" }],
-          release_date: "2024-01-01",
-        },
-      },
-    ];
-    setTracks(mockTracks);
-    setIsOpen(true);
+  const { data, refetch } = useMediaSearch(
+    {
+      keyword: query,
+      type: "MUSIC",
+      limit: 10,
+    },
+    false,
+  );
+  const items = data?.results || [];
+
+  const handleSearch = () => {
+    if (query.trim()) {
+      refetch();
+      setIsOpen(true);
+    }
   };
 
-  const handleSelect = (track: Track) => {
-    setSelected(track);
+  const handleSelect = (item: MediaItem) => {
+    setSelected(item);
     setQuery("");
-    setTracks([]);
+    setIsOpen(false);
+    if (onSelect) onSelect(item);
   };
 
   return (
@@ -67,28 +63,31 @@ export default function MusicSelector() {
         ) : (
           <div className="border-black-200 flex items-center justify-between rounded-md border bg-white px-3 py-2">
             <div className="flex max-w-[90%] items-center gap-2 overflow-hidden lg:gap-3">
-              {selected.album.images[0] && (
-                // Image 컴포넌트 활용
-                <img
-                  src={selected.album.images[0].url}
-                  alt={selected.name}
+              {selected.imageUrl && (
+                <Image
+                  src={selected.imageUrl}
+                  alt={selected.title}
+                  width={300}
+                  height={300}
                   className="h-10 w-10 rounded object-cover lg:h-12 lg:w-12"
                 />
               )}
               <div className="overflow-hidden">
                 <p className="text-md text-black-500 truncate font-medium lg:text-lg">
-                  {selected.name}
+                  {selected.title}
                 </p>
                 <p className="text-black-200 lg:text-md truncate text-xs">
-                  {selected.artists.map((a) => a.name).join(", ") ||
-                    "가수 정보 없음"}{" "}
-                  •{" "}
-                  {selected.album.release_date.slice(0, 4) || "연도 정보 없음"}
+                  {selected.creator || "가수 정보 없음"} •{" "}
+                  {selected.year || "연도 정보 없음"}
                 </p>
               </div>
             </div>
             <button
-              onClick={() => setSelected(null)}
+              type="button"
+              onClick={() => {
+                setSelected(null);
+                if (onSelect) onSelect(null);
+              }}
               className="cursor-pointer"
             >
               <X className="text-black-200 hover:text-black-300 h-4 w-4 transition-colors duration-200 lg:h-5 lg:w-5" />
@@ -96,31 +95,31 @@ export default function MusicSelector() {
           </div>
         )}
 
-        {isOpen && tracks.length > 0 && (
+        {isOpen && items.length > 0 && (
           <div ref={ref}>
             <ul className="border-black-200 absolute top-full left-0 z-50 mt-1.5 max-h-[324px] w-full overflow-y-auto rounded-md border-1 bg-white shadow-lg">
-              {tracks.map((track) => (
+              {items.map((item) => (
                 <li
-                  key={track.id}
-                  onClick={() => handleSelect(track)}
+                  key={item.externalId}
+                  onClick={() => handleSelect(item)}
                   className="hover:bg-black-10 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-colors duration-200 lg:gap-3"
                 >
-                  {track.album.images[0] && (
-                    <img
-                      src={track.album.images[0].url}
-                      alt={track.name}
+                  {item.imageUrl && (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      width={300}
+                      height={300}
                       className="h-10 w-10 rounded object-cover lg:h-12 lg:w-12"
                     />
                   )}
                   <div className="overflow-hidden">
                     <p className="text-md text-black-500 truncate font-medium lg:text-lg">
-                      {track.name}
+                      {item.title}
                     </p>
                     <p className="text-black-200 lg:text-md truncate text-xs">
-                      {track.artists.map((a) => a.name).join(", ") ||
-                        "가수 정보 없음"}{" "}
-                      •{" "}
-                      {track.album.release_date.slice(0, 4) || "연도 정보 없음"}
+                      {item.creator || "가수 정보 없음"} •{" "}
+                      {item.year || "연도 정보 없음"}
                     </p>
                   </div>
                 </li>
