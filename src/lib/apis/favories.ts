@@ -1,6 +1,9 @@
 import { axiosClientHelper } from "../network/axiosClientHelper";
 import { safeResponse } from "../network/safeResponse";
 import {
+  AddFavoryRequest,
+  AddFavoryResponse,
+  addFavoryResponseSchema,
   FavoryListResponse,
   favoryListResponseSchema,
   GetFavoryListParams,
@@ -13,4 +16,13 @@ export const getFavoryList = async (params: GetFavoryListParams) => {
     { params },
   );
   return safeResponse(response.data, favoryListResponseSchema);
+};
+
+// Faovry 등록 요청 API
+export const addFavory = async (data: AddFavoryRequest) => {
+  const response = await axiosClientHelper.post<AddFavoryResponse>(
+    "/favories",
+    data,
+  );
+  return safeResponse(response.data, addFavoryResponseSchema);
 };

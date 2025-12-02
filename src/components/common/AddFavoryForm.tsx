@@ -1,6 +1,11 @@
 "use client";
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
+import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
+import { useAddFavory } from "@/lib/hooks/useFavories";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -10,39 +15,123 @@ import MusicSelector from "@/components/ui/MusicSelector";
 import MovieSelector from "@/components/ui/MovieSelector";
 import DramaSelector from "@/components/ui/DramaSelector";
 import BookSelector from "@/components/ui/BookSelector";
-import Badge from "../ui/Badge";
 
-const categoryMap: Record<string, string> = {
+const mediaTypeMap: Record<string, string> = {
   music: "음악",
   movie: "영화",
   drama: "드라마",
   book: "도서",
 };
 
-export default function AddFavoryForm({ category }: { category: string }) {
-  const [tagInput, setTagInput] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const koreanCategory = categoryMap[category] || category;
+export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
+  // 추후 내 정보 조회 적용 시, 제거 예정
+  const storedId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const userId = storedId ? Number(storedId) : undefined;
 
-  // 추후 API 연동 및 조건/에러 처리 필요
-  const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<AddFavoryRequest>({
+    resolver: zodResolver(addFavoryRequestSchema),
+    mode: "onChange",
+    defaultValues: {
+      userId: userId,
+      mediaId: undefined,
+      title: "",
+      content: "",
+    },
+  });
 
-      const trimmed = tagInput.trim();
+  // 선택된 미디어 정보
+  const [selectedMedia, setSelectedMedia] = useState<{
+    externalId: string;
+    type: "MUSIC" | "MOVIE" | "DRAMA" | "BOOK";
+    title: string;
+    creator: string | null;
+    year: number | null;
+    imageUrl: string | null;
+  } | null>(null);
 
-      if (!trimmed) return;
-      if (tags.includes(trimmed)) return;
-      if (/\s/.test(trimmed)) return;
+  const translatedMediaType = mediaTypeMap[mediaType] || mediaType;
+  const addMedia = useAddMedia();
+  const addFavory = useAddFavory();
 
-      setTags((prev) => [...prev, trimmed]);
-      setTagInput("");
+  const [mediaId, setMediaId] = useState<number | null>(null);
+  const [registering, setRegistering] = useState(false);
+  const [registrationDone, setRegistrationDone] = useState(false);
+
+  const { data: existingMedia, refetch: checkMedia } = useMediaExists(
+    selectedMedia?.externalId || "",
+  );
+
+  // 선택된 미디어 존재 여부 확인
+  useEffect(() => {
+    if (!selectedMedia || !selectedMedia.externalId) return;
+    checkMedia();
+  }, [selectedMedia, checkMedia]);
+
+  // 존재하는 미디어일 때 mediaId 세팅
+  useEffect(() => {
+    if (existingMedia?.mediaId != null) {
+      // 미디어가 이미 존재하는 경우 mediaId 설정
+      setMediaId(existingMedia.mediaId);
+    }
+  }, [existingMedia]);
+
+  useEffect(() => {
+    if (!selectedMedia) return; // 미디어 선택 전
+    if (existingMedia === undefined) return; // 아직 조회 안 끝남 → API 결과 기다려야 함
+    if (registering) return; // 등록 중이면  중복 실행 방지
+    if (existingMedia?.mediaId != null) return; // 등록 중이면  중복 실행 방지
+    if (registrationDone) return; // 이미 등록 완료면 중복 방지
+
+    // 외부 API 조회 → media 없음 → 등록 필요
+    const registerMedia = async () => {
+      setRegistering(true);
+      try {
+        const res = await addMedia.mutateAsync({
+          externalId: selectedMedia.externalId,
+          type: selectedMedia.type,
+          title: selectedMedia.title,
+          creator: selectedMedia.creator ?? null,
+          year: selectedMedia.year ?? null,
+          imageUrl: selectedMedia.imageUrl ?? null,
+        });
+        setMediaId(res.id);
+        setRegistrationDone(true); // 등록 완료 표시
+      } catch {
+        toast.error("잠시후 다시 시도해 주세요");
+        setMediaId(null);
+      } finally {
+        setRegistering(false);
+      }
+    };
+    registerMedia();
+  }, [existingMedia, selectedMedia, addMedia, registering, registrationDone]);
+
+  useEffect(() => {
+    if (mediaId) setValue("mediaId", mediaId);
+  }, [mediaId, setValue]);
+
+  // 감상평 등록
+  const onSubmit = async (data: AddFavoryRequest) => {
+    try {
+      await addFavory.mutateAsync({
+        ...data,
+        mediaId: mediaId!,
+      });
+      toast.success("감상평이 등록되었습니다");
+    } catch {
+      toast.error("감상평 등록에 실패했습니다");
     }
   };
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <form className="space-y-[42px] p-4 lg:space-y-[52px] lg:p-6">
+      <div className="space-y-[42px] p-4 lg:space-y-[52px] lg:p-6">
         <div className="flex items-center gap-2">
           <Image
             src={logo}
@@ -50,59 +139,67 @@ export default function AddFavoryForm({ category }: { category: string }) {
             className="w-[86px] md:w-[114px] lg:w-[134px]"
           />
           <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold lg:text-xl">
-            {koreanCategory} 감상평 등록하기
+            {translatedMediaType} 감상평 등록하기
           </h2>
         </div>
 
-        <div className="space-y-6">
-          {category === "music" && <MusicSelector />}
-          {category === "movie" && <MovieSelector />}
-          {category === "drama" && <DramaSelector />}
-          {category === "book" && <BookSelector />}
-          <Input
-            placeholder="감상평의 제목을 입력해 주세요"
-            label="제목"
-            required
-          />
-          <Textarea
-            placeholder="감상평을 자유롭게 작성해 주세요"
-            label="내용"
-            variant="form"
-            required
-          />
-          <div>
-            <Input
-              placeholder="태그를 작성해 보세요"
-              label="태그"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={onKeyDownTag}
-            />
-            <div className="mt-2 flex flex-wrap gap-2">
-              {tags.map((tag, index) => (
-                <Badge
-                  key={tag}
-                  clickable={false}
-                  className="flex items-center gap-1"
-                >
-                  {tag}
-                  <X
-                    className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
-                    strokeWidth={2}
-                    onClick={() =>
-                      setTags((prev) => prev.filter((_, i) => i !== index))
-                    }
-                  />
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-6">
+            {mediaType === "music" && (
+              <MusicSelector
+                onSelect={(item) =>
+                  setSelectedMedia(
+                    item
+                      ? {
+                          externalId: item.externalId,
+                          type: item.mediaType,
+                          title: item.title,
+                          creator: item.creator,
+                          year: item.year,
+                          imageUrl: item.imageUrl,
+                        }
+                      : null,
+                  )
+                }
+              />
+            )}
+            {/* 다른 미디어 타입 추후 처리 필요 */}
+            {mediaType === "movie" && <MovieSelector />}
+            {mediaType === "drama" && <DramaSelector />}
+            {mediaType === "book" && <BookSelector />}
 
-        <Button size="lg" disabled>
-          등록하기
-        </Button>
-      </form>
+            <div className="mb-6">
+              <Input
+                {...register("title")}
+                placeholder="감상평의 제목을 입력해 주세요"
+                label="제목"
+                required
+                error={errors.title?.message}
+              />
+            </div>
+            <div className="mb-6">
+              <Textarea
+                {...register("content")}
+                placeholder="감상평을 자유롭게 작성해 주세요"
+                label="내용"
+                variant="form"
+                required
+                error={errors.content?.message}
+              />
+            </div>
+            <input type="hidden" {...register("mediaId")} />
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            isLoading={isSubmitting}
+            disabled={!isValid}
+          >
+            등록하기
+          </Button>
+        </form>
+      </div>
     </main>
   );
 }

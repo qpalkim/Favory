@@ -1,7 +1,7 @@
 import z from "zod";
 
 // 공통 카테고리 API 타입
-const mediaTypeSchema = z.enum(["MUSIC", "MOVIE", "DRAMA", "BOOK"]);
+export const mediaTypeSchema = z.enum(["MUSIC", "MOVIE", "DRAMA", "BOOK"]);
 
 // 공통 작품 정보 API 타입
 const mediaSchema = z.object({
@@ -80,3 +80,24 @@ export const favoryListResponseSchema = z.object({
 });
 
 export type FavoryListResponse = z.infer<typeof favoryListResponseSchema>;
+
+// Favory 등록 요청 API 타입
+export const addFavoryRequestSchema = z.object({
+  userId: z.number(),
+  mediaId: z.number(),
+  title: z
+    .string()
+    .min(1, { message: "제목은 필수 입력입니다" })
+    .max(20, { message: "20자 이내로 작성해 주세요" }),
+  content: z
+    .string()
+    .min(1, { message: "감상평은 필수 입력입니다" })
+    .max(500, { message: "500자 이내로 작성해 주세요" }),
+});
+
+export type AddFavoryRequest = z.infer<typeof addFavoryRequestSchema>;
+
+// Favory 등록 응답 API 타입
+export const addFavoryResponseSchema = favorySchema;
+
+export type AddFavoryResponse = z.infer<typeof addFavoryResponseSchema>;
