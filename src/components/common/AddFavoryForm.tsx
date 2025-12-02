@@ -1,5 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
+import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
+import { useAddFavory } from "@/lib/hooks/useFavories";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -9,12 +15,6 @@ import MusicSelector from "@/components/ui/MusicSelector";
 import MovieSelector from "@/components/ui/MovieSelector";
 import DramaSelector from "@/components/ui/DramaSelector";
 import BookSelector from "@/components/ui/BookSelector";
-import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
-import { useAddFavory } from "@/lib/hooks/useFavories";
-import { useForm } from "react-hook-form";
-import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-toastify";
 
 const mediaTypeMap: Record<string, string> = {
   music: "음악",
@@ -61,6 +61,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
 
   const [mediaId, setMediaId] = useState<number | null>(null);
   const [registering, setRegistering] = useState(false);
+  const [registrationDone, setRegistrationDone] = useState(false);
 
   const { data: existingMedia, refetch: checkMedia } = useMediaExists(
     selectedMedia?.externalId || "",
@@ -72,8 +73,20 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     checkMedia();
   }, [selectedMedia, checkMedia]);
 
+  // 존재하는 미디어일 때 mediaId 세팅
   useEffect(() => {
-    if (!selectedMedia || existingMedia !== undefined || registering) return;
+    if (existingMedia?.mediaId != null) {
+      // 미디어가 이미 존재하는 경우 mediaId 설정
+      setMediaId(existingMedia.mediaId);
+    }
+  }, [existingMedia]);
+
+  useEffect(() => {
+    if (!selectedMedia) return; // 미디어 선택 전
+    if (existingMedia === undefined) return; // 아직 조회 안 끝남 → API 결과 기다려야 함
+    if (registering) return; // 등록 중이면  중복 실행 방지
+    if (existingMedia?.mediaId != null) return; // 등록 중이면  중복 실행 방지
+    if (registrationDone) return; // 이미 등록 완료면 중복 방지
 
     // 외부 API 조회 → media 없음 → 등록 필요
     const registerMedia = async () => {
@@ -83,11 +96,12 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
           externalId: selectedMedia.externalId,
           type: selectedMedia.type,
           title: selectedMedia.title,
-          creator: selectedMedia.creator,
-          year: selectedMedia.year,
-          imageUrl: selectedMedia.imageUrl,
+          creator: selectedMedia.creator ?? null,
+          year: selectedMedia.year ?? null,
+          imageUrl: selectedMedia.imageUrl ?? null,
         });
         setMediaId(res.id);
+        setRegistrationDone(true); // 등록 완료 표시
       } catch {
         toast.error("잠시후 다시 시도해 주세요");
         setMediaId(null);
@@ -96,7 +110,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
       }
     };
     registerMedia();
-  }, [existingMedia, selectedMedia, addMedia, registering]);
+  }, [existingMedia, selectedMedia, addMedia, registering, registrationDone]);
 
   useEffect(() => {
     if (mediaId) setValue("mediaId", mediaId);
