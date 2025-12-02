@@ -11,6 +11,7 @@ import Pagination from "../ui/Pagination";
 export default function FavoryListContainer() {
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const { data, isLoading, isError } = useFavoryList({
+    size: 100,
     sort: sortType,
   });
   const [currentPage, setCurrentPage] = useState(1);
