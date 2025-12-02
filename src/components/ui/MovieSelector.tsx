@@ -1,46 +1,46 @@
 "use client";
 import { useRef, useState } from "react";
-import { useClickOutside } from "@/lib/utils/useClickOutside";
 import { X } from "lucide-react";
+import { MediaItem } from "@/lib/types/media";
+import { useMediaSearch } from "@/lib/hooks/useMedia";
+import { useClickOutside } from "@/lib/utils/useClickOutside";
+import Image from "next/image";
 import Input from "./Input";
 
-// 추후 타입 정의 필요
-interface Movie {
-  id: number;
-  title: string;
-  release_date: string;
-  poster_path: string | null;
-  director?: string;
+interface MovieSelectorProps {
+  onSelect?: (item: MediaItem | null) => void;
 }
 
-export default function MovieSelector() {
+export default function MovieSelector({ onSelect }: MovieSelectorProps) {
   const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [selected, setSelected] = useState<Movie | null>(null);
+  const [selected, setSelected] = useState<MediaItem | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useClickOutside(ref, () => setIsOpen(false));
 
-  // 백엔드 연동 필요
+  const { data, refetch } = useMediaSearch(
+    {
+      keyword: query,
+      type: "MOVIE",
+      limit: 20,
+    },
+    false,
+  );
+  const items = data?.results || [];
+
   const handleSearch = async () => {
-    const mockMovies: Movie[] = [
-      {
-        id: 1,
-        title: "Sample Movie",
-        release_date: "2024-01-01",
-        poster_path: "https://via.placeholder.com/150",
-        director: "Sample Director",
-      },
-    ];
-    setMovies(mockMovies);
-    setIsOpen(true);
+    if (query.trim()) {
+      refetch();
+      setIsOpen(true);
+    }
   };
 
-  const handleSelect = (movie: Movie) => {
-    setSelected(movie);
+  const handleSelect = (item: MediaItem) => {
+    setSelected(item);
     setQuery("");
-    setMovies([]);
+    setIsOpen(false);
+    if (onSelect) onSelect(item);
   };
 
   return (
@@ -63,11 +63,12 @@ export default function MovieSelector() {
         ) : (
           <div className="border-black-200 flex items-center justify-between rounded-md border bg-white px-3 py-2">
             <div className="flex max-w-[90%] items-center gap-2 overflow-hidden lg:gap-3">
-              {selected.poster_path && (
-                // Image 컴포넌트 활용
-                <img
-                  src={`https://image.tmdb.org/t/p/w200${selected.poster_path}`}
+              {selected.imageUrl && (
+                <Image
+                  src={selected.imageUrl}
                   alt={selected.title}
+                  width={300}
+                  height={300}
                   className="h-10 w-auto rounded object-cover lg:h-12"
                 />
               )}
@@ -76,13 +77,16 @@ export default function MovieSelector() {
                   {selected.title}
                 </p>
                 <p className="text-black-200 lg:text-md text-xs">
-                  {selected.director || "감독 정보 없음"} •{" "}
-                  {selected.release_date?.slice(0, 4) || "연도 정보 없음"}
+                  {selected.creator || "감독 정보 없음"} •{" "}
+                  {selected.year || "연도 정보 없음"}
                 </p>
               </div>
             </div>
             <button
-              onClick={() => setSelected(null)}
+              onClick={() => {
+                setSelected(null);
+                if (onSelect) onSelect(null);
+              }}
               className="cursor-pointer"
             >
               <X className="text-black-200 hover:text-black-300 h-4 w-4 transition-colors duration-200 lg:h-5 lg:w-5" />
@@ -90,29 +94,31 @@ export default function MovieSelector() {
           </div>
         )}
 
-        {isOpen && movies.length > 0 && (
+        {isOpen && items.length > 0 && (
           <div ref={ref}>
             <ul className="border-black-200 absolute top-full left-0 z-50 mt-1.5 max-h-[324px] w-full overflow-y-auto rounded-md border-1 bg-white shadow-lg">
-              {movies.map((movie) => (
+              {items.map((item) => (
                 <li
-                  key={movie.id}
-                  onClick={() => handleSelect(movie)}
+                  key={item.externalId}
+                  onClick={() => handleSelect(item)}
                   className="hover:bg-black-10 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-colors duration-200 lg:gap-3"
                 >
-                  {movie.poster_path && (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                      alt={movie.title}
+                  {item.imageUrl && (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      width={300}
+                      height={300}
                       className="h-10 w-auto rounded object-cover lg:h-12"
                     />
                   )}
                   <div className="overflow-hidden">
                     <p className="text-md text-black-500 font-medium lg:text-lg">
-                      {movie.title}
+                      {item.title}
                     </p>
                     <p className="text-black-200 lg:text-md text-xs">
-                      {movie.director || "감독 정보 없음"} •{" "}
-                      {movie.release_date?.slice(0, 4) || "연도 정보 없음"}
+                      {item.creator || "감독 정보 없음"} •{" "}
+                      {item.year || "연도 정보 없음"}
                     </p>
                   </div>
                 </li>
