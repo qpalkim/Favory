@@ -23,7 +23,7 @@ export default function MusicSelector({ onSelect }: MusicSelectorProps) {
     {
       keyword: query,
       type: "MUSIC",
-      limit: 10,
+      limit: 20,
     },
     false,
   );
@@ -83,7 +83,6 @@ export default function MusicSelector({ onSelect }: MusicSelectorProps) {
               </div>
             </div>
             <button
-              type="button"
               onClick={() => {
                 setSelected(null);
                 if (onSelect) onSelect(null);
