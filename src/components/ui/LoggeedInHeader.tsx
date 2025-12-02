@@ -64,7 +64,10 @@ export default function LoggedInHeader({
               <AddFavoryModal onClose={() => setIsOpen(false)} />
             </Modal>
           )}
-          <Link href="/search">
+          <Link
+            href="/search"
+            className="transition-opacity duration-200 hover:opacity-80"
+          >
             <Search className="h-6 w-6 text-white md:h-8 md:w-8" />
           </Link>
           <Dropdown
