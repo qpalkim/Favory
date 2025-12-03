@@ -1,46 +1,46 @@
 "use client";
 import { useRef, useState } from "react";
-import { useClickOutside } from "@/lib/utils/useClickOutside";
 import { X } from "lucide-react";
+import { MediaItem } from "@/lib/types/media";
+import { useMediaSearch } from "@/lib/hooks/useMedia";
+import { useClickOutside } from "@/lib/utils/useClickOutside";
+import Image from "next/image";
 import Input from "./Input";
 
-// 추후 타입 정의 필요
-interface Book {
-  id: string;
-  title: string;
-  authors: string[];
-  publishedDate: string;
-  thumbnail: string | null;
+interface BookSelectorProps {
+  onSelect?: (item: MediaItem | null) => void;
 }
 
-export default function BookSelector() {
+export default function BookSelector({ onSelect }: BookSelectorProps) {
   const [query, setQuery] = useState("");
-  const [books, setBooks] = useState<Book[]>([]);
-  const [selected, setSelected] = useState<Book | null>(null);
+  const [selected, setSelected] = useState<MediaItem | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useClickOutside(ref, () => setIsOpen(false));
 
-  // 백엔드 연동 필요
+  const { data, refetch } = useMediaSearch(
+    {
+      keyword: query,
+      type: "BOOK",
+      limit: 20,
+    },
+    false,
+  );
+  const items = data?.results || [];
+
   const handleSearch = async () => {
-    const mockBooks: Book[] = [
-      {
-        id: "1",
-        title: "Sample Book",
-        authors: ["Sample Author"],
-        publishedDate: "2024-01-01",
-        thumbnail: "https://via.placeholder.com/150",
-      },
-    ];
-    setBooks(mockBooks);
-    setIsOpen(true);
+    if (query.trim()) {
+      refetch();
+      setIsOpen(true);
+    }
   };
 
-  const handleSelect = (book: Book) => {
-    setSelected(book);
+  const handleSelect = (item: MediaItem) => {
+    setSelected(item);
     setQuery("");
-    setBooks([]);
+    setIsOpen(false);
+    if (onSelect) onSelect(item);
   };
 
   return (
@@ -63,11 +63,12 @@ export default function BookSelector() {
         ) : (
           <div className="border-black-200 flex items-center justify-between rounded-md border bg-white px-3 py-2">
             <div className="flex max-w-[90%] items-center gap-2 overflow-hidden lg:gap-3">
-              {selected.thumbnail && (
-                // Image 컴포넌트 활용
-                <img
-                  src={selected.thumbnail}
+              {selected.imageUrl && (
+                <Image
+                  src={selected.imageUrl}
                   alt={selected.title}
+                  width={300}
+                  height={300}
                   className="h-10 w-auto rounded object-cover lg:h-12"
                 />
               )}
@@ -76,13 +77,16 @@ export default function BookSelector() {
                   {selected.title}
                 </p>
                 <p className="text-black-200 lg:text-md text-xs">
-                  {selected.authors.join(", ") || "저자 정보 없음"} •{" "}
-                  {selected.publishedDate?.slice(0, 4) || "연도 정보 없음"}
+                  {selected.creator || "작가 정보 없음"} •{" "}
+                  {selected.year || "연도 정보 없음"}
                 </p>
               </div>
             </div>
             <button
-              onClick={() => setSelected(null)}
+              onClick={() => {
+                setSelected(null);
+                if (onSelect) onSelect(null);
+              }}
               className="cursor-pointer"
             >
               <X className="text-black-200 hover:text-black-300 h-4 w-4 transition-colors duration-200 lg:h-5 lg:w-5" />
@@ -90,29 +94,31 @@ export default function BookSelector() {
           </div>
         )}
 
-        {isOpen && books.length > 0 && (
+        {isOpen && items.length > 0 && (
           <div ref={ref}>
             <ul className="border-black-200 absolute top-full left-0 z-50 mt-1.5 max-h-[324px] w-full overflow-y-auto rounded-md border-1 bg-white shadow-lg">
-              {books.map((book) => (
+              {items.map((item) => (
                 <li
-                  key={book.id}
-                  onClick={() => handleSelect(book)}
+                  key={item.externalId}
+                  onClick={() => handleSelect(item)}
                   className="hover:bg-black-10 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-colors duration-200 lg:gap-3"
                 >
-                  {book.thumbnail && (
-                    <img
-                      src={book.thumbnail}
-                      alt={book.title}
+                  {item.imageUrl && (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      width={300}
+                      height={300}
                       className="h-10 w-auto rounded object-cover lg:h-12"
                     />
                   )}
                   <div className="overflow-hidden">
                     <p className="text-md text-black-500 font-medium lg:text-lg">
-                      {book.title}
+                      {item.title}
                     </p>
                     <p className="text-black-200 lg:text-md text-xs">
-                      {book.authors.join(", ") || "저자 정보 없음"} •{" "}
-                      {book.publishedDate?.slice(0, 4) || "연도 정보 없음"}
+                      {item.creator || "저자 정보 없음"} •{" "}
+                      {item.year || "연도 정보 없음"}
                     </p>
                   </div>
                 </li>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { MediaItem } from "@/lib/types/media";
 import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
 import { useAddFavory } from "@/lib/hooks/useFavories";
@@ -16,6 +17,10 @@ import MovieSelector from "@/components/ui/MovieSelector";
 import DramaSelector from "@/components/ui/DramaSelector";
 import BookSelector from "@/components/ui/BookSelector";
 
+interface MediaSelectorProps {
+  onSelect: (item: MediaItem | null) => void;
+}
+
 const mediaTypeMap: Record<string, string> = {
   music: "음악",
   movie: "영화",
@@ -23,11 +28,19 @@ const mediaTypeMap: Record<string, string> = {
   book: "도서",
 };
 
+const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
+  music: MusicSelector,
+  movie: MovieSelector,
+  drama: DramaSelector,
+  book: BookSelector,
+};
+
 export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
   // 추후 내 정보 조회 적용 시, 제거 예정
   const storedId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const userId = storedId ? Number(storedId) : undefined;
+  const Selector = selectorMap[mediaType];
 
   const {
     register,
@@ -66,6 +79,21 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
   const { data: existingMedia, refetch: checkMedia } = useMediaExists(
     selectedMedia?.externalId || "",
   );
+
+  const handleSelect = (item: MediaItem | null) => {
+    setSelectedMedia(
+      item
+        ? {
+            externalId: item.externalId,
+            type: item.mediaType,
+            title: item.title,
+            creator: item.creator,
+            year: item.year,
+            imageUrl: item.imageUrl,
+          }
+        : null,
+    );
+  };
 
   // 선택된 미디어 존재 여부 확인
   useEffect(() => {
@@ -145,29 +173,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-6">
-            {mediaType === "music" && (
-              <MusicSelector
-                onSelect={(item) =>
-                  setSelectedMedia(
-                    item
-                      ? {
-                          externalId: item.externalId,
-                          type: item.mediaType,
-                          title: item.title,
-                          creator: item.creator,
-                          year: item.year,
-                          imageUrl: item.imageUrl,
-                        }
-                      : null,
-                  )
-                }
-              />
-            )}
-            {/* 다른 미디어 타입 추후 처리 필요 */}
-            {mediaType === "movie" && <MovieSelector />}
-            {mediaType === "drama" && <DramaSelector />}
-            {mediaType === "book" && <BookSelector />}
-
+            {Selector && <Selector onSelect={handleSelect} />}
             <div className="mb-6">
               <Input
                 {...register("title")}
