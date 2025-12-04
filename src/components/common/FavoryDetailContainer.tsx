@@ -1,8 +1,10 @@
+"use client";
 import { ImageOff, Music4, Share } from "lucide-react";
-import { FavoryDetailResponse } from "@/lib/types/favories";
-import { CommentListResponse } from "@/lib/types/comments";
+import { useFavoryDetail } from "@/lib/hooks/useFavories";
+import { useCommentList } from "@/lib/hooks/useComments";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
+import formatTime from "@/lib/utils/formatTime";
 import ProfileImg from "../ui/ProfileImg";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
@@ -10,94 +12,31 @@ import Textarea from "../ui/Textarea";
 import CommentItem from "../ui/CommentItem";
 import Empty from "./Empty";
 
-// 추후 Favory 상세 조회 타입 정의
-const tempFavories: FavoryDetailResponse = {
-  id: 1,
-  category: "MUSIC",
-  media: {
-    title: "Myself",
-    creator: null,
-    year: null,
-    coverImg: null,
-  },
-  favoryTitle: "드라이브할 때 꼭 들어야 하는 노래",
-  content:
-    "화려한 세상 속에서도 여전히 ‘나 자신’을 찾아 헤매는 외로움이 느껴지는 노래",
-  tags: [
-    {
-      id: 1,
-      name: "포말",
-    },
-    {
-      id: 2,
-      name: "내한와줘",
-    },
-    {
-      id: 3,
-      name: "드라이브",
-    },
-  ],
-  createdAt: "4시간 전",
-  updatedAt: "",
-  writer: {
-    id: 400,
-    image: null,
-    nickname: "fewfew",
-  },
-};
+export default function FavoryDetailContainer({ id }: { id: number }) {
+  const {
+    data: favoryDetail,
+    isLoading: favoryDetailLoading,
+    isError: favoryDetailError,
+  } = useFavoryDetail(id);
+  const {
+    data: comments = [],
+    isLoading: commentsLoading,
+    isError: commentsError,
+  } = useCommentList(id);
 
-const tempComments: CommentListResponse = [
-  {
-    favoryId: 1,
-    id: 1,
-    content:
-      "정말 드라이브하기 딱 좋은 노래네요! 평소에 잘 모르던 아티스트인데 이번에 한번 들어봐야겠어요 노래가 정말 좋아요~!",
-    createdAt: "4시간 전",
-    updatedAt: "",
-    writer: {
-      image: null,
-      nickname: "qpalkim",
-      id: 101,
-    },
-  },
-  {
-    favoryId: 1,
-    id: 2,
-    content: "가사 차분해서 밤에 듣기 너무 좋음",
-    createdAt: "4시간 전",
-    updatedAt: "",
-    writer: {
-      image: null,
-      nickname: "banana",
-      id: 101,
-    },
-  },
-  {
-    favoryId: 1,
-    id: 3,
-    content: "운동할 때도 은근 잘 맞는 노래임",
-    createdAt: "4시간 전",
-    updatedAt: "",
-    writer: {
-      image: null,
-      nickname: "testest",
-      id: 101,
-    },
-  },
-];
-
-export default function FavoryDetailContainer() {
-  const { media, favoryTitle, content, tags, createdAt, updatedAt, writer } =
-    tempFavories;
+  if (favoryDetailLoading || commentsLoading) return <div>로딩 중입니다</div>;
+  if (favoryDetailError || commentsError) return <div>에러가 발생했습니다</div>;
+  if (!favoryDetail) return null;
 
   return (
     <div className="mx-auto flex justify-between gap-6 lg:max-w-[1200px] lg:px-6">
-      {/* Favory 상세 정보 */}
       <div className="relative w-full lg:max-w-[660px]">
-        {media.coverImg ? (
+        {favoryDetail.mediaImageUrl ? (
           <Image
-            src={media.coverImg}
-            alt={media.title}
+            src={favoryDetail.mediaImageUrl}
+            alt={favoryDetail.mediaTitle}
+            width={300}
+            height={300}
             className="max-h-[375px] w-full object-cover md:max-h-[768px] lg:max-h-[660px]"
           />
         ) : (
@@ -122,43 +61,43 @@ export default function FavoryDetailContainer() {
 
           <div>
             <h2 className="text-black-500 md:text-2lg text-lg font-semibold">
-              {media.title}
+              {favoryDetail.mediaTitle}
             </h2>
             <p className="text-black-200 text-md md:text-lg">
-              {media.creator || "가수 정보 없음"} •&nbsp;
-              {media.year || "연도 정보 없음"}
+              {favoryDetail.mediaCreator || "가수 정보 없음"} •&nbsp;
+              {favoryDetail.mediaYear || "연도 정보 없음"}
             </p>
             <hr className="border-black-100 my-3 md:my-4" />
             <h3 className="text-black-500 md:text-2lg text-lg font-medium">
-              {favoryTitle}
+              {favoryDetail.title}
             </h3>
             <p className="text-black-500 text-md mt-2 leading-tight md:text-lg">
-              {content}
+              {favoryDetail.content}
             </p>
           </div>
 
-          {tags && tags.length > 0 && (
+          {favoryDetail.tags?.length ? (
             <div>
               <h3 className="text-black-500 text-[15px] font-semibold md:text-lg">
                 태그
               </h3>
               <div className="mt-2 flex gap-1 md:gap-2">
-                {tags.map((tag) => (
+                {favoryDetail.tags.map((tag) => (
                   <Badge key={tag.id}>#{tag.name}</Badge>
                 ))}
               </div>
             </div>
-          )}
+          ) : null}
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ProfileImg src={writer.image} />
+              <ProfileImg src={favoryDetail.userImageUrl} />
               <div className="flex flex-col gap-0.5">
                 <p className="text-black-500 md:text-md truncate text-sm leading-tight font-medium">
-                  {writer.nickname}
+                  {favoryDetail.userNickname}
                 </p>
                 <p className="text-black-200 truncate text-xs leading-tight font-light md:text-sm">
-                  {updatedAt || createdAt}
+                  {formatTime(favoryDetail.createdAt || favoryDetail.updatedAt)}
                 </p>
               </div>
             </div>
@@ -181,7 +120,7 @@ export default function FavoryDetailContainer() {
           {/* 모바일/태블릿 환경 댓글 목록 영역 */}
           <div className="lg:hidden">
             <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
-              댓글 {tempComments.length}개
+              댓글 {comments.length}개
             </h5>
             <div className="mt-6 flex gap-2">
               <ProfileImg src={null} />
@@ -193,12 +132,12 @@ export default function FavoryDetailContainer() {
               </Button>
             </div>
             <hr className="border-black-100 mt-6" />
-            {tempComments.length === 0 ? (
+            {comments.length === 0 ? (
               <div className="my-12">
                 <Empty type="comment" />
               </div>
             ) : (
-              tempComments.map((comment) => (
+              comments.map((comment) => (
                 <CommentItem key={comment.id} comment={comment} />
               ))
             )}
@@ -221,12 +160,12 @@ export default function FavoryDetailContainer() {
           </Button>
         </div>
         <hr className="border-black-100 mt-6" />
-        {tempComments.length === 0 ? (
+        {comments.length === 0 ? (
           <div className="my-12">
             <Empty type="comment" />
           </div>
         ) : (
-          tempComments.map((comment) => (
+          comments.map((comment) => (
             <CommentItem key={comment.id} comment={comment} />
           ))
         )}

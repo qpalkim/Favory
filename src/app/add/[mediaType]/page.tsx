@@ -1,15 +1,11 @@
 "use client";
 import { notFound, useParams } from "next/navigation";
+import { ALLOWED_MEDIA_TYPES } from "@/lib/utils/constants";
 import AddFavoryForm from "@/components/common/AddFavoryForm";
-
-const ALLOWED_MEDIA_TYPES = ["music", "movie", "drama", "book"];
 
 export default function Page() {
   const params = useParams();
-  const mediaType = Array.isArray(params?.mediaType)
-    ? params.mediaType[0]
-    : params?.mediaType;
-
+  const mediaType = params.mediaType as string;
   if (!mediaType || !ALLOWED_MEDIA_TYPES.includes(mediaType)) notFound();
 
   return (
