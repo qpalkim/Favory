@@ -39,7 +39,7 @@ export type MediaExistsResponse = z.infer<typeof mediaExistsResponseSchema>;
 // 미디어 등록 요청 API 타입
 export const addMediaRequestSchema = z.object({
   externalId: z.string(),
-  type: mediaTypeSchema,
+  mediaType: mediaTypeSchema,
   title: z.string(),
   creator: z.string().nullable(),
   year: z.number().nullable(),
@@ -52,7 +52,7 @@ export type AddMediaRequest = z.infer<typeof addMediaRequestSchema>;
 export const addMediaResponseSchema = z.object({
   id: z.number(),
   externalId: z.string(),
-  type: mediaTypeSchema,
+  mediaType: mediaTypeSchema,
   title: z.string(),
   creator: z.string().nullable(),
   year: z.number().nullable(),
