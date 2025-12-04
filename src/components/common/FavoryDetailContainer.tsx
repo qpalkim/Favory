@@ -148,7 +148,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
       {/* PC 환경 댓글 목록 영역 */}
       <div className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]">
         <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
-          댓글 3개
+          댓글 {comments.length}개
         </h5>
         <div className="mt-6 flex gap-2">
           <ProfileImg src={null} />
