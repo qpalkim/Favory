@@ -7,6 +7,7 @@ import { MediaItem } from "@/lib/types/media";
 import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
 import { useAddFavory } from "@/lib/hooks/useFavories";
+import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -20,13 +21,6 @@ import BookSelector from "@/components/ui/BookSelector";
 interface MediaSelectorProps {
   onSelect: (item: MediaItem | null) => void;
 }
-
-const mediaTypeMap: Record<string, string> = {
-  music: "음악",
-  movie: "영화",
-  drama: "드라마",
-  book: "도서",
-};
 
 const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
   music: MusicSelector,
@@ -59,23 +53,13 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
   });
 
   // 선택된 미디어 정보
-  const [selectedMedia, setSelectedMedia] = useState<{
-    externalId: string;
-    type: "MUSIC" | "MOVIE" | "DRAMA" | "BOOK";
-    title: string;
-    creator: string | null;
-    year: number | null;
-    imageUrl: string | null;
-  } | null>(null);
-
-  const translatedMediaType = mediaTypeMap[mediaType] || mediaType;
+  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+  const translatedMediaType = MEDIA_TYPE_TRANSLATE_MAP[mediaType] || mediaType;
   const addMedia = useAddMedia();
   const addFavory = useAddFavory();
-
   const [mediaId, setMediaId] = useState<number | null>(null);
   const [registering, setRegistering] = useState(false);
   const [registrationDone, setRegistrationDone] = useState(false);
-
   const { data: existingMedia, refetch: checkMedia } = useMediaExists(
     selectedMedia?.externalId || "",
   );
@@ -85,7 +69,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
       item
         ? {
             externalId: item.externalId,
-            type: item.mediaType,
+            mediaType: item.mediaType,
             title: item.title,
             creator: item.creator,
             year: item.year,
@@ -122,7 +106,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
       try {
         const res = await addMedia.mutateAsync({
           externalId: selectedMedia.externalId,
-          type: selectedMedia.type,
+          mediaType: selectedMedia.mediaType,
           title: selectedMedia.title,
           creator: selectedMedia.creator ?? null,
           year: selectedMedia.year ?? null,
@@ -170,7 +154,6 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
             {translatedMediaType} 감상평 등록하기
           </h2>
         </div>
-
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-6">
             {Selector && <Selector onSelect={handleSelect} />}
@@ -195,7 +178,6 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
             </div>
             <input type="hidden" {...register("mediaId")} />
           </div>
-
           <Button
             type="submit"
             size="lg"
