@@ -7,10 +7,17 @@ import {
 import {
   AddFavoryRequest,
   AddFavoryResponse,
+  EditFavoryRequest,
+  FavoryDetailResponse,
   FavoryListResponse,
   GetFavoryListParams,
 } from "../types/favories";
-import { addFavory, getFavoryList } from "../apis/favories";
+import {
+  addFavory,
+  editFavory,
+  getFavoryDetail,
+  getFavoryList,
+} from "../apis/favories";
 
 // Favory 목록 조회 훅
 export const useFavoryList = (params: GetFavoryListParams) => {
@@ -28,6 +35,24 @@ export const useAddFavory = () => {
     mutationFn: addFavory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favories"] });
+    },
+  });
+};
+// Favory 상세 조회 훅
+export const useFavoryDetail = (id: number) => {
+  return useQuery<FavoryDetailResponse>({
+    queryKey: ["favories", id],
+    queryFn: () => getFavoryDetail(id),
+  });
+};
+
+// Favory 수정 요청 훅
+export const useEditFavory = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: EditFavoryRequest) => editFavory(id, data),
+    onSuccess: (editFavory) => {
+      queryClient.setQueryData(["favories", id], editFavory);
     },
   });
 };

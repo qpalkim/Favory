@@ -3,41 +3,11 @@ import z from "zod";
 // 공통 카테고리 API 타입
 export const mediaTypeSchema = z.enum(["MUSIC", "MOVIE", "DRAMA", "BOOK"]);
 
-// 공통 작품 정보 API 타입
-const mediaSchema = z.object({
-  title: z.string().min(1),
-  creator: z.string().nullable(),
-  year: z.string().nullable(),
-  coverImg: z.string().url().nullable(),
-});
-
 // 공통 태그 API 타입
 const tagSchema = z.object({
   id: z.number().min(1),
   name: z.string().min(1).max(10),
 });
-
-// 테스트 공통 Favory API 타입
-const tempFavorySchema = z.object({
-  id: z.number().min(1),
-  category: mediaTypeSchema,
-  media: mediaSchema,
-  favoryTitle: z.string().min(1).max(20),
-  content: z.string().min(1).max(500),
-  tags: z.array(tagSchema).max(3).optional(), // 태그 최대 3개
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
-  writer: z.object({
-    image: z.string().nullable(),
-    nickname: z.string(),
-    id: z.number(),
-  }),
-});
-
-// Favory 상세 조회 API 타입
-export const faovoryDetailResponseSchema = tempFavorySchema;
-
-export type FavoryDetailResponse = z.infer<typeof faovoryDetailResponseSchema>;
 
 // 공통 Faovry API 타입
 export const favorySchema = z.object({
@@ -101,3 +71,27 @@ export type AddFavoryRequest = z.infer<typeof addFavoryRequestSchema>;
 export const addFavoryResponseSchema = favorySchema;
 
 export type AddFavoryResponse = z.infer<typeof addFavoryResponseSchema>;
+
+// Favory 상세 조회 API 타입
+export const favoryDetailResponseSchema = favorySchema;
+
+export type FavoryDetailResponse = z.infer<typeof favoryDetailResponseSchema>;
+
+// Favory 수정 요청 API 타입
+export const editFavoryRequestSchema = z.object({
+  title: z
+    .string()
+    .min(1, { message: "제목은 필수 입력입니다" })
+    .max(20, { message: "20자 이내로 작성해 주세요" }),
+  content: z
+    .string()
+    .min(1, { message: "감상평은 필수 입력입니다" })
+    .max(500, { message: "500자 이내로 작성해 주세요" }),
+});
+
+export type EditFavoryRequest = z.infer<typeof editFavoryRequestSchema>;
+
+// Favory 수정 응답 API 타입
+export const editFavoryResponseSchema = favorySchema;
+
+export type EditFavoryResponse = z.infer<typeof editFavoryResponseSchema>;
