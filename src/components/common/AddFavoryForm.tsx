@@ -44,6 +44,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting, isValid },
   } = useForm<AddFavoryRequest>({
     resolver: zodResolver(addFavoryRequestSchema),
@@ -56,7 +57,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
       tagNames: [],
     },
   });
-  const [tags, setTags] = useState<string[]>([]);
+  const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null); // 선택된 미디어 정보
@@ -71,18 +72,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
   );
 
   const handleSelect = (item: MediaItem | null) => {
-    setSelectedMedia(
-      item
-        ? {
-            externalId: item.externalId,
-            mediaType: item.mediaType,
-            title: item.title,
-            creator: item.creator,
-            year: item.year,
-            imageUrl: item.imageUrl,
-          }
-        : null,
-    );
+    setSelectedMedia(item);
   };
 
   // 선택된 미디어 존재 여부 확인
@@ -94,8 +84,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
   // 존재하는 미디어일 때 mediaId 세팅
   useEffect(() => {
     if (existingMedia?.mediaId != null) {
-      // 미디어가 이미 존재하는 경우 mediaId 설정
-      setMediaId(existingMedia.mediaId);
+      setMediaId(existingMedia.mediaId); // 미디어가 이미 존재하는 경우 mediaId 설정
     }
   }, [existingMedia]);
 
@@ -103,8 +92,8 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     if (!selectedMedia) return; // 미디어 선택 전
     if (existingMedia === undefined) return; // 아직 조회 안 끝남 → API 결과 기다려야 함
     if (registering) return; // 등록 중이면  중복 실행 방지
-    if (existingMedia?.mediaId != null) return; // 등록 중이면  중복 실행 방지
     if (registrationDone) return; // 이미 등록 완료면 중복 방지
+    if (existingMedia?.mediaId != null) return; // 미디어 존재하면 등록 필요 없음
 
     // 외부 API 조회 → media 없음 → 등록 필요
     const registerMedia = async () => {
@@ -134,7 +123,10 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     if (mediaId) setValue("mediaId", mediaId);
   }, [mediaId, setValue]);
 
-  // 태그 입력
+  const updateTags = (newTags: string[]) => {
+    setValue("tagNames", newTags, { shouldValidate: true });
+  };
+
   const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.nativeEvent.isComposing) return;
     if (e.key === "Enter") {
@@ -142,30 +134,28 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
 
       const cleaned = e.currentTarget.value.replace(/\s+/g, "");
       const newTag = cleaned.trim();
+
       if (!newTag) return;
       if (tags.includes(newTag)) return setTagInputError("중복된 태그입니다");
       if (newTag.length > 10)
         return setTagInputError("10자 이내로 입력해 주세요");
-      if (tags.length >= 3) return;
-      setTagInputError("최대 3개까지 입력할 수 있습니다");
-      setTags([...tags, newTag]);
+      if (tags.length >= 3)
+        return setTagInputError("최대 3개까지 입력할 수 있습니다");
+
+      updateTags([...tags, newTag]);
       setTagInput("");
       setTagInputError("");
     }
   };
 
-  useEffect(() => {
-    setValue("tagNames", tags);
-  }, [tags, setValue]);
-
-  // 감상평 등록
   const onSubmit = async (data: AddFavoryRequest) => {
+    if (!mediaId) return;
+
     try {
       const res = await addFavory.mutateAsync({
         ...data,
-        mediaId: mediaId!,
+        mediaId: mediaId,
       });
-      setTags([]);
       setSelectedMedia(null);
       toast.success("감상평이 등록되었습니다");
       router.push(`/favories/${res.mediaType.toLowerCase()}/${res.id}`);
@@ -233,7 +223,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
                       className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
                       strokeWidth={2}
                       onClick={() =>
-                        setTags((prev) => prev.filter((_, i) => i !== index))
+                        updateTags(tags.filter((_, i) => i !== index))
                       }
                     />
                   </Badge>
@@ -246,7 +236,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
             type="submit"
             size="lg"
             isLoading={isSubmitting}
-            disabled={!isValid}
+            disabled={!isValid || !mediaId}
           >
             등록하기
           </Button>
