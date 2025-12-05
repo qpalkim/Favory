@@ -18,16 +18,16 @@ export default function DeleteItemModal({
         <AlertCircle
           className="text-black-200 h-6 w-6 md:h-8 md:w-8"
           aria-label="삭제 경고 아이콘"
-          strokeWidth={2}
+          strokeWidth={1.5}
         />
       </div>
       <div className="flex flex-col items-center justify-center">
-        <h4 className="text-black-500 text-lg font-semibold md:text-[20px]">
+        <h4 className="text-black-500 text-md font-semibold md:text-lg">
           {isComment
             ? "댓글을 삭제하시겠습니까?"
             : "Favory 감상평을 삭제하시겠습니까?"}
         </h4>
-        <p className="text-black-200 text-md md:text-lg">
+        <p className="text-black-200 md:text-md text-sm">
           삭제 후, 복구할 수 없습니다
         </p>
       </div>
