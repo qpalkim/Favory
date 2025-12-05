@@ -91,6 +91,10 @@ export const editFavoryRequestSchema = z.object({
     .string()
     .min(1, { message: "감상평은 필수 입력입니다" })
     .max(500, { message: "500자 이내로 작성해 주세요" }),
+  tagNames: z
+    .array(z.string().max(10, { message: "10자 이내로 입력해 주세요" }))
+    .max(3, { message: "최대 3개까지 입력할 수 있습니다" })
+    .optional(),
 });
 
 export type EditFavoryRequest = z.infer<typeof editFavoryRequestSchema>;
