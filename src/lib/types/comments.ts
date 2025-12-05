@@ -2,16 +2,15 @@ import z from "zod";
 
 // 공통 댓글 응답 API 타입
 export const commentResponseSchema = z.object({
-  favoryId: z.number(),
   id: z.number(),
+  favoryId: z.number(),
+  userId: z.number(),
+  userNickname: z.string(),
+  userImageUrl: z.string(), // 추가
   content: z.string().min(1),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
-  writer: z.object({
-    image: z.string().nullable(),
-    nickname: z.string(),
-    id: z.number(),
-  }),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  deletedAt: z.string(),
 });
 
 export type CommentResponse = z.infer<typeof commentResponseSchema>;

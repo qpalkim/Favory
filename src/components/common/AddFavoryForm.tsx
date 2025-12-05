@@ -1,17 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { X } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MediaItem } from "@/lib/types/media";
 import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
 import { useAddFavory } from "@/lib/hooks/useFavories";
+import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
+import Badge from "../ui/Badge";
 import MusicSelector from "@/components/ui/MusicSelector";
 import MovieSelector from "@/components/ui/MovieSelector";
 import DramaSelector from "@/components/ui/DramaSelector";
@@ -20,13 +24,6 @@ import BookSelector from "@/components/ui/BookSelector";
 interface MediaSelectorProps {
   onSelect: (item: MediaItem | null) => void;
 }
-
-const mediaTypeMap: Record<string, string> = {
-  music: "음악",
-  movie: "영화",
-  drama: "드라마",
-  book: "도서",
-};
 
 const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
   music: MusicSelector,
@@ -41,6 +38,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const userId = storedId ? Number(storedId) : undefined;
   const Selector = selectorMap[mediaType];
+  const router = useRouter();
 
   const {
     register,
@@ -55,27 +53,19 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
       mediaId: undefined,
       title: "",
       content: "",
+      tagNames: [],
     },
   });
-
-  // 선택된 미디어 정보
-  const [selectedMedia, setSelectedMedia] = useState<{
-    externalId: string;
-    type: "MUSIC" | "MOVIE" | "DRAMA" | "BOOK";
-    title: string;
-    creator: string | null;
-    year: number | null;
-    imageUrl: string | null;
-  } | null>(null);
-
-  const translatedMediaType = mediaTypeMap[mediaType] || mediaType;
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [tagInputError, setTagInputError] = useState("");
+  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null); // 선택된 미디어 정보
+  const translatedMediaType = MEDIA_TYPE_TRANSLATE_MAP[mediaType] || mediaType;
   const addMedia = useAddMedia();
   const addFavory = useAddFavory();
-
   const [mediaId, setMediaId] = useState<number | null>(null);
   const [registering, setRegistering] = useState(false);
   const [registrationDone, setRegistrationDone] = useState(false);
-
   const { data: existingMedia, refetch: checkMedia } = useMediaExists(
     selectedMedia?.externalId || "",
   );
@@ -85,7 +75,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
       item
         ? {
             externalId: item.externalId,
-            type: item.mediaType,
+            mediaType: item.mediaType,
             title: item.title,
             creator: item.creator,
             year: item.year,
@@ -122,7 +112,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
       try {
         const res = await addMedia.mutateAsync({
           externalId: selectedMedia.externalId,
-          type: selectedMedia.type,
+          mediaType: selectedMedia.mediaType,
           title: selectedMedia.title,
           creator: selectedMedia.creator ?? null,
           year: selectedMedia.year ?? null,
@@ -144,14 +134,41 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     if (mediaId) setValue("mediaId", mediaId);
   }, [mediaId, setValue]);
 
+  // 태그 입력
+  const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing) return;
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const cleaned = e.currentTarget.value.replace(/\s+/g, "");
+      const newTag = cleaned.trim();
+      if (!newTag) return;
+      if (tags.includes(newTag)) return setTagInputError("중복된 태그입니다");
+      if (newTag.length > 10)
+        return setTagInputError("10자 이내로 입력해 주세요");
+      if (tags.length >= 3) return;
+      setTagInputError("최대 3개까지 입력할 수 있습니다");
+      setTags([...tags, newTag]);
+      setTagInput("");
+      setTagInputError("");
+    }
+  };
+
+  useEffect(() => {
+    setValue("tagNames", tags);
+  }, [tags, setValue]);
+
   // 감상평 등록
   const onSubmit = async (data: AddFavoryRequest) => {
     try {
-      await addFavory.mutateAsync({
+      const res = await addFavory.mutateAsync({
         ...data,
         mediaId: mediaId!,
       });
+      setTags([]);
+      setSelectedMedia(null);
       toast.success("감상평이 등록되었습니다");
+      router.push(`/favories/${res.mediaType.toLowerCase()}/${res.id}`);
     } catch {
       toast.error("감상평 등록에 실패했습니다");
     }
@@ -170,7 +187,6 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
             {translatedMediaType} 감상평 등록하기
           </h2>
         </div>
-
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-6">
             {Selector && <Selector onSelect={handleSelect} />}
@@ -193,9 +209,39 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
                 error={errors.content?.message}
               />
             </div>
+            <div className="mb-[42px]">
+              <Input
+                placeholder="태그를 작성해 보세요"
+                label="태그"
+                value={tagInput}
+                onChange={(e) => {
+                  setTagInput(e.target.value);
+                  setTagInputError("");
+                }}
+                onKeyDown={onKeyDownTag}
+                error={tagInputError || errors.tagNames?.message}
+              />
+              <div className="mt-2 flex flex-wrap gap-2">
+                {tags.map((tag, index) => (
+                  <Badge
+                    key={tag}
+                    clickable={false}
+                    className="flex items-center gap-1"
+                  >
+                    {tag}
+                    <X
+                      className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
+                      strokeWidth={2}
+                      onClick={() =>
+                        setTags((prev) => prev.filter((_, i) => i !== index))
+                      }
+                    />
+                  </Badge>
+                ))}
+              </div>
+            </div>
             <input type="hidden" {...register("mediaId")} />
           </div>
-
           <Button
             type="submit"
             size="lg"
