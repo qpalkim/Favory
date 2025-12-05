@@ -22,7 +22,12 @@ export default function Dropdown({ options, trigger }: DropdownProps) {
   return (
     <div ref={ref} className="relative inline-block">
       <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-        {trigger ?? <EllipsisVertical className="text-black-200" />}
+        {trigger ?? (
+          <EllipsisVertical
+            aria-label="더보기 옵션"
+            className="text-black-200 h-4 w-4 md:h-5 md:w-5"
+          />
+        )}
       </div>
 
       {isOpen && (
@@ -30,7 +35,7 @@ export default function Dropdown({ options, trigger }: DropdownProps) {
           {options.map((option, idx) => (
             <li key={option.label}>
               <button
-                className={`md:text-md text-black-500 hover:bg-black-10 w-full cursor-pointer px-5 py-2 text-center text-xs transition-colors duration-200 ease-in-out md:px-6 lg:text-[15px] ${
+                className={`md:text-md text-black-500 hover:bg-black-10 w-full cursor-pointer px-5 py-2 text-center text-xs transition-colors duration-200 ease-in-out md:px-6 ${
                   idx === 0 ? "rounded-t-lg" : ""
                 } ${
                   idx === options.length - 1
