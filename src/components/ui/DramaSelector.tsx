@@ -117,7 +117,7 @@ export default function DramaSelector({ onSelect }: DramaSelectorProps) {
                       {item.title}
                     </p>
                     <p className="text-black-200 lg:text-md text-xs">
-                      {item.creator || "감독 정보 없음"} •{" "}
+                      {item.creator || "방송사 정보 없음"} •{" "}
                       {item.year || "연도 정보 없음"}
                     </p>
                   </div>
