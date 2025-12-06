@@ -51,3 +51,8 @@ export const editFavory = async (
   );
   return safeResponse(response.data, editFavoryResponseSchema);
 };
+
+// Favory 삭제 API
+export const deleteFavory = async (id: number): Promise<void> => {
+  await axiosClientHelper.delete(`/favories/${id}`);
+};

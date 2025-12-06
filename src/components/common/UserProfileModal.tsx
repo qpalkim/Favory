@@ -3,13 +3,13 @@ import ProfileImg from "../ui/ProfileImg";
 import Button from "../ui/Button";
 
 interface UserProfileModalProps {
-  profileImg: string | null;
+  imageUrl: string | null;
   nickname: string;
   onClose: () => void;
 }
 
 export default function UserProfileModal({
-  profileImg,
+  imageUrl,
   nickname,
   onClose,
 }: UserProfileModalProps) {
@@ -24,10 +24,12 @@ export default function UserProfileModal({
         />
       </div>
       <div className="flex flex-col items-center space-y-1">
-        <ProfileImg src={profileImg} />
+        <ProfileImg src={imageUrl} />
         <p className="text-black-500 text-md md:text-lg">{nickname}</p>
       </div>
-      <Button className="w-full">프로필 구경하러 가기</Button>
+      <Button className="w-full" href={`/profile/@${nickname}`}>
+        프로필 구경하러 가기
+      </Button>
     </div>
   );
 }

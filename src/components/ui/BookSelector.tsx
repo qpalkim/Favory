@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { MediaItem } from "@/lib/types/media";
 import { useMediaSearch } from "@/lib/hooks/useMedia";
@@ -9,13 +9,25 @@ import Input from "./Input";
 
 interface BookSelectorProps {
   onSelect?: (item: MediaItem | null) => void;
+  selected?: MediaItem | null;
+  disabled?: boolean;
 }
 
-export default function BookSelector({ onSelect }: BookSelectorProps) {
+export default function BookSelector({
+  onSelect,
+  selected: selectedProp,
+  disabled = false,
+}: BookSelectorProps) {
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<MediaItem | null>(null);
+  const [selected, setSelected] = useState<MediaItem | null>(
+    selectedProp || null,
+  );
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setSelected(selectedProp || null);
+  }, [selectedProp]);
 
   useClickOutside(ref, () => setIsOpen(false));
 
@@ -61,7 +73,9 @@ export default function BookSelector({ onSelect }: BookSelectorProps) {
             placeholder="도서 제목을 검색하여 선택해 주세요"
           />
         ) : (
-          <div className="border-black-200 flex items-center justify-between rounded-md border bg-white px-3 py-2">
+          <div
+            className={`border-black-200 flex items-center justify-between rounded-md border px-3 py-2 ${disabled ? "cursor-not-allowed border-green-600 bg-green-500/7" : "bg-white"}`}
+          >
             <div className="flex max-w-[90%] items-center gap-2 overflow-hidden lg:gap-3">
               {selected.imageUrl && (
                 <Image
@@ -82,15 +96,17 @@ export default function BookSelector({ onSelect }: BookSelectorProps) {
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => {
-                setSelected(null);
-                if (onSelect) onSelect(null);
-              }}
-              className="cursor-pointer"
-            >
-              <X className="text-black-200 hover:text-black-300 h-4 w-4 transition-colors duration-200 lg:h-5 lg:w-5" />
-            </button>
+            {!disabled && (
+              <button
+                onClick={() => {
+                  setSelected(null);
+                  if (onSelect) onSelect(null);
+                }}
+                className="cursor-pointer"
+              >
+                <X className="text-black-200 hover:text-black-300 h-4 w-4 transition-colors duration-200 lg:h-5 lg:w-5" />
+              </button>
+            )}
           </div>
         )}
 

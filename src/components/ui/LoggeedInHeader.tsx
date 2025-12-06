@@ -19,7 +19,7 @@ export default function LoggedInHeader({
   image: string | null;
   nickname: string;
 }) {
-  const [open, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const options = [
     {
@@ -43,7 +43,7 @@ export default function LoggedInHeader({
   return (
     <header className="fixed z-50 w-full bg-green-500 shadow-lg">
       <div className="relative mx-auto flex h-10 max-w-[1448px] items-center justify-between px-6 transition-all md:h-12">
-        <Link href="/">
+        <Link href="/favories">
           <Image
             src={logo}
             alt="헤더 로고"
@@ -59,7 +59,7 @@ export default function LoggedInHeader({
             <Plus className="h-4 w-4 stroke-3 text-green-600 md:h-5 md:w-5" />
             <h6 className="hidden md:block">등록하기</h6>
           </Badge>
-          {open && (
+          {isOpen && (
             <Modal onClose={() => setIsOpen(false)}>
               <AddFavoryModal onClose={() => setIsOpen(false)} />
             </Modal>

@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MediaItem } from "@/lib/types/media";
-import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
-import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
-import { useAddFavory } from "@/lib/hooks/useFavories";
+import {
+  EditFavoryRequest,
+  editFavoryRequestSchema,
+} from "@/lib/types/favories";
+import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
@@ -17,12 +19,14 @@ import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
 import Badge from "../ui/Badge";
 import MusicSelector from "@/components/ui/MusicSelector";
-import MovieSelector from "@/components/ui/MovieSelector";
-import DramaSelector from "@/components/ui/DramaSelector";
-import BookSelector from "@/components/ui/BookSelector";
+import MovieSelector from "../ui/MovieSelector";
+import DramaSelector from "../ui/DramaSelector";
+import BookSelector from "../ui/BookSelector";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 interface MediaSelectorProps {
-  onSelect: (item: MediaItem | null) => void;
+  selected?: MediaItem | null;
+  disabled?: boolean;
 }
 
 const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
@@ -32,96 +36,54 @@ const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
   book: BookSelector,
 };
 
-export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
-  // 추후 내 정보 조회 적용 시, 제거 예정
-  const storedId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-  const userId = storedId ? Number(storedId) : undefined;
-  const Selector = selectorMap[mediaType];
-  const router = useRouter();
-
+export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     watch,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<AddFavoryRequest>({
-    resolver: zodResolver(addFavoryRequestSchema),
+  } = useForm<EditFavoryRequest>({
+    resolver: zodResolver(editFavoryRequestSchema),
     mode: "onChange",
-    defaultValues: {
-      userId: userId,
-      mediaId: undefined,
-      title: "",
-      content: "",
-      tagNames: [],
-    },
   });
+
+  const Selector = selectorMap[mediaType];
   const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null); // 선택된 미디어 정보
+  const router = useRouter();
+  const params = useParams();
+  const id = Number(params.id);
   const translatedMediaType = MEDIA_TYPE_TRANSLATE_MAP[mediaType] || mediaType;
-  const addMedia = useAddMedia();
-  const addFavory = useAddFavory();
-  const [mediaId, setMediaId] = useState<number | null>(null);
-  const [registering, setRegistering] = useState(false);
-  const [registrationDone, setRegistrationDone] = useState(false);
-  const { data: existingMedia, refetch: checkMedia } = useMediaExists(
-    selectedMedia?.externalId || "",
+  const { data: favoryData, isLoading } = useFavoryDetail(id);
+  const { mutate } = useEditFavory(id);
+  const [initialData, setInitialData] = useState<EditFavoryRequest | null>(
+    null,
   );
-
-  const handleSelect = (item: MediaItem | null) => {
-    setSelectedMedia(item);
-  };
-
-  // 선택된 미디어 존재 여부 확인
-  useEffect(() => {
-    if (!selectedMedia || !selectedMedia.externalId) return;
-    checkMedia();
-  }, [selectedMedia, checkMedia]);
-
-  // 존재하는 미디어일 때 mediaId 세팅
-  useEffect(() => {
-    if (existingMedia?.mediaId != null) {
-      setMediaId(existingMedia.mediaId); // 미디어가 이미 존재하는 경우 mediaId 설정
-    }
-  }, [existingMedia]);
-
-  useEffect(() => {
-    if (!selectedMedia) return; // 미디어 선택 전
-    if (existingMedia === undefined) return; // 아직 조회 안 끝남 → API 결과 기다려야 함
-    if (registering) return; // 등록 중이면  중복 실행 방지
-    if (registrationDone) return; // 이미 등록 완료면 중복 방지
-    if (existingMedia?.mediaId != null) return; // 미디어 존재하면 등록 필요 없음
-
-    // 외부 API 조회 → media 없음 → 등록 필요
-    const registerMedia = async () => {
-      setRegistering(true);
-      try {
-        const res = await addMedia.mutateAsync({
-          externalId: selectedMedia.externalId,
-          mediaType: selectedMedia.mediaType,
-          title: selectedMedia.title,
-          creator: selectedMedia.creator ?? null,
-          year: selectedMedia.year ?? null,
-          imageUrl: selectedMedia.imageUrl ?? null,
-        });
-        setMediaId(res.id);
-        setRegistrationDone(true); // 등록 완료 표시
-      } catch {
-        toast.error("잠시후 다시 시도해 주세요");
-        setMediaId(null);
-      } finally {
-        setRegistering(false);
+  const selectedMedia: MediaItem | null = favoryData
+    ? {
+        title: favoryData.mediaTitle,
+        creator: favoryData.mediaCreator,
+        year: favoryData.mediaYear,
+        imageUrl: favoryData.mediaImageUrl,
+        mediaType: favoryData.mediaType,
+        externalId: favoryData.mediaId.toString(), // 추후 일치시키기
       }
-    };
-    registerMedia();
-  }, [existingMedia, selectedMedia, addMedia, registering, registrationDone]);
+    : null;
 
   useEffect(() => {
-    if (mediaId) setValue("mediaId", mediaId);
-  }, [mediaId, setValue]);
+    if (favoryData) {
+      const init = {
+        title: favoryData.title,
+        content: favoryData.content,
+        tagNames: favoryData.tags?.map((tag) => tag.name) || [],
+      };
+      reset(init);
+      setInitialData(init);
+    }
+  }, [favoryData, reset]);
 
   const updateTags = (newTags: string[]) => {
     setValue("tagNames", newTags, { shouldValidate: true });
@@ -148,21 +110,19 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     }
   };
 
-  const onSubmit = async (data: AddFavoryRequest) => {
-    if (!mediaId) return;
-
-    try {
-      const res = await addFavory.mutateAsync({
-        ...data,
-        mediaId: mediaId,
-      });
-      setSelectedMedia(null);
-      toast.success("감상평이 등록되었습니다");
-      router.push(`/favories/${res.mediaType.toLowerCase()}/${res.id}`);
-    } catch {
-      toast.error("감상평 등록에 실패했습니다");
-    }
+  const onSubmit = (data: EditFavoryRequest) => {
+    mutate(data, {
+      onSuccess: () => {
+        toast.success("감상평이 수정되었습니다");
+        router.push(`/favories/${mediaType}/${id}`);
+      },
+      onError: () => {
+        toast.error("감상평 수정에 실패했습니다");
+      },
+    });
   };
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
@@ -174,12 +134,12 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
             className="w-[86px] md:w-[114px] lg:w-[134px]"
           />
           <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold lg:text-xl">
-            {translatedMediaType} 감상평 등록하기
+            {translatedMediaType} 감상평 수정하기
           </h2>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-6">
-            {Selector && <Selector onSelect={handleSelect} />}
+            {Selector && <Selector disabled selected={selectedMedia} />}
             <div className="mb-6">
               <Input
                 {...register("title")}
@@ -230,15 +190,18 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
                 ))}
               </div>
             </div>
-            <input type="hidden" {...register("mediaId")} />
           </div>
           <Button
             type="submit"
             size="lg"
             isLoading={isSubmitting}
-            disabled={!isValid || !mediaId}
+            disabled={
+              !isValid ||
+              !initialData ||
+              JSON.stringify(initialData) === JSON.stringify(watch())
+            }
           >
-            등록하기
+            수정하기
           </Button>
         </form>
       </div>

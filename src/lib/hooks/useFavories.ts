@@ -14,6 +14,7 @@ import {
 } from "../types/favories";
 import {
   addFavory,
+  deleteFavory,
   editFavory,
   getFavoryDetail,
   getFavoryList,
@@ -53,6 +54,18 @@ export const useEditFavory = (id: number) => {
     mutationFn: (data: EditFavoryRequest) => editFavory(id, data),
     onSuccess: (editFavory) => {
       queryClient.setQueryData(["favories", id], editFavory);
+      queryClient.invalidateQueries({ queryKey: ["favories"] });
+    },
+  });
+};
+
+// Favory 삭제 요청 훅
+export const useDeleteFavory = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => deleteFavory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favories"] });
     },
   });
 };
