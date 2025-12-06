@@ -3,6 +3,8 @@ import z from "zod";
 // 공통 카테고리 API 타입
 export const mediaTypeSchema = z.enum(["MUSIC", "MOVIE", "DRAMA", "BOOK"]);
 
+export type MediaType = z.infer<typeof mediaTypeSchema>;
+
 // 공통 태그 API 타입
 const tagSchema = z.object({
   id: z.number().min(1),
@@ -36,6 +38,7 @@ export const getFavoryListParamsSchema = z.object({
   page: z.number().optional(),
   size: z.number().optional(),
   sort: z.string().optional(),
+  type: mediaTypeSchema.optional(),
 });
 
 export type GetFavoryListParams = z.infer<typeof getFavoryListParamsSchema>;
