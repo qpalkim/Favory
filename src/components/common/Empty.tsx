@@ -1,7 +1,7 @@
 import { MessageCircleMore, FolderOpen } from "lucide-react";
 
 interface EmptyProps {
-  type: "comment" | "myComment" | "myFavory";
+  type: "comment" | "myComment" | "favory" | "myFavory";
   category?: string;
 }
 
@@ -15,6 +15,11 @@ const EMPTY_MESSAGES = {
     title: "아직 작성한 댓글이 없어요",
     description: "댓글을 작성하고, 다른 사람들과 소통해 보세요",
     Icon: MessageCircleMore,
+  },
+  favory: {
+    title: "해당 타입의 감상평이 없어요",
+    description: "가장 먼저 감상평을 작성해 보세요",
+    Icon: FolderOpen,
   },
   myFavory: {
     title: (category: string) => `아직 작성한 ${category} 감상평이 없어요`,
