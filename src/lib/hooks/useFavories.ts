@@ -54,6 +54,7 @@ export const useEditFavory = (id: number) => {
     mutationFn: (data: EditFavoryRequest) => editFavory(id, data),
     onSuccess: (editFavory) => {
       queryClient.setQueryData(["favories", id], editFavory);
+      queryClient.invalidateQueries({ queryKey: ["favories"] });
     },
   });
 };
