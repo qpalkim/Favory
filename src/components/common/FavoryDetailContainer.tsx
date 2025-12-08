@@ -122,7 +122,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                 )}
               </div>
               <hr className="border-black-100 my-3 md:my-4" />
-              <h3 className="text-black-500 md:text-2lg text-lg font-medium">
+              <h3 className="text-black-500 md:text-2lg text-lg font-semibold">
                 {favoryDetail.title}
               </h3>
               <p className="text-black-500 text-md mt-2 md:text-lg">
