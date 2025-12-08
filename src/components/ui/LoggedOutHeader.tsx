@@ -5,7 +5,7 @@ import logo from "@/assets/logo/logo_white.svg";
 export default function LoggedOutHeader() {
   return (
     <header className="fixed z-50 w-full bg-green-500 shadow-lg">
-      <div className="relative mx-auto flex h-10 max-w-[1448px] items-center justify-between px-6 transition-all md:h-12">
+      <div className="relative mx-auto flex h-10 max-w-[1448px] items-center justify-between px-4 transition-all md:h-12">
         <Link href="/favories">
           <Image
             src={logo}
