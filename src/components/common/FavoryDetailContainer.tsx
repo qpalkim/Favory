@@ -24,14 +24,14 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   // 추후 내 정보 조회 적용 시, 제거 예정
   const storedId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const deleteFavory = useDeleteFavory(id);
 
   const handleDelete = async () => {
     try {
       await deleteFavory.mutateAsync();
-      setIsOpen(false);
+      setIsDeleteOpen(false);
       toast.success("감상평이 삭제되었습니다");
       router.replace("/favories");
     } catch {
@@ -68,22 +68,25 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     <>
       <div className="mx-auto flex justify-between gap-6 lg:max-w-[1200px] lg:px-6">
         <div className="relative w-full lg:max-w-[660px]">
-          {favoryDetail.mediaImageUrl ? (
-            <Image
-              src={favoryDetail.mediaImageUrl}
-              alt={favoryDetail.mediaTitle}
-              width={300}
-              height={300}
-              className="max-h-[375px] w-full object-cover md:max-h-[768px] lg:max-h-[660px]"
-            />
-          ) : (
-            <div className="bg-black-10 flex h-[375px] w-full flex-col items-center justify-center md:h-[768px] lg:h-[660px]">
-              <ImageOff className="text-black-100 h-[42px] w-[42px] stroke-1 md:h-[52px] md:w-[52px]" />
-              <p className="text-black-200 md:text-md mt-2 text-sm">
-                작품 이미지가 없습니다
-              </p>
-            </div>
-          )}
+          <div className="max-h-[375px] overflow-hidden pb-[100%] md:max-h-[768px] lg:max-h-[660px]">
+            {favoryDetail.mediaImageUrl ? (
+              <div className="relative aspect-square w-full">
+                <Image
+                  src={favoryDetail.mediaImageUrl}
+                  alt={`${favoryDetail.mediaTitle} 커버 이미지`}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            ) : (
+              <div className="bg-black-10 mx-auto flex h-[375px] w-full flex-col items-center justify-center md:h-[768px] lg:h-[660px]">
+                <ImageOff className="text-black-100 h-[42px] w-[42px] stroke-1 md:h-[52px] md:w-[52px]" />
+                <p className="text-black-200 md:text-md mt-2 text-sm">
+                  작품 이미지가 없습니다
+                </p>
+              </div>
+            )}
+          </div>
           <div className="relative z-10 -mt-6 space-y-6 rounded-t-3xl bg-white p-6 shadow-lg md:-mt-18 md:p-8">
             <div className="flex items-center gap-2">
               <Image
@@ -116,7 +119,10 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                             `/favories/${favoryDetail.mediaType.toLowerCase()}/${id}/edit`,
                           ),
                       },
-                      { label: "삭제하기", onClick: () => setIsOpen(true) },
+                      {
+                        label: "삭제하기",
+                        onClick: () => setIsDeleteOpen(true),
+                      },
                     ]}
                   />
                 )}
@@ -130,7 +136,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
               </p>
             </div>
 
-            {favoryDetail.tags?.length ? (
+            {!!favoryDetail.tags?.length && (
               <div>
                 <h3 className="text-black-500 text-[15px] font-semibold md:text-lg">
                   태그
@@ -141,7 +147,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                   ))}
                 </div>
               </div>
-            ) : null}
+            )}
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -228,11 +234,11 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
           )}
         </div>
       </div>
-      {isOpen && (
-        <Modal onClose={() => setIsOpen(false)}>
+      {isDeleteOpen && (
+        <Modal onClose={() => setIsDeleteOpen(false)}>
           <DeleteItemModal
             isComment={false}
-            onClose={() => setIsOpen(false)}
+            onClose={() => setIsDeleteOpen(false)}
             onDelete={handleDelete}
           />
         </Modal>
