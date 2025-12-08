@@ -74,6 +74,19 @@
   animation: soft-glow 3s ease-in-out infinite;
 }
 
+.banner-swiper .swiper-pagination-bullet {
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  opacity: 1;
+}
+
+.banner-swiper .swiper-pagination-bullet-active {
+  background: white;
+  transform: scale(1.05);
+}
+
 body {
   font-family: var(--font-pretendard);
   min-width: 375px;
