@@ -6,3 +6,10 @@ export const MEDIA_TYPE_TRANSLATE_MAP: Record<string, string> = {
 };
 
 export const ALLOWED_MEDIA_TYPES = ["music", "movie", "drama", "book"];
+
+export const CREATOR_FALLBACK = {
+  MUSIC: "가수 정보 없음",
+  MOVIE: "감독 정보 없음",
+  DRAMA: "방송사 정보 없음",
+  BOOK: "작가 정보 없음",
+};
