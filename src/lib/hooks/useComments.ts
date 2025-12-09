@@ -8,8 +8,14 @@ import {
   AddCommentRequest,
   AddCommentResponse,
   CommentListResponse,
+  EditCommentRequest,
 } from "../types/comments";
-import { addComment, getCommentList } from "../apis/comments";
+import {
+  addComment,
+  deleteComment,
+  editComment,
+  getCommentList,
+} from "../apis/comments";
 
 // 댓글 목록 조회 훅
 export const useCommentList = (favoryId: number) => {
@@ -25,6 +31,28 @@ export const useAddComment = () => {
   const queryClient = useQueryClient();
   return useMutation<AddCommentResponse, unknown, AddCommentRequest>({
     mutationFn: addComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
+    },
+  });
+};
+
+// 댓글 수정 훅
+export const useEditComment = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: EditCommentRequest) => editComment(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
+    },
+  });
+};
+
+// 댓글 삭제 훅
+export const useDeleteComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteComment(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments"] });
     },

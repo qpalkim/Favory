@@ -36,3 +36,18 @@ export type AddCommentRequest = z.infer<typeof addCommentRequestSchema>;
 export const addCommentResponseSchema = commentResponseSchema;
 
 export type AddCommentResponse = z.infer<typeof addCommentResponseSchema>;
+
+// 댓글 수정 요청 API 타입
+export const editCommentRequestSchema = z.object({
+  content: z
+    .string()
+    .min(1)
+    .max(100, { message: "100자 이내로 작성해 주세요" }),
+});
+
+export type EditCommentRequest = z.infer<typeof editCommentRequestSchema>;
+
+// 댓글 수정 응답 API 타입
+export const editCommentResponseSchema = commentResponseSchema;
+
+export type EditCommentResponse = z.infer<typeof editCommentResponseSchema>;

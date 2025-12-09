@@ -6,6 +6,9 @@ import {
   addCommentResponseSchema,
   CommentListResponse,
   commentListResponseSchema,
+  EditCommentRequest,
+  EditCommentResponse,
+  editCommentResponseSchema,
 } from "../types/comments";
 
 // 댓글 목록 조회 API
@@ -23,4 +26,21 @@ export const addComment = async (data: AddCommentRequest) => {
     data,
   );
   return safeResponse(response.data, addCommentResponseSchema);
+};
+
+// 댓글 수정 API
+export const editComment = async (
+  id: number,
+  data: EditCommentRequest,
+): Promise<EditCommentResponse> => {
+  const response = await axiosClientHelper.put<EditCommentResponse>(
+    `/comments/${id}`,
+    data,
+  );
+  return safeResponse(response.data, editCommentResponseSchema);
+};
+
+// 댓글 삭제 API
+export const deleteComment = async (id: number): Promise<void> => {
+  await axiosClientHelper.delete(`/comments/${id}`);
 };
