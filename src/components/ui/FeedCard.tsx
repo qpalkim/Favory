@@ -1,4 +1,5 @@
 import { Favory } from "@/lib/types/favories";
+import { CREATOR_FALLBACK } from "@/lib/utils/constants";
 import Image from "next/image";
 import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
@@ -33,7 +34,7 @@ export default function FeedCard({ favory }: FeedCardProps) {
               {favory.mediaTitle}
             </h2>
             <p className="md:text-md mt-1 truncate text-xs leading-tight text-white">
-              {favory.mediaCreator || "정보 없음"} •{" "}
+              {favory.mediaCreator || CREATOR_FALLBACK[favory.mediaType]} •{" "}
               {favory.mediaYear || "연도 정보 없음"}
             </p>
           </div>
