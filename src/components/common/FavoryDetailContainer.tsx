@@ -189,14 +189,20 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
 
             {/* 모바일/태블릿 환경 댓글 목록 영역 */}
             <div className="lg:hidden">
-              <FavoryCommentList commentList={commentList || []} />
+              <FavoryCommentList
+                favoryId={favoryDetail.id}
+                commentList={commentList || []}
+              />
             </div>
           </div>
         </div>
 
         {/* PC 환경 댓글 목록 영역 */}
         <div className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]">
-          <FavoryCommentList commentList={commentList || []} />
+          <FavoryCommentList
+            favoryId={favoryDetail.id}
+            commentList={commentList || []}
+          />
         </div>
       </div>
 
