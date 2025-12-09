@@ -5,19 +5,22 @@ import { notFound, useRouter } from "next/navigation";
 import { ImageOff, Music4, Share } from "lucide-react";
 import { useDeleteFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useCommentList } from "@/lib/hooks/useComments";
+import {
+  CREATOR_FALLBACK,
+  MEDIA_TYPE_TRANSLATE_MAP,
+} from "@/lib/utils/constants";
 import formatTime from "@/lib/utils/formatTime";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import ProfileImg from "../ui/ProfileImg";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
-import Textarea from "../ui/Textarea";
-import CommentItem from "../ui/CommentItem";
 import Dropdown from "../ui/Dropdown";
 import Modal from "../ui/Modal";
 import DeleteItemModal from "./DeleteItemModal";
 import UserProfileModal from "./UserProfileModal";
-import Empty from "./Empty";
+import FavoryCommentList from "./FavoryCommentList";
+import FavoryDetailContainerSkeleton from "../skeleton/FavoryDetailContainerSkeleton";
 
 export default function FavoryDetailContainer({ id }: { id: number }) {
   const router = useRouter();
@@ -54,14 +57,19 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     isError: favoryDetailError,
   } = useFavoryDetail(id);
   const {
-    data: comments = [],
-    isLoading: commentsLoading,
-    isError: commentsError,
+    data: commentList,
+    isLoading: commentListLoading,
+    isError: commentListError,
   } = useCommentList(id);
 
-  if (favoryDetailLoading || commentsLoading) return <div>로딩 중입니다</div>;
+  if (favoryDetailLoading || commentListLoading)
+    return <FavoryDetailContainerSkeleton />;
   if (!favoryDetail) return notFound();
-  if (favoryDetailError || commentsError) return <div>에러가 발생했습니다</div>;
+  const normalizedType = favoryDetail?.mediaType?.toLowerCase();
+  const translatedMediaType =
+    MEDIA_TYPE_TRANSLATE_MAP[normalizedType] || normalizedType;
+  if (favoryDetailError || commentListError)
+    return <div>에러가 발생했습니다</div>;
   const isMine = Number(storedId) === favoryDetail.userId;
 
   return (
@@ -95,7 +103,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                 alt="로고 아이콘"
               />
               <h1 className="text-black-500 md:text-2lg text-[15px] font-medium">
-                음악 감상평
+                {translatedMediaType} 감상평
               </h1>
             </div>
             <div>
@@ -105,8 +113,9 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                     {favoryDetail.mediaTitle}
                   </h2>
                   <p className="text-black-200 text-md md:text-lg">
-                    {favoryDetail.mediaCreator || "가수 정보 없음"} •&nbsp;
-                    {favoryDetail.mediaYear || "연도 정보 없음"}
+                    {favoryDetail.mediaCreator ||
+                      CREATOR_FALLBACK[favoryDetail.mediaType]}{" "}
+                    • {favoryDetail.mediaYear || "연도 정보 없음"}
                   </p>
                 </div>
                 {isMine && (
@@ -135,7 +144,6 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                 {favoryDetail.content}
               </p>
             </div>
-
             {!!favoryDetail.tags?.length && (
               <div>
                 <h3 className="text-black-500 text-[15px] font-semibold md:text-lg">
@@ -148,7 +156,6 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                 </div>
               </div>
             )}
-
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ProfileImg
@@ -168,72 +175,31 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                 </div>
               </div>
             </div>
-
             <div className="my-[52px] flex justify-center gap-2 md:my-[96px]">
+              {/* API 연동 예정 */}
               <Button>
                 <Music4 className="h-4 w-4" />
                 지금 들으러 가기
               </Button>
               <Button variant="outline" onClick={handleCopyLink}>
                 <Share className="h-4 w-4" />
-                링크 공유하기
+                링크 복사하기
               </Button>
             </div>
 
             {/* 모바일/태블릿 환경 댓글 목록 영역 */}
             <div className="lg:hidden">
-              <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
-                댓글 {comments.length}개
-              </h5>
-              <div className="mt-6 flex gap-2">
-                <ProfileImg src={null} />
-                <Textarea placeholder="100자 이내로 입력해 주세요" />
-              </div>
-              <div className="flex justify-end">
-                <Button size="sm" className="mt-2" disabled>
-                  등록
-                </Button>
-              </div>
-              <hr className="border-black-100 mt-6" />
-              {comments.length === 0 ? (
-                <div className="my-12">
-                  <Empty type="comment" />
-                </div>
-              ) : (
-                comments.map((comment) => (
-                  <CommentItem key={comment.id} comment={comment} />
-                ))
-              )}
+              <FavoryCommentList commentList={commentList || []} />
             </div>
           </div>
         </div>
 
         {/* PC 환경 댓글 목록 영역 */}
         <div className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]">
-          <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
-            댓글 {comments.length}개
-          </h5>
-          <div className="mt-6 flex gap-2">
-            <ProfileImg src={null} />
-            <Textarea placeholder="100자 이내로 입력해 주세요" />
-          </div>
-          <div className="flex justify-end">
-            <Button size="sm" className="mt-2" disabled>
-              등록
-            </Button>
-          </div>
-          <hr className="border-black-100 mt-6" />
-          {comments.length === 0 ? (
-            <div className="my-12">
-              <Empty type="comment" />
-            </div>
-          ) : (
-            comments.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
-            ))
-          )}
+          <FavoryCommentList commentList={commentList || []} />
         </div>
       </div>
+
       {isDeleteOpen && (
         <Modal onClose={() => setIsDeleteOpen(false)}>
           <DeleteItemModal
