@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { useUserData } from "@/lib/hooks/useUser";
+import { useAddComment } from "@/lib/hooks/useComments";
 import { CommentListResponse } from "@/lib/types/comments";
 import CommentItem from "../ui/CommentItem";
 import ProfileImg from "../ui/ProfileImg";
@@ -6,21 +10,77 @@ import Button from "../ui/Button";
 import Empty from "./Empty";
 
 export default function FavoryCommentList({
+  favoryId,
   commentList,
 }: {
+  favoryId: number;
   commentList: CommentListResponse;
 }) {
+  // 추후 내 정보 조회 적용 시, 제거 예정
+  const storedId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const userId = storedId ? Number(storedId) : undefined;
+  const { data: user } = useUserData(userId);
+  const [addContent, setAddContent] = useState("");
+  const [contentError, setContentError] = useState("");
+  const addComment = useAddComment();
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setAddContent(value);
+    if (value.length > 100) {
+      setContentError("100자 이내로 작성해 주세요");
+    } else {
+      setContentError("");
+    }
+  };
+
+  const handleAddComment = () => {
+    if (addContent.length > 100)
+      return setContentError("100자 이내로 작성해 주세요");
+    addComment.mutate(
+      {
+        favoryId: favoryId,
+        userId: userId!,
+        content: addContent.trim(),
+      },
+      {
+        onSuccess: () => {
+          toast.success("댓글이 등록되었습니다");
+          setAddContent("");
+        },
+        onError: () => {
+          toast.error("댓글 등록에 실패했습니다");
+        },
+      },
+    );
+  };
+
   return (
     <>
       <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
         댓글 {commentList?.length ?? 0}개
       </h5>
       <div className="mt-6 flex gap-2">
-        <ProfileImg src={null} />
-        <Textarea placeholder="100자 이내로 입력해 주세요" />
+        <ProfileImg src={user?.profileImageUrl || null} />
+        <div className="w-full">
+          <Textarea
+            placeholder="댓글을 작성해 보세요"
+            value={addContent}
+            onChange={handleChange}
+            className="flex-1"
+            error={contentError}
+          />
+        </div>
       </div>
       <div className="flex justify-end">
-        <Button size="sm" className="mt-2" disabled>
+        <Button
+          size="sm"
+          className="mt-2"
+          onClick={handleAddComment}
+          disabled={addContent.trim() === "" || contentError !== ""}
+          isLoading={addComment.isPending}
+        >
           등록
         </Button>
       </div>

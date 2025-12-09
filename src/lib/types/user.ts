@@ -5,7 +5,7 @@ export const userResponseSchema = z.object({
   id: z.number(),
   email: z.string(),
   nickname: z.string().min(3).max(10),
-  profileImageUrl: z.string().url().nullable(),
+  profileImageUrl: z.string().nullable(),
   profileMessage: z.string().nullable(),
 });
 
