@@ -51,7 +51,7 @@ const textareaVariants = cva(
       },
       state: {
         default:
-          "border-black-200 focus:border-green-600 focus:bg-green-500/7 focus:shadow-[0_0_0_3px_rgba(7,102,83,0.4)]",
+          "border-black-200 focus:border-green-600 focus:bg-green-10 focus:shadow-[0_0_0_3px_rgba(7,102,83,0.4)]",
         error:
           "border-error-100 focus:border-error-100 focus:bg-error-100/7 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.4)]",
       },

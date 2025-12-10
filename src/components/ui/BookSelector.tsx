@@ -74,7 +74,7 @@ export default function BookSelector({
           />
         ) : (
           <div
-            className={`border-black-200 flex items-center justify-between rounded-md border px-3 py-2 ${disabled ? "cursor-not-allowed border-green-600 bg-green-500/7" : "bg-white"}`}
+            className={`border-black-200 flex items-center justify-between rounded-md border px-3 py-2 ${disabled ? "bg-green-10 cursor-not-allowed border-green-600" : "bg-white"}`}
           >
             <div className="flex max-w-[90%] items-center gap-2 overflow-hidden lg:gap-3">
               {selected.imageUrl && (
