@@ -99,7 +99,7 @@ export default function CommentItem({
                     size="sm"
                     onClick={handleSave}
                     disabled={
-                      editedContent.trim() === "" ||
+                      !editedContent.trim() ||
                       editedContent.trim() === comment.content.trim() ||
                       isOverLimit
                     }
@@ -122,14 +122,8 @@ export default function CommentItem({
             <div className="absolute top-0 right-0">
               <Dropdown
                 options={[
-                  {
-                    label: "수정하기",
-                    onClick: () => setIsEditing(true),
-                  },
-                  {
-                    label: "삭제하기",
-                    onClick: () => setIsDeleteOpen(true),
-                  },
+                  { label: "수정하기", onClick: () => setIsEditing(true) },
+                  { label: "삭제하기", onClick: () => setIsDeleteOpen(true) },
                 ]}
               />
             </div>
