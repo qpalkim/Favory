@@ -22,22 +22,10 @@ export default function FavoryCommentList({
   const userId = storedId ? Number(storedId) : undefined;
   const { data: user } = useUserData(userId);
   const [addContent, setAddContent] = useState("");
-  const [contentError, setContentError] = useState("");
   const addComment = useAddComment();
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setAddContent(value);
-    if (value.length > 100) {
-      setContentError("100자 이내로 작성해 주세요");
-    } else {
-      setContentError("");
-    }
-  };
+  const isOverLimit = addContent.length > 100;
 
   const handleAddComment = () => {
-    if (addContent.length > 100)
-      return setContentError("100자 이내로 작성해 주세요");
     addComment.mutate(
       {
         favoryId: favoryId,
@@ -67,9 +55,9 @@ export default function FavoryCommentList({
           <Textarea
             placeholder="댓글을 작성해 보세요"
             value={addContent}
-            onChange={handleChange}
+            onChange={(e) => setAddContent(e.target.value)}
             className="flex-1"
-            error={contentError}
+            error={isOverLimit ? "100자 이내로 작성해 주세요" : ""}
           />
         </div>
       </div>
@@ -78,7 +66,7 @@ export default function FavoryCommentList({
           size="sm"
           className="mt-2"
           onClick={handleAddComment}
-          disabled={addContent.trim() === "" || contentError !== ""}
+          disabled={addContent.trim() === "" || isOverLimit}
           isLoading={addComment.isPending}
         >
           등록
@@ -92,7 +80,7 @@ export default function FavoryCommentList({
         </div>
       ) : (
         commentList?.map((comment) => (
-          <CommentItem key={comment.id} comment={comment} />
+          <CommentItem key={comment.id} comment={comment} userId={userId} />
         ))
       )}
     </>
