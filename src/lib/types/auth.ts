@@ -80,3 +80,19 @@ export const loginResponseSchema = z.object({
 });
 
 export type LoginResponse = z.infer<typeof loginResponseSchema>;
+
+// 리프레시 토큰 갱신 응답 API 타입
+export const refreshTokenResponseSchema = z.object({
+  accessToken: z.string().optional(),
+  refreshToken: z.string(),
+  tokenType: z.string(),
+  user: z.object({
+    id: z.number().min(1),
+    email: z.string().min(1),
+    nickname: z.string().min(1).max(10),
+    createdAt: z.string().transform((str) => new Date(str).toISOString()),
+    updatedAt: z.string().transform((str) => new Date(str).toISOString()),
+  }),
+});
+
+export type RefreshTokenResponse = z.infer<typeof refreshTokenResponseSchema>;
