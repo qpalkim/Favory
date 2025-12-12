@@ -6,11 +6,9 @@ const errorResponse = (error: unknown) => {
     const status = error.response?.status ?? 500;
 
     if (status === 400) {
-      return NextResponse.json(
-        { message: "잘못된 요청입니다" },
-        { status: 400 },
-      );
+      return NextResponse.json(error.response?.data, { status: 400 });
     }
+
     if (status === 401) {
       return NextResponse.json(
         { message: "인증이 필요합니다" },
