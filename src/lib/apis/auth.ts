@@ -4,6 +4,8 @@ import {
   LoginRequest,
   LoginResponse,
   loginResponseSchema,
+  RefreshTokenResponse,
+  refreshTokenResponseSchema,
   SignUpRequest,
   SignUpResponse,
   signUpResponseSchema,
@@ -22,4 +24,14 @@ export const signUp = async (data: SignUpRequest) => {
 export const login = async (data: LoginRequest) => {
   const response = await axiosClientHelper.post<LoginResponse>("/login", data);
   return safeResponse(response.data, loginResponseSchema);
+};
+
+// 리프레시 토큰 갱신 요청 API
+export const refreshToken = async () => {
+  const response = await axiosClientHelper.post<RefreshTokenResponse>(
+    "/refresh-token",
+    {},
+    { withCredentials: true },
+  );
+  return safeResponse(response.data, refreshTokenResponseSchema);
 };

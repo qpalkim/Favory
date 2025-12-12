@@ -9,6 +9,7 @@ const axiosServerHelper = axios.create({
 axiosServerHelper.interceptors.request.use(async (config) => {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken");
+
   if (accessToken?.value)
     config.headers.Authorization = `Bearer ${accessToken.value}`;
 
@@ -19,44 +20,51 @@ axiosServerHelper.interceptors.response.use(
   (response) => response,
   async (error: unknown) => {
     if (!isAxiosError(error)) return Promise.reject(error);
+
     const { response, config } = error;
 
-    if (response?.status === 401) {
+    if (response?.status === 401 || response?.status === 403) {
       const baseURL = process.env.NEXT_PUBLIC_API_URL;
-
       const cookieStore = await cookies();
       const refreshToken = cookieStore.get("refreshToken")?.value;
+      const currentAccessToken = cookieStore.get("accessToken")?.value;
+      if (!refreshToken) return Promise.reject(error);
+
       let res;
 
       try {
-        res = await fetch(`${baseURL}/auth/refresh-token`, {
+        res = await fetch(`${baseURL}/refresh-token`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${refreshToken}`,
+            Authorization: `Bearer ${currentAccessToken}`,
           },
+          body: JSON.stringify({
+            refreshToken: refreshToken,
+          }),
         }).then((value) => value.json());
       } catch {
         return null;
       }
 
-      const accessToken = res.accessToken;
+      const newAccessToken = res.accessToken;
 
       if (!config) return Promise.reject(error);
-      if (!accessToken) return Promise.reject(error);
+      if (!newAccessToken) return Promise.reject(error);
 
-      const accessTokenExp = getExpirationDate(accessToken);
+      const accessTokenExp = getExpirationDate(newAccessToken);
       const refreshTokenExp = refreshToken
         ? getExpirationDate(refreshToken)
         : undefined;
 
-      cookieStore.set("accessToken", accessToken, {
+      cookieStore.set("accessToken", newAccessToken, {
         httpOnly: true,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
         path: "/",
         expires: accessTokenExp || undefined,
       });
+
       if (refreshToken) {
         cookieStore.set("refreshToken", refreshToken, {
           httpOnly: true,
@@ -66,7 +74,9 @@ axiosServerHelper.interceptors.response.use(
           expires: refreshTokenExp || undefined,
         });
       }
-      config.headers.Authorization = `Bearer ${accessToken}`;
+
+      config.headers.Authorization = `Bearer ${newAccessToken}`;
+
       return axiosServerHelper(config);
     }
     return Promise.reject(error);
