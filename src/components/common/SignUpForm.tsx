@@ -17,6 +17,7 @@ import Button from "@/components/ui/Button";
 type SignUpErrorResponse = {
   message: string;
   details: null;
+  field: string;
 };
 
 export default function SignUpForm() {
@@ -46,22 +47,24 @@ export default function SignUpForm() {
       router.push("/favories");
     } catch (err) {
       const error = err as AxiosError<SignUpErrorResponse>;
-      const msg = error?.response?.data?.message;
+      const status = error.response?.status;
+      const field = error.response?.data?.field;
 
-      // 추후 이메일/중복 처리 분기 처리 필요
-      if (msg?.includes("이메일")) {
-        setError("email", {
-          type: "manual",
-          message: "이미 존재하는 이메일입니다",
-        });
-      } else if (msg?.includes("닉네임")) {
-        setError("nickname", {
-          type: "manual",
-          message: "이미 존재하는 닉네임입니다",
-        });
-      } else {
-        toast.error("회원가입에 실패했습니다");
+      if (status === 400) {
+        if (field === "email") {
+          setError("email", {
+            type: "manual",
+            message: " 이미 존재하는 이메일입니다",
+          });
+        } else if (field === "nickname") {
+          setError("nickname", {
+            type: "manual",
+            message: "이미 존재하는 닉네임입니다",
+          });
+        }
+        return;
       }
+      toast.error("회원가입에 실패했습니다");
     }
   };
 
