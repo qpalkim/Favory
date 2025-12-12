@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${Pretendard.variable} ${LeferiBold.variable}`}>
-      <body className="flex h-screen flex-col bg-[#fafafa]">
+      <body className="flex flex-col bg-[#fafafa]">
         <QueryClientProvider>
           <ToastContainer
             position="bottom-center"
