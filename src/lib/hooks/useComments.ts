@@ -9,6 +9,7 @@ import {
   AddCommentResponse,
   CommentListResponse,
   EditCommentRequest,
+  GetCommentListParams,
 } from "../types/comments";
 import {
   addComment,
@@ -18,10 +19,13 @@ import {
 } from "../apis/comments";
 
 // 댓글 목록 조회 훅
-export const useCommentList = (favoryId: number) => {
+export const useCommentList = (
+  favoryId: number,
+  params: GetCommentListParams,
+) => {
   return useQuery<CommentListResponse>({
-    queryKey: ["comments", favoryId],
-    queryFn: () => getCommentList(favoryId),
+    queryKey: ["comments", favoryId, params],
+    queryFn: () => getCommentList(favoryId, params),
     placeholderData: keepPreviousData,
   });
 };

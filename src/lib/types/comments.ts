@@ -15,8 +15,23 @@ export const commentResponseSchema = z.object({
 
 export type CommentResponse = z.infer<typeof commentResponseSchema>;
 
+// 댓글 목록 조회 파라미터 API 타입
+export const getCommentListParamsSchema = z.object({
+  page: z.number().optional(),
+  size: z.number().optional(),
+  sort: z.string().optional(),
+});
+
+export type GetCommentListParams = z.infer<typeof getCommentListParamsSchema>;
+
 // 댓글 목록 조회 응답 API 타입
-export const commentListResponseSchema = z.array(commentResponseSchema);
+export const commentListResponseSchema = z.object({
+  content: z.array(commentResponseSchema),
+  pageNumber: z.number(),
+  pageSize: z.number(),
+  totalElements: z.number(),
+  totalPages: z.number(),
+});
 
 export type CommentListResponse = z.infer<typeof commentListResponseSchema>;
 
