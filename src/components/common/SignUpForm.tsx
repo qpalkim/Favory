@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLogin, useSignUp } from "@/lib/hooks/useAuth";
 import { SignUpRequest, signUpRequestSchema } from "@/lib/types/auth";
 import Link from "next/link";
@@ -21,6 +22,7 @@ type SignUpErrorResponse = {
 };
 
 export default function SignUpForm() {
+  const queryClient = useQueryClient();
   const { mutateAsync: signUp } = useSignUp();
   const { mutateAsync: login } = useLogin();
   const router = useRouter();
@@ -42,6 +44,7 @@ export default function SignUpForm() {
       await signUp(data);
       const { email, password } = data;
       await login({ email, password });
+      await queryClient.invalidateQueries({ queryKey: ["me"] });
       toast.success("회원가입에 성공했습니다");
       router.push("/favories");
     } catch (err) {
