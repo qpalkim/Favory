@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLogin } from "@/lib/hooks/useAuth";
 import { LoginRequest, loginRequestSchema } from "@/lib/types/auth";
 import Link from "next/link";
@@ -14,6 +15,7 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
 export default function LoginForm() {
+  const queryClient = useQueryClient();
   const { mutateAsync: login } = useLogin();
   const router = useRouter();
   const [showPw, setShowPw] = useState(false);
@@ -30,8 +32,8 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginRequest) => {
     try {
-      const res = await login(data);
-      localStorage.setItem("userId", String(res.user.id)); // 추후 내 정보 조회 적용 시, 제거 예정
+      await login(data);
+      await queryClient.invalidateQueries({ queryKey: ["me"] });
       toast.success("로그인에 성공했습니다");
       router.push("/favories");
     } catch {

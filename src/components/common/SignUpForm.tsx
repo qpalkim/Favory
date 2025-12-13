@@ -39,8 +39,7 @@ export default function SignUpForm() {
 
   const onSubmit = async (data: SignUpRequest) => {
     try {
-      const res = await signUp(data);
-      localStorage.setItem("userId", String(res.id)); // 추후 내 정보 조회 적용 시, 제거 예정
+      await signUp(data);
       const { email, password } = data;
       await login({ email, password });
       toast.success("회원가입에 성공했습니다");
