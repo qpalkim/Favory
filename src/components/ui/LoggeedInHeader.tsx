@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 import { logout } from "@/lib/actions/logoutAction";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,6 +21,7 @@ export default function LoggedInHeader({
   nickname: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const options = [
     {
@@ -31,7 +33,7 @@ export default function LoggedInHeader({
       onClick: async () => {
         try {
           await logout();
-          localStorage.removeItem("userId"); // 추후 내 정보 조회 적용 시, 제거 예정
+          queryClient.removeQueries({ queryKey: ["me"] });
           toast.success("로그아웃에 성공했습니다");
         } catch {
           toast.error("로그아웃에 실패했습니다");

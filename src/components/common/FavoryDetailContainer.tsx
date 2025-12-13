@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { notFound, useRouter } from "next/navigation";
 import { ImageOff, Music4, Share } from "lucide-react";
+import { useMyData } from "@/lib/hooks/useUsers";
 import { useDeleteFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useCommentList } from "@/lib/hooks/useComments";
 import {
@@ -26,9 +27,8 @@ import Empty from "./Empty";
 
 export default function FavoryDetailContainer({ id }: { id: number }) {
   const router = useRouter();
-  // 추후 내 정보 조회 적용 시, 제거 예정
-  const storedId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const { data: me } = useMyData();
+
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const deleteFavory = useDeleteFavory(id);
@@ -81,7 +81,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   if (favoryDetailError || commentListError)
     return <div>에러가 발생했습니다</div>;
 
-  const isMine = Number(storedId) === favoryDetail.userId;
+  const isMine = me?.id === favoryDetail.userId;
 
   const CommentSection = (
     <div className="mt-6">

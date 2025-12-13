@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useUserData } from "@/lib/hooks/useUser";
+import { useMyData } from "@/lib/hooks/useUsers";
 import { useAddComment } from "@/lib/hooks/useComments";
 import { CommentListResponse } from "@/lib/types/comments";
 import CommentItem from "../ui/CommentItem";
@@ -15,20 +15,18 @@ export default function FavoryCommentList({
   favoryId: number;
   commentList: CommentListResponse;
 }) {
-  // 추후 내 정보 조회 적용 시, 제거 예정
-  const storedId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-  const userId = storedId ? Number(storedId) : undefined;
-  const { data: user } = useUserData(userId);
+  const { data: me } = useMyData();
   const [addContent, setAddContent] = useState("");
   const addComment = useAddComment();
   const isOverLimit = addContent.length > 100;
 
   const handleAddComment = () => {
+    if (!me) return;
+
     addComment.mutate(
       {
         favoryId: favoryId,
-        userId: userId!,
+        userId: me.id,
         content: addContent.trim(),
       },
       {
@@ -49,7 +47,7 @@ export default function FavoryCommentList({
         댓글 {commentList?.totalElements ?? 0}개
       </h5>
       <div className="mt-6 flex gap-2">
-        <ProfileImg src={user?.profileImageUrl || null} />
+        <ProfileImg src={me?.profileImageUrl || null} />
         <div className="w-full">
           <Textarea
             placeholder="댓글을 작성해 보세요"
@@ -81,7 +79,7 @@ export default function FavoryCommentList({
             key={comment.id}
             className={`border-black-100 ${isLast ? "" : "border-b"}`}
           >
-            <CommentItem key={comment.id} comment={comment} userId={userId} />
+            <CommentItem key={comment.id} comment={comment} userId={me?.id} />
           </div>
         );
       })}
