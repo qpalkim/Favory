@@ -7,7 +7,6 @@ import CommentItem from "../ui/CommentItem";
 import ProfileImg from "../ui/ProfileImg";
 import Textarea from "../ui/Textarea";
 import Button from "../ui/Button";
-import Empty from "./Empty";
 
 export default function FavoryCommentList({
   favoryId,
@@ -47,7 +46,7 @@ export default function FavoryCommentList({
   return (
     <>
       <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
-        댓글 {commentList?.length ?? 0}개
+        댓글 {commentList?.totalElements ?? 0}개
       </h5>
       <div className="mt-6 flex gap-2">
         <ProfileImg src={user?.profileImageUrl || null} />
@@ -74,15 +73,18 @@ export default function FavoryCommentList({
       </div>
       <hr className="border-black-100 mt-6" />
 
-      {commentList?.length === 0 ? (
-        <div className="my-12">
-          <Empty type="comment" />
-        </div>
-      ) : (
-        commentList?.map((comment) => (
-          <CommentItem key={comment.id} comment={comment} userId={userId} />
-        ))
-      )}
+      {commentList?.content.map((comment, index) => {
+        const isLast = index === commentList.content.length - 1;
+
+        return (
+          <div
+            key={comment.id}
+            className={`border-black-100 ${isLast ? "" : "border-b"}`}
+          >
+            <CommentItem key={comment.id} comment={comment} userId={userId} />
+          </div>
+        );
+      })}
     </>
   );
 }
