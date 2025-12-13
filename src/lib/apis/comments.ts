@@ -9,12 +9,17 @@ import {
   EditCommentRequest,
   EditCommentResponse,
   editCommentResponseSchema,
+  GetCommentListParams,
 } from "../types/comments";
 
 // 댓글 목록 조회 API
-export const getCommentList = async (favoryId: number) => {
+export const getCommentList = async (
+  favoryId: number,
+  params: GetCommentListParams,
+) => {
   const response = await axiosClientHelper.get<CommentListResponse>(
     `/comments/favory/${favoryId}`,
+    { params },
   );
   return safeResponse(response.data, commentListResponseSchema);
 };

@@ -21,6 +21,8 @@ import DeleteItemModal from "./DeleteItemModal";
 import UserProfileModal from "./UserProfileModal";
 import FavoryCommentList from "./FavoryCommentList";
 import FavoryDetailContainerSkeleton from "../skeleton/FavoryDetailContainerSkeleton";
+import Pagination from "../ui/Pagination";
+import Empty from "./Empty";
 
 export default function FavoryDetailContainer({ id }: { id: number }) {
   const router = useRouter();
@@ -30,6 +32,8 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const deleteFavory = useDeleteFavory(id);
+  const [currentPage, setCurrentPage] = useState(0);
+  const size = 5;
 
   const handleDelete = async () => {
     try {
@@ -56,21 +60,50 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     isLoading: favoryDetailLoading,
     isError: favoryDetailError,
   } = useFavoryDetail(id);
+
   const {
     data: commentList,
     isLoading: commentListLoading,
     isError: commentListError,
-  } = useCommentList(id);
+  } = useCommentList(id, { page: currentPage, size });
 
   if (favoryDetailLoading || commentListLoading)
     return <FavoryDetailContainerSkeleton />;
+
   if (!favoryDetail) return notFound();
+
+  if (!commentList) return <Empty type="comment" />;
+
   const normalizedType = favoryDetail?.mediaType?.toLowerCase();
   const translatedMediaType =
     MEDIA_TYPE_TRANSLATE_MAP[normalizedType] || normalizedType;
+
   if (favoryDetailError || commentListError)
     return <div>에러가 발생했습니다</div>;
+
   const isMine = Number(storedId) === favoryDetail.userId;
+
+  const CommentSection = (
+    <div className="mt-6">
+      <FavoryCommentList favoryId={favoryDetail.id} commentList={commentList} />
+
+      {commentList.totalElements === 0 ? (
+        <div className="my-12">
+          <Empty type="comment" />
+        </div>
+      ) : (
+        commentList.totalElements > size && (
+          <div className="my-16 flex justify-center">
+            <Pagination
+              currentPage={commentList.pageNumber + 1}
+              totalPages={commentList.totalPages}
+              onChange={(page) => setCurrentPage(page - 1)}
+            />
+          </div>
+        )
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -188,21 +221,13 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
             </div>
 
             {/* 모바일/태블릿 환경 댓글 목록 영역 */}
-            <div className="lg:hidden">
-              <FavoryCommentList
-                favoryId={favoryDetail.id}
-                commentList={commentList || []}
-              />
-            </div>
+            <div className="lg:hidden">{CommentSection}</div>
           </div>
         </div>
 
         {/* PC 환경 댓글 목록 영역 */}
         <div className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]">
-          <FavoryCommentList
-            favoryId={favoryDetail.id}
-            commentList={commentList || []}
-          />
+          {CommentSection}
         </div>
       </div>
 
