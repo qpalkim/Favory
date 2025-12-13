@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MediaItem } from "@/lib/types/media";
 import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
+import { useMyData } from "@/lib/hooks/useUsers";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
 import { useAddFavory } from "@/lib/hooks/useFavories";
 import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
@@ -33,10 +34,7 @@ const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
 };
 
 export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
-  // 추후 내 정보 조회 적용 시, 제거 예정
-  const storedId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-  const userId = storedId ? Number(storedId) : undefined;
+  const { data: me } = useMyData();
   const Selector = selectorMap[mediaType];
   const router = useRouter();
 
@@ -50,7 +48,6 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
     resolver: zodResolver(addFavoryRequestSchema),
     mode: "onChange",
     defaultValues: {
-      userId: userId,
       mediaId: undefined,
       title: "",
       content: "",
@@ -149,13 +146,14 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
   };
 
   const onSubmit = async (data: AddFavoryRequest) => {
-    if (!mediaId) return;
+    if (!me || !mediaId) return;
 
     try {
       const res = await addFavory.mutateAsync({
         ...data,
         mediaId: mediaId,
-      });
+        userId: me.id,
+      } as AddFavoryRequest & { userId: number });
       setSelectedMedia(null);
       toast.success("감상평이 등록되었습니다");
       router.push(`/favories/${res.mediaType.toLowerCase()}/${res.id}`);

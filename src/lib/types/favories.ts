@@ -56,7 +56,6 @@ export type FavoryListResponse = z.infer<typeof favoryListResponseSchema>;
 
 // Favory 등록 요청 API 타입
 export const addFavoryRequestSchema = z.object({
-  userId: z.number(),
   mediaId: z.number(),
   title: z
     .string()
