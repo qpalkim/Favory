@@ -4,7 +4,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const paginationVariants = cva(
-  "flex items-center justify-center transition-colors cursor-pointer text-sm rounded-lg md:rounded-xl w-8 h-8 md:w-10 md:h-10 md:text-lg hover:font-medium disabled:cursor-not-allowed",
+  "flex items-center justify-center transition-colors cursor-pointer text-sm rounded-lg md:rounded-xl w-8 h-8 md:w-9 md:h-9 md:text-md hover:font-medium disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
@@ -62,12 +62,9 @@ export default function Pagination({
         onClick={handlePrevPage}
         disabled={currentPage === 1}
         aria-label="이전 페이지"
-        className="disabled:text-black-100 mr-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:cursor-not-allowed md:mr-8"
+        className="mr-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:hidden md:mr-6"
       >
-        <ArrowLeft
-          aria-label="이전 페이지로 이동"
-          className="h-5 w-5 md:h-6 md:w-6"
-        />
+        <ArrowLeft aria-label="이전 페이지로 이동" className="h-5 w-5" />
       </button>
 
       <div className="flex items-center gap-2 md:gap-4">
@@ -90,12 +87,9 @@ export default function Pagination({
         onClick={handleNextPage}
         disabled={currentPage === totalPages}
         aria-label="다음 페이지"
-        className="disabled:text-black-100 ml-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:cursor-not-allowed md:ml-8"
+        className="ml-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:hidden md:ml-6"
       >
-        <ArrowRight
-          aria-label="다음 페이지로 이동"
-          className="h-5 w-5 md:h-6 md:w-6"
-        />
+        <ArrowRight aria-label="다음 페이지로 이동" className="h-5 w-5" />
       </button>
     </div>
   );

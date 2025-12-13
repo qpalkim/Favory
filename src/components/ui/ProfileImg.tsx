@@ -4,7 +4,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
 import defaultProfile from "@/assets/icon/defaultProfile.svg";
 
-const profileImgVariants = cva("relative rounded-full", {
+const profileImgVariants = cva("relative rounded-full shrink-0", {
   variants: {
     size: {
       sm: "w-[24px] h-[24px] md:w-[32px] md:h-[32px]",

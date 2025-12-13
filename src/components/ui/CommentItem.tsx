@@ -65,7 +65,7 @@ export default function CommentItem({
 
   return (
     <>
-      <div className="border-black-100 flex gap-2 border-b py-6 last:border-b-0 lg:max-w-[660px]">
+      <div className="flex gap-2 py-6 lg:max-w-[660px]">
         <ProfileImg
           src={comment.userImageUrl}
           clickable
