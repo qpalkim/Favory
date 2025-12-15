@@ -1,6 +1,6 @@
 import z from "zod";
 
-// 유저 정보 조회 API 타입
+// 내 정보 및 유저 정보 조회 API 타입
 export const userResponseSchema = z.object({
   id: z.number(),
   email: z.string(),
