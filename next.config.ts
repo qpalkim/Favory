@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "books.google.com",
       },
+      {
+        protocol: "https",
+        hostname: "favory.s3.ap-northeast-2.amazonaws.com",
+      },
     ],
   },
 };
