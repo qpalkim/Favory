@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLogin } from "@/lib/hooks/useAuth";
@@ -18,6 +18,8 @@ export default function LoginForm() {
   const queryClient = useQueryClient();
   const { mutateAsync: login } = useLogin();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const hasShownToast = useRef(false);
   const [showPw, setShowPw] = useState(false);
   const {
     register,
@@ -29,6 +31,15 @@ export default function LoginForm() {
     resolver: zodResolver(loginRequestSchema),
     mode: "onChange",
   });
+
+  useEffect(() => {
+    const reason = searchParams.get("reason");
+    if (reason === "auth" && !hasShownToast.current) {
+      toast.info("로그인 후, 이용 가능합니다");
+      hasShownToast.current = true;
+      window.history.replaceState(null, "", "/login");
+    }
+  }, [searchParams]);
 
   const onSubmit = async (data: LoginRequest) => {
     try {

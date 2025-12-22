@@ -1,6 +1,11 @@
 import LoginForm from "@/components/common/LoginForm";
+import { getAuth } from "@/lib/auth/getAuth";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+export default async function Page() {
+  const { isLoggedIn } = await getAuth();
+  if (isLoggedIn) redirect("/favories");
+
   return (
     <section className="h-full bg-gradient-to-b from-green-600 via-green-500 to-green-100">
       <div className="px-4 py-[52px] md:px-0 md:py-[70px] lg:py-[100px]">
