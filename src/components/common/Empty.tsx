@@ -1,7 +1,7 @@
-import { MessageCircleMore, FolderOpen } from "lucide-react";
+import { MessageCircleMore, FolderOpen, Search } from "lucide-react";
 
 interface EmptyProps {
-  type: "comment" | "myComment" | "favory" | "myFavory";
+  type: "comment" | "myComment" | "favory" | "myFavory" | "search";
   category?: string;
 }
 
@@ -25,6 +25,11 @@ const EMPTY_MESSAGES = {
     title: (category: string) => `아직 작성한 ${category} 감상평이 없어요`,
     description: "작성한 감상평이 다른 사람들에게 영감을 줄 수 있어요",
     Icon: FolderOpen,
+  },
+  search: {
+    title: "검색 결과가 없습니다",
+    description: null,
+    Icon: Search,
   },
 };
 

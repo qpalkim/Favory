@@ -1,12 +1,12 @@
 import z from "zod";
 
-// 공통 카테고리 API 타입
+// 공통 미디어 타입 API 타입
 export const mediaTypeSchema = z.enum(["MUSIC", "MOVIE", "DRAMA", "BOOK"]);
 
 export type MediaType = z.infer<typeof mediaTypeSchema>;
 
 // 공통 태그 API 타입
-const tagSchema = z.object({
+export const tagSchema = z.object({
   id: z.number().min(1),
   name: z.string().min(1).max(10),
 });

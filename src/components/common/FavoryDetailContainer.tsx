@@ -184,7 +184,18 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                 </h3>
                 <div className="mt-2 flex gap-1 md:gap-2">
                   {favoryDetail.tags.map((tag) => (
-                    <Badge key={tag.id}>#{tag.name}</Badge>
+                    <Badge
+                      key={tag.id}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        router.push(
+                          `/search?keyword=${encodeURIComponent(`#${tag.name}`)}`,
+                        );
+                      }}
+                    >
+                      #{tag.name}
+                    </Badge>
                   ))}
                 </div>
               </div>
