@@ -3,7 +3,7 @@ import z from "zod";
 // 내 정보 및 유저 정보 조회 API 타입
 export const userResponseSchema = z.object({
   id: z.number(),
-  email: z.string(),
+  email: z.string().optional(),
   nickname: z.string().min(3).max(10),
   profileImageUrl: z.string().nullable(),
   profileMessage: z.string().nullable(),
