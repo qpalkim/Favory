@@ -1,5 +1,6 @@
 import { ImageOff } from "lucide-react";
 import { Favory } from "@/lib/types/favories";
+import { SearchFavory } from "@/lib/types/search";
 import Image from "next/image";
 import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
@@ -7,7 +8,7 @@ import ProfileImg from "./ProfileImg";
 import Badge from "./Badge";
 
 interface FavoryItemProps {
-  favory: Favory;
+  favory: Favory | SearchFavory;
   profile?: boolean;
 }
 
@@ -32,7 +33,7 @@ export default function FavoryItem({
             {favory.mediaTitle}
           </h2>
           <p className="text-black-200 truncate text-[10px] leading-tight font-light md:text-xs">
-            {formatTime(favory.updatedAt || favory.createdAt)}
+            {formatTime(favory.createdAt)}
           </p>
         </div>
         <p className="text-black-200 md:text-md mt-1 truncate text-xs leading-tight">
@@ -57,6 +58,8 @@ export default function FavoryItem({
         <Image
           src={favory.mediaImageUrl}
           alt={favory.title}
+          width={300}
+          height={300}
           className="h-[72px] w-auto flex-shrink-0 rounded-sm object-cover md:h-[92px] md:rounded-md"
         />
       ) : (
