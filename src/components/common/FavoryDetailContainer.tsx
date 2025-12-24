@@ -190,7 +190,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                         e.preventDefault();
                         e.stopPropagation();
                         router.push(
-                          `/search?keyword=%23${encodeURIComponent(tag.name)}`,
+                          `/search?keyword=${encodeURIComponent(`#${tag.name}`)}`,
                         );
                       }}
                     >

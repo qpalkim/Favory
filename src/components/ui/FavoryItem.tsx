@@ -64,7 +64,7 @@ export default function FavoryItem({
                     e.preventDefault();
                     e.stopPropagation();
                     router.push(
-                      `/search?keyword=%23${encodeURIComponent(tag.name)}`,
+                      `/search?keyword=${encodeURIComponent(`#${tag.name}`)}`,
                     );
                   }}
                 >
