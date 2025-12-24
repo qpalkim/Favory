@@ -11,5 +11,6 @@ export const useSearchFavoryList = (params: GetSearchFavoryListParams) => {
     queryKey: ["favories", "search", params],
     queryFn: () => getSearchFavoryList(params),
     placeholderData: keepPreviousData,
+    enabled: !!params.keyword?.trim(),
   });
 };
