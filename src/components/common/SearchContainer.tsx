@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { Category, SearchFavory } from "@/lib/types/search";
+import { Category } from "@/lib/types/search";
 import { UserResponse } from "@/lib/types/users";
+import { Favory } from "@/lib/types/favories";
 import { useSearchFavoryList } from "@/lib/hooks/search";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import SearchBar from "../ui/SearchBar";
@@ -27,7 +28,7 @@ const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
 export default function SearchContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const keyword = searchParams.get("keyword") ?? "";
+  const keyword = searchParams.get("keyword")?.trim() ?? "";
   const [category, setCategory] = useState<Category | undefined>(undefined);
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,8 +37,12 @@ export default function SearchContainer() {
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const itemsPerPage = isPC ? 10 : isTablet ? 8 : 6;
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [keyword]);
+
   const { data, isLoading, isError } = useSearchFavoryList({
-    keyword: keyword,
+    keyword,
     category: category,
     sort: sortType,
     size: itemsPerPage,
@@ -52,6 +57,7 @@ export default function SearchContainer() {
   ];
 
   const handleSearch = (term: string) => {
+    setCurrentPage(1);
     router.push(`/search?keyword=${encodeURIComponent(term)}`);
   };
 
@@ -60,7 +66,6 @@ export default function SearchContainer() {
     setCurrentPage(1);
   };
 
-  if (isLoading) return <div>로딩 중입니다</div>;
   if (isError) return <div>에러가 발생했습니다</div>;
 
   return (
@@ -91,38 +96,15 @@ export default function SearchContainer() {
           </div>
         </div>
 
-        {keyword && (
-          <div>
-            <div className="flex items-center justify-between md:hidden">
-              <h4 className="text-black-500 md:text-2lg text-[15px] font-medium">
-                검색 결과 {data?.totalElements}개
-              </h4>
-              <SelectOption
-                options={sortOptions}
-                onSelect={(option) => {
-                  setSortType(option.value as "latest" | "oldest");
-                  setCurrentPage(1);
-                }}
-              />
-            </div>
-
-            <h4 className="text-black-500 md:text-2lg hidden font-medium md:block">
-              검색 결과 {data?.totalElements}개
-            </h4>
-            <div className="mt-6 flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                {MEDIA_TYPES.map((item) => (
-                  <Button
-                    key={item.label}
-                    size="sm"
-                    variant={category === item.value ? "primary" : "outline"}
-                    onClick={() => handleCategoryClick(item.value)}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </div>
-              <div className="hidden md:block">
+        {keyword &&
+          (isLoading ? (
+            <div>로딩 중입니다</div>
+          ) : (
+            <div>
+              <div className="flex items-center justify-between md:hidden">
+                <h4 className="text-black-500 md:text-2lg text-[15px] font-medium">
+                  검색 결과 {data?.totalElements}개
+                </h4>
                 <SelectOption
                   options={sortOptions}
                   onSelect={(option) => {
@@ -131,25 +113,51 @@ export default function SearchContainer() {
                   }}
                 />
               </div>
-            </div>
 
-            <div className="mt-6">
-              {favories.length === 0 ? (
-                <div className="my-12">
-                  <Empty type="search" />
+              <h4 className="text-black-500 md:text-2lg hidden font-medium md:block">
+                검색 결과 {data?.totalElements}개
+              </h4>
+              <div className="mt-6 flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  {MEDIA_TYPES.map((item) => (
+                    <Button
+                      key={item.label}
+                      size="sm"
+                      variant={category === item.value ? "primary" : "outline"}
+                      onClick={() => handleCategoryClick(item.value)}
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
                 </div>
-              ) : category === "PROFILE" ? (
-                (favories as UserResponse[]).map((profile) => (
-                  <ProfileItem key={profile.id} profile={profile} />
-                ))
-              ) : (
-                (favories as SearchFavory[]).map((favory) => (
-                  <FavoryItem key={favory.id} favory={favory} />
-                ))
-              )}
+                <div className="hidden md:block">
+                  <SelectOption
+                    options={sortOptions}
+                    onSelect={(option) => {
+                      setSortType(option.value as "latest" | "oldest");
+                      setCurrentPage(1);
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6">
+                {favories.length === 0 ? (
+                  <div className="my-12">
+                    <Empty type="search" />
+                  </div>
+                ) : category === "PROFILE" ? (
+                  (favories as UserResponse[]).map((profile) => (
+                    <ProfileItem key={profile.id} profile={profile} />
+                  ))
+                ) : (
+                  (favories as Favory[]).map((favory) => (
+                    <FavoryItem key={favory.id} favory={favory} />
+                  ))
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          ))}
       </div>
 
       {totalPages > 1 && (
