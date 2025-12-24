@@ -7,10 +7,12 @@ import { getSearchFavoryList } from "../apis/search";
 
 // Favory 검색 조회 훅
 export const useSearchFavoryList = (params: GetSearchFavoryListParams) => {
+  const { keyword, category, sort, page, size } = params;
+
   return useQuery<SearchFavoryListResponse>({
-    queryKey: ["favories", "search", params],
+    queryKey: ["favories", "search", keyword, category, sort, page, size],
     queryFn: () => getSearchFavoryList(params),
+    enabled: !!keyword,
     placeholderData: keepPreviousData,
-    enabled: !!params.keyword?.trim(),
   });
 };

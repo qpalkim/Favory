@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Category } from "@/lib/types/search";
 import { UserResponse } from "@/lib/types/users";
 import { Favory } from "@/lib/types/favories";
-import { useSearchFavoryList } from "@/lib/hooks/search";
+import { useSearchFavoryList } from "@/lib/hooks/useSearch";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import SearchBar from "../ui/SearchBar";
 import FavoryItem from "../ui/FavoryItem";
@@ -42,7 +42,7 @@ export default function SearchContainer() {
   }, [keyword]);
 
   const { data, isLoading, isError } = useSearchFavoryList({
-    keyword,
+    keyword: keyword || "",
     category: category,
     sort: sortType,
     size: itemsPerPage,
