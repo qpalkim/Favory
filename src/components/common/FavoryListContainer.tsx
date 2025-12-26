@@ -18,27 +18,31 @@ const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
   { label: "서적", value: "BOOK" },
 ];
 
+const SORT_OPTIONS = [
+  { label: "최신순", value: "latest" },
+  { label: "등록순", value: "oldest" },
+];
+
 export default function FavoryListContainer() {
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const [mediaType, setMediaType] = useState<MediaType | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading, isError } = useFavoryList({
-    size: 100,
-    sort: sortType,
-    type: mediaType,
-  });
-  const favories = data?.content ?? [];
   const isPC = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const itemsPerPage = isPC ? 16 : isTablet ? 12 : 8;
+
+  const { data, isLoading, isError } = useFavoryList({
+    page: currentPage - 1,
+    size: itemsPerPage,
+    sort: sortType,
+    type: mediaType,
+  });
+
+  const favories = data?.content ?? [];
+  const totalPages = data?.totalPages ?? 0;
+
   const skeletonCount = isPC ? 8 : isTablet ? 6 : 4;
-  const totalPages = Math.ceil(favories.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = favories.slice(startIndex, startIndex + itemsPerPage);
-  const sortOptions = [
-    { label: "최신순", value: "latest" },
-    { label: "등록순", value: "oldest" },
-  ];
+
   const handleMediaClick = (type: MediaType | undefined) => {
     setMediaType(type);
     setCurrentPage(1);
@@ -62,35 +66,41 @@ export default function FavoryListContainer() {
           ))}
         </div>
         <SelectOption
-          options={sortOptions}
+          options={SORT_OPTIONS}
           onSelect={(option) => {
             setSortType(option.value as "latest" | "oldest");
             setCurrentPage(1);
           }}
         />
       </div>
-      {!isLoading && currentItems.length === 0 ? (
+
+      {isLoading ? (
+        <div className="mb-6 grid grid-cols-2 gap-x-2 gap-y-3 md:mb-8 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:mb-12 lg:grid-cols-4">
+          {Array.from({ length: skeletonCount }).map((_, idx) => (
+            <FeedCardSkeleton key={idx} />
+          ))}
+        </div>
+      ) : favories.length === 0 ? (
         <div className="my-12">
           <Empty type="favory" />
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-3 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:grid-cols-4">
-            {isLoading
-              ? Array.from({ length: skeletonCount }).map((_, idx) => (
-                  <FeedCardSkeleton key={idx} />
-                ))
-              : currentItems.map((favory) => (
-                  <FeedCard key={favory.id} favory={favory} />
-                ))}
+          <div className="mb-6 grid grid-cols-2 gap-x-2 gap-y-3 md:mb-8 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:mb-12 lg:grid-cols-4">
+            {favories.map((favory) => (
+              <FeedCard key={favory.id} favory={favory} />
+            ))}
           </div>
-          <div className="my-16 flex justify-center">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onChange={setCurrentPage}
-            />
-          </div>
+
+          {!isLoading && totalPages > 1 && (
+            <div className="my-16 flex justify-center">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onChange={setCurrentPage}
+              />
+            </div>
+          )}
         </>
       )}
     </div>
