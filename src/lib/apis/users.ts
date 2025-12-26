@@ -10,7 +10,7 @@ import {
 
 // 유저 정보 조회 API
 export const getUserData = async (id: number) => {
-  const response = await axiosClientHelper.get<UserResponse>(`users/${id}`);
+  const response = await axiosClientHelper.get<UserResponse>(`/users/${id}`);
   return safeResponse(response.data, userResponseSchema);
 };
 
