@@ -38,3 +38,10 @@ export const searchFavoryListResponseSchema = z.object({
 export type SearchFavoryListResponse = z.infer<
   typeof searchFavoryListResponseSchema
 >;
+
+// 최근 검색어 조회 응답 API 타입
+export const recentSearchListResponseSchema = z.array(z.string());
+
+export type RecentSearchListResponse = z.infer<
+  typeof recentSearchListResponseSchema
+>;
