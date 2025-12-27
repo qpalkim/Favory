@@ -2,6 +2,7 @@ import { axiosClientHelper } from "../network/axiosClientHelper";
 import { safeResponse } from "../network/safeResponse";
 import {
   ProfileImageUrlParams,
+  ProfileImageUrlRequest,
   ProfileImageUrlResponse,
   profileImageUrlResponseSchema,
   UserResponse,
@@ -21,7 +22,9 @@ export const getMyData = async () => {
 };
 
 // 프로필 이미지 등록/수정 요청 API
-export const putProfileImageUrl = async (params: ProfileImageUrlParams) => {
+export const putProfileImageUrl = async (
+  params: ProfileImageUrlParams & ProfileImageUrlRequest,
+) => {
   const formData = new FormData();
   formData.append("file", params.file);
 
