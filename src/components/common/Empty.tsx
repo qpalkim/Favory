@@ -1,7 +1,18 @@
-import { MessageCircleMore, FolderOpen, Search } from "lucide-react";
+import {
+  MessageCircleMore,
+  FolderOpen,
+  Search,
+  TextSearch,
+} from "lucide-react";
 
 interface EmptyProps {
-  type: "comment" | "myComment" | "favory" | "myFavory" | "search";
+  type:
+    | "comment"
+    | "myComment"
+    | "favory"
+    | "myFavory"
+    | "search"
+    | "recentSearch";
   category?: string;
 }
 
@@ -31,6 +42,11 @@ const EMPTY_MESSAGES = {
     description: null,
     Icon: Search,
   },
+  recentSearch: {
+    title: "최근 검색어가 없습니다",
+    description: null,
+    Icon: TextSearch,
+  },
 };
 
 export default function Empty({ type, category }: EmptyProps) {
@@ -43,7 +59,7 @@ export default function Empty({ type, category }: EmptyProps) {
   return (
     <div className="flex flex-col items-center">
       <Icon className="text-black-100 h-[42px] w-[42px] stroke-1 md:h-[52px] md:w-[52px]" />
-      <h2 className="text-black-500 md:text-2lg mt-4 text-lg font-semibold md:mt-6">
+      <h2 className="text-black-500 md:text-2lg mt-4 text-[15px] font-medium md:mt-6">
         {displayTitle}
       </h2>
       <p className="text-black-200 md:text-md mt-2 text-sm">{description}</p>

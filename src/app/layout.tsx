@@ -35,6 +35,7 @@ export default function RootLayout({
             icon={false}
             closeButton={false}
             pauseOnHover={false}
+            pauseOnFocusLoss={false}
             limit={3}
             hideProgressBar
             draggable

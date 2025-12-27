@@ -26,6 +26,8 @@ export const useFavoryList = (params: GetFavoryListParams) => {
     queryKey: ["favories", params],
     queryFn: () => getFavoryList(params),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 30,
+    retry: 1,
   });
 };
 

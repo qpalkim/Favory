@@ -2,6 +2,7 @@ import { axiosClientHelper } from "../network/axiosClientHelper";
 import { safeResponse } from "../network/safeResponse";
 import {
   ProfileImageUrlParams,
+  ProfileImageUrlRequest,
   ProfileImageUrlResponse,
   profileImageUrlResponseSchema,
   UserResponse,
@@ -10,7 +11,7 @@ import {
 
 // 유저 정보 조회 API
 export const getUserData = async (id: number) => {
-  const response = await axiosClientHelper.get<UserResponse>(`users/${id}`);
+  const response = await axiosClientHelper.get<UserResponse>(`/users/${id}`);
   return safeResponse(response.data, userResponseSchema);
 };
 
@@ -21,7 +22,9 @@ export const getMyData = async () => {
 };
 
 // 프로필 이미지 등록/수정 요청 API
-export const putProfileImageUrl = async (params: ProfileImageUrlParams) => {
+export const putProfileImageUrl = async (
+  params: ProfileImageUrlParams & ProfileImageUrlRequest,
+) => {
   const formData = new FormData();
   formData.append("file", params.file);
 

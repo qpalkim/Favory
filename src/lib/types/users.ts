@@ -14,7 +14,6 @@ export type UserResponse = z.infer<typeof userResponseSchema>;
 // 프로필 이미지 등록/수정 요청 파라미터 API 타입
 export const profileImageUrlParamsSchema = z.object({
   id: z.number(),
-  file: z.instanceof(File),
 });
 
 export type ProfileImageUrlParams = z.infer<typeof profileImageUrlParamsSchema>;

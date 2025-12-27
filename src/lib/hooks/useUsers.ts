@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ProfileImageUrlParams,
+  profileImageUrlParamsSchema,
+  ProfileImageUrlRequest,
   profileImageUrlRequestSchema,
   UserResponse,
 } from "../types/users";
@@ -33,8 +35,11 @@ export const useMyData = () => {
 // 프로필 이미지 등록/수정 훅
 export const useProfileImageUrl = () => {
   return useMutation({
-    mutationFn: async (params: ProfileImageUrlParams) => {
-      profileImageUrlRequestSchema.parse(params);
+    mutationFn: async (
+      params: ProfileImageUrlParams & ProfileImageUrlRequest,
+    ) => {
+      profileImageUrlParamsSchema.parse({ id: params.id });
+      profileImageUrlRequestSchema.parse({ file: params.file });
       return putProfileImageUrl(params);
     },
   });

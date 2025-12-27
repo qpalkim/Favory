@@ -13,3 +13,8 @@ export const CREATOR_FALLBACK = {
   DRAMA: "방송사 정보 없음",
   BOOK: "작가 정보 없음",
 };
+
+export const SORT_OPTIONS = [
+  { label: "최신순", value: "latest" },
+  { label: "등록순", value: "oldest" },
+];

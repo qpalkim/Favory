@@ -75,16 +75,27 @@ export const POST = async (request: NextRequest) => {
 export const PUT = async (request: NextRequest) => {
   const url = new URL(request.url);
   const endPoint = url.pathname.replace(/^\/api/, "");
+  const contentType = request.headers.get("Content-Type")?.split(";")[0];
+
   try {
     const apiResponse = await axiosServerHelper.put(
       endPoint,
-      await request.json(),
+      contentType === "application/json"
+        ? await request.json()
+        : await request.formData(),
+      {
+        headers: {
+          "Content-Type": request.headers.get("Content-Type"),
+        },
+      },
     );
-    if (isEmpty(apiResponse.data))
-      return new NextResponse(null, {
-        status: apiResponse.status,
-      });
-    return NextResponse.json(apiResponse.data, { status: apiResponse.status });
+
+    if (isEmpty(apiResponse.data)) {
+      return new NextResponse(null, { status: apiResponse.status });
+    }
+    return NextResponse.json(apiResponse.data, {
+      status: apiResponse.status,
+    });
   } catch (error) {
     return errorResponse(error);
   }
