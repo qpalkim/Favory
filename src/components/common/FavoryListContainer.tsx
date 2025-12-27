@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFavoryList } from "@/lib/hooks/useFavories";
 import { MediaType } from "@/lib/types/favories";
+import { SORT_OPTIONS } from "@/lib/utils/constants";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import FeedCard from "../ui/FeedCard";
 import Button from "../ui/Button";
@@ -18,20 +19,16 @@ const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
   { label: "서적", value: "BOOK" },
 ];
 
-const SORT_OPTIONS = [
-  { label: "최신순", value: "latest" },
-  { label: "등록순", value: "oldest" },
-];
-
 export default function FavoryListContainer() {
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const [mediaType, setMediaType] = useState<MediaType | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
+
   const isPC = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const itemsPerPage = isPC ? 16 : isTablet ? 12 : 8;
 
-  const { data, isLoading, isError } = useFavoryList({
+  const { data, isLoading, isFetching, isError } = useFavoryList({
     page: currentPage - 1,
     size: itemsPerPage,
     sort: sortType,
@@ -41,12 +38,15 @@ export default function FavoryListContainer() {
   const favories = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
 
-  const skeletonCount = isPC ? 8 : isTablet ? 6 : 4;
-
   const handleMediaClick = (type: MediaType | undefined) => {
+    if (mediaType === type) return;
     setMediaType(type);
     setCurrentPage(1);
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [itemsPerPage]);
 
   if (isError) return <div>에러가 발생했습니다</div>;
 
@@ -60,6 +60,7 @@ export default function FavoryListContainer() {
               size="sm"
               variant={mediaType === item.value ? "primary" : "outline"}
               onClick={() => handleMediaClick(item.value)}
+              disabled={isLoading || isFetching}
             >
               {item.label}
             </Button>
@@ -67,7 +68,9 @@ export default function FavoryListContainer() {
         </div>
         <SelectOption
           options={SORT_OPTIONS}
+          disabled={isLoading || isFetching}
           onSelect={(option) => {
+            if (sortType == option.value) return;
             setSortType(option.value as "latest" | "oldest");
             setCurrentPage(1);
           }}
@@ -76,7 +79,7 @@ export default function FavoryListContainer() {
 
       {isLoading ? (
         <div className="mb-6 grid grid-cols-2 gap-x-2 gap-y-3 md:mb-8 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:mb-12 lg:grid-cols-4">
-          {Array.from({ length: skeletonCount }).map((_, idx) => (
+          {Array.from({ length: itemsPerPage }).map((_, idx) => (
             <FeedCardSkeleton key={idx} />
           ))}
         </div>
@@ -86,7 +89,7 @@ export default function FavoryListContainer() {
         </div>
       ) : (
         <>
-          <div className="mb-6 grid grid-cols-2 gap-x-2 gap-y-3 md:mb-8 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:mb-12 lg:grid-cols-4">
+          <div className="mb-16 grid grid-cols-2 gap-x-2 gap-y-3 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:grid-cols-4">
             {favories.map((favory) => (
               <FeedCard key={favory.id} favory={favory} />
             ))}
@@ -98,6 +101,7 @@ export default function FavoryListContainer() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onChange={setCurrentPage}
+                disabled={isLoading || isFetching}
               />
             </div>
           )}

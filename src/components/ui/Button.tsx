@@ -3,14 +3,14 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 
 const buttonVariants = cva(
-  "flex items-center justify-center cursor-pointer duration-200 ease-in-out whitespace-nowrap font-semibold rounded-md",
+  "flex items-center justify-center cursor-pointer transition-all duration-200 ease-in-out whitespace-nowrap font-semibold rounded-md",
   {
     variants: {
       variant: {
         primary:
-          "bg-green-500 text-white hover:bg-green-600 disabled:bg-black-100 transition-colors",
+          "bg-green-500 text-white hover:bg-green-600 disabled:bg-black-100",
         outline:
-          "bg-white text-green-600 border border-green-600 transition-shadow",
+          "bg-white text-green-600 border border-green-600 disabled:opacity-40",
       },
       size: {
         sm: "h-[32px] md:h-[36px] text-xs md:text-sm px-3 w-max",
@@ -52,7 +52,9 @@ export default function Button({
 }: ButtonProps) {
   const classes = cn(
     buttonVariants({ variant, size }),
-    disabled || isLoading ? "cursor-not-allowed" : "hover:shadow-md",
+    disabled || isLoading
+      ? "cursor-not-allowed pointer-events-none"
+      : "hover:shadow-md",
     className,
   );
 

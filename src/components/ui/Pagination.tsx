@@ -4,7 +4,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const paginationVariants = cva(
-  "flex items-center justify-center transition-colors cursor-pointer text-sm rounded-lg md:rounded-xl w-8 h-8 md:w-9 md:h-9 md:text-md hover:font-medium disabled:cursor-not-allowed",
+  "flex items-center justify-center transition-colors cursor-pointer text-sm rounded-lg md:rounded-xl w-8 h-8 md:w-9 md:h-9 md:text-md hover:font-medium disabled:opacity-40 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
@@ -22,12 +22,14 @@ interface PaginationProps extends VariantProps<typeof paginationVariants> {
   currentPage: number;
   totalPages: number;
   onChange: (page: number) => void;
+  disabled?: boolean;
 }
 
 export default function Pagination({
   currentPage,
   totalPages,
   onChange,
+  disabled,
 }: PaginationProps) {
   const PAGE_COUNT = 5;
   const [firstPage, setFirstPage] = useState(1);
@@ -43,7 +45,9 @@ export default function Pagination({
   }, [currentPage, PAGE_COUNT, totalPages]);
 
   const handlePageChange = (page: number) => {
+    if (disabled) return;
     if (page < 1 || page > totalPages) return;
+    if (page === currentPage) return;
     onChange(page);
   };
 
@@ -60,7 +64,7 @@ export default function Pagination({
     <div className="flex items-center">
       <button
         onClick={handlePrevPage}
-        disabled={currentPage === 1}
+        disabled={disabled || currentPage === 1}
         aria-label="이전 페이지"
         className="mr-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:hidden md:mr-6"
       >
@@ -71,6 +75,7 @@ export default function Pagination({
         {pages.map((page) => (
           <button
             key={page}
+            disabled={disabled}
             onClick={() => handlePageChange(page)}
             className={paginationVariants({
               variant: currentPage === page ? "active" : "default",
@@ -85,7 +90,7 @@ export default function Pagination({
 
       <button
         onClick={handleNextPage}
-        disabled={currentPage === totalPages}
+        disabled={disabled || currentPage === totalPages}
         aria-label="다음 페이지"
         className="ml-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:hidden md:ml-6"
       >
