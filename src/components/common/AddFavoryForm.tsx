@@ -216,7 +216,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
                     clickable={false}
                     className="flex items-center gap-1"
                   >
-                    {tag}
+                    #{tag}
                     <X
                       className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
                       strokeWidth={2}
