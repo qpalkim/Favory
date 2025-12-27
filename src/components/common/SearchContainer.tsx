@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Category } from "@/lib/types/search";
@@ -10,6 +10,7 @@ import {
   useRecentSearchList,
   useSearchFavoryList,
 } from "@/lib/hooks/useSearch";
+import { SORT_OPTIONS } from "@/lib/utils/constants";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import SearchBar from "../ui/SearchBar";
 import FavoryItem from "../ui/FavoryItem";
@@ -30,11 +31,6 @@ const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
   { label: "프로필", value: "PROFILE" },
 ];
 
-const SORT_OPTIONS = [
-  { label: "최신순", value: "latest" },
-  { label: "등록순", value: "oldest" },
-];
-
 export default function SearchContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,20 +44,13 @@ export default function SearchContainer() {
   const itemsPerPage = isPC ? 10 : isTablet ? 8 : 6;
   const isTagSearch = keyword.startsWith("#");
 
-  const { data, isLoading, isError } = useSearchFavoryList(
-    isTagSearch
-      ? {
-          keyword,
-          sort: sortType,
-        }
-      : {
-          keyword,
-          category,
-          sort: sortType,
-          size: itemsPerPage,
-          page: currentPage - 1,
-        },
-  );
+  const { data, isLoading, isFetching, isError } = useSearchFavoryList({
+    keyword,
+    category: isTagSearch ? undefined : category,
+    sort: sortType,
+    size: itemsPerPage,
+    page: currentPage - 1,
+  });
   const content = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
 
@@ -79,8 +68,11 @@ export default function SearchContainer() {
     ? (content as UserResponse[])
     : [];
 
-  const { data: recentSearchList, isLoading: isRecentSearchListLoading } =
-    useRecentSearchList();
+  const {
+    data: recentSearchList,
+    isLoading: isRecentSearchListLoading,
+    isFetching: isRecentSearchListFetching,
+  } = useRecentSearchList();
   const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
 
   const handleSearch = (term: string) => {
@@ -122,7 +114,7 @@ export default function SearchContainer() {
           </div>
 
           <div className="mt-3 flex flex-wrap gap-2 md:mt-4">
-            {isRecentSearchListLoading ? (
+            {isRecentSearchListLoading || isRecentSearchListFetching ? (
               <>
                 {Array.from({ length: 5 }).map((_, idx) => (
                   <div
@@ -156,7 +148,9 @@ export default function SearchContainer() {
               </h4>
               <SelectOption
                 options={SORT_OPTIONS}
+                disabled={isLoading || isFetching}
                 onSelect={(option) => {
+                  if (sortType === option.value) return;
                   setSortType(option.value as "latest" | "oldest");
                   setCurrentPage(1);
                 }}
@@ -175,6 +169,7 @@ export default function SearchContainer() {
                     size="sm"
                     variant={category === item.value ? "primary" : "outline"}
                     onClick={() => handleCategoryClick(item.value)}
+                    disabled={isLoading || isFetching}
                   >
                     {item.label}
                   </Button>
@@ -183,7 +178,9 @@ export default function SearchContainer() {
               <div className="hidden md:block">
                 <SelectOption
                   options={SORT_OPTIONS}
+                  disabled={isLoading || isFetching}
                   onSelect={(option) => {
+                    if (sortType === option.value) return;
                     setSortType(option.value as "latest" | "oldest");
                     setCurrentPage(1);
                   }}
@@ -220,12 +217,13 @@ export default function SearchContainer() {
         )}
       </div>
 
-      {totalPages > 1 && (
+      {!isLoading && totalPages > 1 && (
         <div className="my-16 flex justify-center">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onChange={setCurrentPage}
+            disabled={isLoading || isFetching}
           />
         </div>
       )}

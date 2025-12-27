@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   GetSearchFavoryListParams,
   RecentSearchListResponse,
@@ -17,6 +22,7 @@ export const useSearchFavoryList = (params: GetSearchFavoryListParams) => {
   return useQuery<SearchFavoryListResponse>({
     queryKey: ["favories", "search", keyword, category, sort, page, size],
     queryFn: () => getSearchFavoryList(params),
+    placeholderData: keepPreviousData,
     enabled: !!keyword,
   });
 };
