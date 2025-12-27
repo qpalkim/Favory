@@ -10,11 +10,13 @@ import "swiper/css/pagination";
 
 export default function BannerWrapper() {
   const { data, isLoading, isError } = useFavoryList({
+    page: 0,
+    size: 4,
     sort: "latest",
   });
-  if (isLoading) return <BannerSkeleton />;
+  if (isLoading && !data) return <BannerSkeleton />;
   if (isError) return <div>에러가 발생했습니다</div>;
-  const favories = data?.content?.slice(0, 4) ?? [];
+  const favories = data?.content ?? [];
 
   return (
     <Swiper
@@ -25,11 +27,15 @@ export default function BannerWrapper() {
       rewind={true}
       fadeEffect={{ crossFade: true }}
       pagination={{ clickable: true }}
-      autoplay={{
-        delay: 3000,
-        disableOnInteraction: false,
-        pauseOnMouseEnter: true,
-      }}
+      autoplay={
+        favories.length > 1
+          ? {
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }
+          : false
+      }
       className="banner-swiper"
     >
       {favories.map((favory) => (
