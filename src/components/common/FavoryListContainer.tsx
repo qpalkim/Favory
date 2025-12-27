@@ -78,7 +78,7 @@ export default function FavoryListContainer() {
       </div>
 
       {isLoading ? (
-        <div className="mb-6 grid grid-cols-2 gap-x-2 gap-y-3 md:mb-8 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:mb-12 lg:grid-cols-4">
+        <div className="mb-16 grid grid-cols-2 gap-x-2 gap-y-3 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:grid-cols-4">
           {Array.from({ length: itemsPerPage }).map((_, idx) => (
             <FeedCardSkeleton key={idx} />
           ))}
