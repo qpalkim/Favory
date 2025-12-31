@@ -1,5 +1,4 @@
-import { notFound, redirect } from "next/navigation";
-import { getAuth } from "@/lib/auth/getAuth";
+import { notFound } from "next/navigation";
 import FavoryDetailContainer from "@/components/common/FavoryDetailContainer";
 
 export default async function Page({
@@ -7,9 +6,6 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { isLoggedIn } = await getAuth();
-  if (!isLoggedIn) redirect("/login?reason=auth");
-
   const { id } = await params;
   const parsedId = Number(id);
 
