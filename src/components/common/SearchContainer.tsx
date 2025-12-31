@@ -20,6 +20,7 @@ import Badge from "../ui/Badge";
 import SelectOption from "../ui/SelectOption";
 import Pagination from "../ui/Pagination";
 import FavoryItemSkeleton from "../skeleton/FavoryItemSkeleton";
+import ProfileItemSkeleton from "../skeleton/ProfileItemSkeleton";
 import Empty from "./Empty";
 
 const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
@@ -42,11 +43,10 @@ export default function SearchContainer() {
   const isPC = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const itemsPerPage = isPC ? 10 : isTablet ? 8 : 6;
-  const isTagSearch = keyword.startsWith("#");
 
   const { data, isLoading, isFetching, isError } = useSearchFavoryList({
     keyword,
-    category: isTagSearch ? undefined : category,
+    category: category,
     sort: sortType,
     size: itemsPerPage,
     page: currentPage - 1,
@@ -54,13 +54,17 @@ export default function SearchContainer() {
   const content = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
 
+  const isTagSearch = keyword.startsWith("#");
+  const isProfileDisabled = isTagSearch;
+  const isListLoading = isLoading || isFetching;
+
   useEffect(() => {
     setCurrentPage(1);
 
-    if (keyword.startsWith("#")) {
+    if (keyword.startsWith("#") && category === "PROFILE") {
       setCategory(undefined);
     }
-  }, [keyword]);
+  }, [keyword, category]);
 
   const isProfileCategory = category === "PROFILE";
   const favoryList: Favory[] = !isProfileCategory ? (content as Favory[]) : [];
@@ -163,17 +167,22 @@ export default function SearchContainer() {
 
             <div className="mt-6 flex items-center justify-between">
               <div className="flex items-center gap-1">
-                {MEDIA_TYPES.map((item) => (
-                  <Button
-                    key={item.label}
-                    size="sm"
-                    variant={category === item.value ? "primary" : "outline"}
-                    onClick={() => handleCategoryClick(item.value)}
-                    disabled={isLoading || isFetching}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
+                {MEDIA_TYPES.map((item) => {
+                  const isDisabled =
+                    item.value === "PROFILE" && isProfileDisabled;
+
+                  return (
+                    <Button
+                      key={item.label}
+                      size="sm"
+                      variant={category === item.value ? "primary" : "outline"}
+                      onClick={() => handleCategoryClick(item.value)}
+                      disabled={isLoading || isFetching || isDisabled}
+                    >
+                      {item.label}
+                    </Button>
+                  );
+                })}
               </div>
               <div className="hidden md:block">
                 <SelectOption
@@ -189,10 +198,16 @@ export default function SearchContainer() {
             </div>
 
             <div className="mt-6">
-              {isLoading ? (
-                Array.from({ length: 4 }).map((_, idx) => (
-                  <FavoryItemSkeleton key={idx} />
-                ))
+              {isListLoading ? (
+                isProfileCategory ? (
+                  Array.from({ length: 4 }).map((_, idx) => (
+                    <ProfileItemSkeleton key={idx} />
+                  ))
+                ) : (
+                  Array.from({ length: 4 }).map((_, idx) => (
+                    <FavoryItemSkeleton key={idx} />
+                  ))
+                )
               ) : isProfileCategory ? (
                 profileList.length === 0 ? (
                   <div className="my-24">
