@@ -51,12 +51,10 @@ export default function SearchContainer() {
     size: itemsPerPage,
     page: currentPage - 1,
   });
-  const content = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
 
   const isTagSearch = keyword.startsWith("#");
   const isProfileDisabled = isTagSearch;
-  const isListLoading = isLoading || isFetching;
 
   useEffect(() => {
     setCurrentPage(1);
@@ -67,10 +65,10 @@ export default function SearchContainer() {
   }, [keyword, category]);
 
   const isProfileCategory = category === "PROFILE";
-  const favoryList: Favory[] = !isProfileCategory ? (content as Favory[]) : [];
-  const profileList: UserResponse[] = isProfileCategory
-    ? (content as UserResponse[])
-    : [];
+  const favoryList: Favory[] =
+    !isProfileCategory && data ? (data.content as Favory[]) : [];
+  const profileList: UserResponse[] =
+    isProfileCategory && data ? (data.content as UserResponse[]) : [];
 
   const {
     data: recentSearchList,
@@ -78,6 +76,10 @@ export default function SearchContainer() {
     isFetching: isRecentSearchListFetching,
   } = useRecentSearchList();
   const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
+
+  const isListLoading = isLoading || isFetching;
+  const isRecentListLoading =
+    isRecentSearchListLoading || isRecentSearchListFetching;
 
   const handleSearch = (term: string) => {
     setCurrentPage(1);
@@ -110,7 +112,8 @@ export default function SearchContainer() {
               최근 검색어
             </h4>
             <button
-              className="text-error-100 cursor-pointer text-xs font-medium md:text-sm"
+              disabled={isRecentListLoading}
+              className="text-error-100 cursor-pointer text-xs font-medium disabled:cursor-not-allowed disabled:opacity-40 md:text-sm"
               onClick={() => deleteRecentSearchList()}
             >
               모두 지우기
