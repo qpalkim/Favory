@@ -111,13 +111,15 @@ export default function SearchContainer() {
             <h4 className="text-black-500 md:text-2lg text-[15px] font-medium">
               최근 검색어
             </h4>
-            <button
-              disabled={isRecentListLoading}
-              className="text-error-100 cursor-pointer text-xs font-medium disabled:cursor-not-allowed disabled:opacity-40 md:text-sm"
-              onClick={() => deleteRecentSearchList()}
-            >
-              모두 지우기
-            </button>
+            {recentSearchList && recentSearchList.length > 0 && (
+              <button
+                disabled={isRecentListLoading}
+                className="text-error-100 cursor-pointer text-xs font-medium disabled:cursor-not-allowed disabled:opacity-40 md:text-sm"
+                onClick={() => deleteRecentSearchList()}
+              >
+                모두 지우기
+              </button>
+            )}
           </div>
 
           <div className="mt-3 flex flex-wrap gap-2 md:mt-4">
