@@ -6,7 +6,11 @@ import { toast } from "react-toastify";
 import { X } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MediaItem } from "@/lib/types/media";
-import { AddFavoryRequest, addFavoryRequestSchema } from "@/lib/types/favories";
+import {
+  AddFavoryRequest,
+  addFavoryRequestSchema,
+  MediaType,
+} from "@/lib/types/favories";
 import { useMyData } from "@/lib/hooks/useUsers";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
 import { useAddFavory } from "@/lib/hooks/useFavories";
@@ -17,25 +21,10 @@ import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
 import Badge from "../ui/Badge";
-import MusicSelector from "@/components/ui/MusicSelector";
-import MovieSelector from "@/components/ui/MovieSelector";
-import DramaSelector from "@/components/ui/DramaSelector";
-import BookSelector from "@/components/ui/BookSelector";
+import MediaSelector from "../ui/MediaSelector";
 
-interface MediaSelectorProps {
-  onSelect: (item: MediaItem | null) => void;
-}
-
-const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
-  music: MusicSelector,
-  movie: MovieSelector,
-  drama: DramaSelector,
-  book: BookSelector,
-};
-
-export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
+export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
   const { data: me } = useMyData();
-  const Selector = selectorMap[mediaType];
   const router = useRouter();
 
   const {
@@ -58,7 +47,8 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null); // 선택된 미디어 정보
-  const translatedMediaType = MEDIA_TYPE_TRANSLATE_MAP[mediaType] || mediaType;
+  const translatedMediaType =
+    MEDIA_TYPE_TRANSLATE_MAP[mediaType.toLowerCase()] || mediaType;
   const addMedia = useAddMedia();
   const addFavory = useAddFavory();
   const [mediaId, setMediaId] = useState<number | null>(null);
@@ -177,7 +167,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: string }) {
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-6">
-            {Selector && <Selector onSelect={handleSelect} />}
+            <MediaSelector type={mediaType} onSelect={handleSelect} />
             <div className="mb-6">
               <Input
                 {...register("title")}
