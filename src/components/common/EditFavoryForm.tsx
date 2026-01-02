@@ -9,6 +9,7 @@ import { MediaItem } from "@/lib/types/media";
 import {
   EditFavoryRequest,
   editFavoryRequestSchema,
+  MediaType,
 } from "@/lib/types/favories";
 import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
@@ -18,25 +19,14 @@ import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
 import Badge from "../ui/Badge";
-import MusicSelector from "@/components/ui/MusicSelector";
-import MovieSelector from "../ui/MovieSelector";
-import DramaSelector from "../ui/DramaSelector";
-import BookSelector from "../ui/BookSelector";
 import LoadingSpinner from "../ui/LoadingSpinner";
+import MediaSelector from "../ui/MediaSelector";
 
-interface MediaSelectorProps {
-  selected?: MediaItem | null;
-  disabled?: boolean;
-}
-
-const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
-  music: MusicSelector,
-  movie: MovieSelector,
-  drama: DramaSelector,
-  book: BookSelector,
-};
-
-export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
+export default function EditFavoryForm({
+  mediaType,
+}: {
+  mediaType: MediaType;
+}) {
   const {
     register,
     handleSubmit,
@@ -49,14 +39,14 @@ export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
     mode: "onChange",
   });
 
-  const Selector = selectorMap[mediaType];
   const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
   const router = useRouter();
   const params = useParams();
   const id = Number(params.id);
-  const translatedMediaType = MEDIA_TYPE_TRANSLATE_MAP[mediaType] || mediaType;
+  const translatedMediaType =
+    MEDIA_TYPE_TRANSLATE_MAP[mediaType.toLowerCase()] || mediaType;
   const { data: favoryData, isLoading } = useFavoryDetail(id);
   const { mutate } = useEditFavory(id);
   const [initialData, setInitialData] = useState<EditFavoryRequest | null>(
@@ -139,7 +129,7 @@ export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-6">
-            {Selector && <Selector disabled selected={selectedMedia} />}
+            <MediaSelector type={mediaType} disabled selected={selectedMedia} />
             <div className="mb-6">
               <Input
                 {...register("title")}
