@@ -41,6 +41,7 @@ export const useAddFavory = () => {
     },
   });
 };
+
 // Favory 상세 조회 훅
 export const useFavoryDetail = (id: number) => {
   return useQuery<FavoryDetailResponse>({
