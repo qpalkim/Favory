@@ -116,14 +116,14 @@ export default function EditFavoryForm({
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <div className="space-y-[42px] p-4 lg:space-y-[52px] lg:p-6">
+      <div className="space-y-[42px] p-4 md:p-6">
         <div className="flex items-center gap-2">
           <Image
             src={logo}
             alt="로고 아이콘"
-            className="w-[86px] md:w-[114px] lg:w-[134px]"
+            className="w-[86px] md:w-[114px]"
           />
-          <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold lg:text-xl">
+          <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold">
             {translatedMediaType} 감상평 수정하기
           </h2>
         </div>

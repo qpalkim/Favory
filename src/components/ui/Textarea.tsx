@@ -20,25 +20,19 @@ export function Label({
   return (
     <label
       className={cn(
-        "text-md lg:text-2lg text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg",
+        "text-md text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg",
         className,
       )}
       {...props}
     >
       {children}
-      {required && (
-        <span className="text-md lg:text-2lg text-error-100 md:text-lg">*</span>
-      )}
+      {required && <span className="text-md text-error-100 md:text-lg">*</span>}
     </label>
   );
 }
 
 export function Error({ children }: { children: ReactNode }) {
-  return (
-    <span className="text-error-100 lg:text-md ml-3 block text-xs">
-      {children}
-    </span>
-  );
+  return <span className="text-error-100 ml-3 block text-xs">{children}</span>;
 }
 
 const textareaVariants = cva(
@@ -47,7 +41,7 @@ const textareaVariants = cva(
     variants: {
       variant: {
         default: "text-sm md:text-md px-3 pt-2",
-        form: "text-sm md:text-md lg:text-lg px-3 pt-3",
+        form: "text-sm md:text-md px-3 pt-3",
       },
       state: {
         default:

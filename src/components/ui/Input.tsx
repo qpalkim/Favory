@@ -20,29 +20,25 @@ export function Label({
   return (
     <label
       className={cn(
-        "text-md lg:text-2lg text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg",
+        "text-md text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg",
         className,
       )}
       {...props}
     >
       {children}
-      {required && (
-        <span className="text-md lg:text-2lg text-error-100 md:text-lg">*</span>
-      )}
+      {required && <span className="text-md text-error-100 md:text-lg">*</span>}
     </label>
   );
 }
 
 export function Error({ children }: { children: ReactNode }) {
   return (
-    <span className="text-error-100 lg:text-md mt-2 ml-3 block text-xs">
-      {children}
-    </span>
+    <span className="text-error-100 mt-2 ml-3 block text-xs">{children}</span>
   );
 }
 
 const inputVariants = cva(
-  "w-full h-[36px] md:h-[38px] lg:h-[46px] px-3 text-sm md:text-md lg:text-lg text-black-500 placeholder:text-black-200 rounded-md bg-white border hover:bg-black-10 focus:outline-none transition-colors duration-200 ease-in-out",
+  "w-full h-[36px] md:h-[38px] px-3 text-sm md:text-md text-black-500 placeholder:text-black-200 rounded-md bg-white border hover:bg-black-10 focus:outline-none transition-colors duration-200 ease-in-out",
   {
     variants: {
       state: {
