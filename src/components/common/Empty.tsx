@@ -39,12 +39,13 @@ const EMPTY_MESSAGES = {
   },
   search: {
     title: "검색 결과가 없습니다",
-    description: null,
+    description:
+      "다른 검색어로 다시 검색해 보세요\n띄어쓰기나 철자가 맞는지 확인해 보세요",
     Icon: Search,
   },
   recentSearch: {
-    title: "최근 검색어가 없습니다",
-    description: null,
+    title: null,
+    description: "최근 검색어가 없습니다",
     Icon: TextSearch,
   },
 };
@@ -59,10 +60,16 @@ export default function Empty({ type, category }: EmptyProps) {
   return (
     <div className="flex flex-col items-center">
       <Icon className="text-black-100 h-[42px] w-[42px] stroke-1 md:h-[52px] md:w-[52px]" />
-      <h2 className="text-black-500 md:text-2lg mt-4 text-[15px] font-medium md:mt-6">
-        {displayTitle}
-      </h2>
-      <p className="text-black-200 md:text-md mt-2 text-sm">{description}</p>
+      {displayTitle && (
+        <h2 className="text-black-500 md:text-2lg mt-4 text-[15px] font-medium md:mt-6">
+          {displayTitle}
+        </h2>
+      )}
+      {description && (
+        <p className="text-black-200 md:text-md mt-2 text-center text-sm whitespace-pre-line">
+          {description}
+        </p>
+      )}
     </div>
   );
 }
