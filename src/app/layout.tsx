@@ -7,7 +7,16 @@ import Footer from "@/components/ui/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Favory - 내 취향을 담은 나만의 공간",
+  metadataBase: new URL("https://favory.vercel.app"),
+  title: "Favory | 내 취향을 담은 나만의 공간",
+  description:
+    "좋아하는 음악, 영화, 드라마, 도서를 한 곳에 모아 감상평을 기록하고, 공유해 보세요",
+  openGraph: {
+    title: "Favory | 내 취향을 담은 나만의 공간",
+    description:
+      "좋아하는 음악, 영화, 드라마, 도서를 한 곳에 모아 감상평을 기록하고, 공유해 보세요",
+    images: ["/thumbnail.jpg"],
+  },
 };
 
 export default function RootLayout({
