@@ -8,11 +8,11 @@ interface Props {
 }
 
 const TAB_ITEMS: TabItem[] = [
-  { id: "music", label: "음악" },
-  { id: "movie", label: "영화" },
-  { id: "drama", label: "드라마" },
-  { id: "book", label: "도서" },
-  { id: "comment", label: "댓글" },
+  { id: "MUSIC", label: "음악" },
+  { id: "MOVIE", label: "영화" },
+  { id: "DRAMA", label: "드라마" },
+  { id: "BOOK", label: "도서" },
+  { id: "COMMENT", label: "댓글" },
 ];
 
 export default function ProfileHeader({ tab, onTabChange }: Props) {

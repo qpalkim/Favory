@@ -10,7 +10,7 @@ export default function Page() {
 
   return (
     <div className="mx-auto mt-8 min-h-screen max-w-[1200px] p-4 md:mt-16">
-      <ProfileLayout tab={tab} onTabChange={setTab}>
+      <ProfileLayout tab={tab ?? "MUSIC"} onTabChange={setTab}>
         <ProfileContent tab={tab} />
       </ProfileLayout>
     </div>
