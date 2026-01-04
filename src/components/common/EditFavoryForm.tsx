@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
+import { AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MediaItem } from "@/lib/types/media";
 import {
@@ -12,6 +13,7 @@ import {
   MediaType,
 } from "@/lib/types/favories";
 import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
+import { useMyData } from "@/lib/hooks/useUsers";
 import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
@@ -47,7 +49,8 @@ export default function EditFavoryForm({
   const id = Number(params.id);
   const translatedMediaType =
     MEDIA_TYPE_TRANSLATE_MAP[mediaType.toLowerCase()] || mediaType;
-  const { data: favoryData, isLoading } = useFavoryDetail(id);
+  const { data: me } = useMyData();
+  const { data: favoryData, isLoading, isError, error } = useFavoryDetail(id);
   const { mutate } = useEditFavory(id);
   const [initialData, setInitialData] = useState<EditFavoryRequest | null>(
     null,
@@ -62,6 +65,26 @@ export default function EditFavoryForm({
         externalId: favoryData.mediaId.toString(), // 추후 일치시키기
       }
     : null;
+
+  useEffect(() => {
+    if (!isError) return;
+
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 404) {
+        toast.error("존재하지 않는 감상평입니다");
+        router.replace("/favories");
+      }
+    }
+  }, [isError, error, router]);
+
+  useEffect(() => {
+    if (!favoryData || !me) return;
+
+    if (favoryData.userId !== me.id) {
+      toast.error("편집 권한이 없습니다");
+      router.replace("/favories");
+    }
+  }, [favoryData, me, router]);
 
   useEffect(() => {
     if (favoryData) {
@@ -112,7 +135,12 @@ export default function EditFavoryForm({
     });
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading)
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
