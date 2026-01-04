@@ -1,3 +1,5 @@
+import { BookOpen, Clapperboard, Music4, Tv } from "lucide-react";
+
 export const MEDIA_TYPE_TRANSLATE_MAP: Record<string, string> = {
   music: "음악",
   movie: "영화",
@@ -18,3 +20,10 @@ export const SORT_OPTIONS = [
   { label: "최신순", value: "latest" },
   { label: "등록순", value: "oldest" },
 ];
+
+export const CATEGORY_BUTTON = {
+  MUSIC: { icon: Music4, text: "지금 들으러 가기" },
+  MOVIE: { icon: Clapperboard, text: "지금 보러 가기" },
+  DRAMA: { icon: Tv, text: "지금 보러 가기" },
+  BOOK: { icon: BookOpen, text: "지금 읽으러 가기" },
+};

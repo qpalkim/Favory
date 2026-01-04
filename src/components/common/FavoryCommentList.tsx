@@ -21,7 +21,10 @@ export default function FavoryCommentList({
   const isOverLimit = addContent.length > 100;
 
   const handleAddComment = () => {
-    if (!me) return;
+    if (!me) {
+      toast.info("로그인 후, 이용 가능합니다");
+      return;
+    }
 
     addComment.mutate(
       {

@@ -4,13 +4,16 @@ import { useForm } from "react-hook-form";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
+import { AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MediaItem } from "@/lib/types/media";
 import {
   EditFavoryRequest,
   editFavoryRequestSchema,
+  MediaType,
 } from "@/lib/types/favories";
 import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
+import { useMyData } from "@/lib/hooks/useUsers";
 import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
@@ -18,25 +21,14 @@ import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
 import Badge from "../ui/Badge";
-import MusicSelector from "@/components/ui/MusicSelector";
-import MovieSelector from "../ui/MovieSelector";
-import DramaSelector from "../ui/DramaSelector";
-import BookSelector from "../ui/BookSelector";
 import LoadingSpinner from "../ui/LoadingSpinner";
+import MediaSelector from "../ui/MediaSelector";
 
-interface MediaSelectorProps {
-  selected?: MediaItem | null;
-  disabled?: boolean;
-}
-
-const selectorMap: Record<string, React.ComponentType<MediaSelectorProps>> = {
-  music: MusicSelector,
-  movie: MovieSelector,
-  drama: DramaSelector,
-  book: BookSelector,
-};
-
-export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
+export default function EditFavoryForm({
+  mediaType,
+}: {
+  mediaType: MediaType;
+}) {
   const {
     register,
     handleSubmit,
@@ -49,15 +41,16 @@ export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
     mode: "onChange",
   });
 
-  const Selector = selectorMap[mediaType];
   const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
   const router = useRouter();
   const params = useParams();
   const id = Number(params.id);
-  const translatedMediaType = MEDIA_TYPE_TRANSLATE_MAP[mediaType] || mediaType;
-  const { data: favoryData, isLoading } = useFavoryDetail(id);
+  const translatedMediaType =
+    MEDIA_TYPE_TRANSLATE_MAP[mediaType.toLowerCase()] || mediaType;
+  const { data: me } = useMyData();
+  const { data: favoryData, isLoading, isError, error } = useFavoryDetail(id);
   const { mutate } = useEditFavory(id);
   const [initialData, setInitialData] = useState<EditFavoryRequest | null>(
     null,
@@ -72,6 +65,26 @@ export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
         externalId: favoryData.mediaId.toString(), // 추후 일치시키기
       }
     : null;
+
+  useEffect(() => {
+    if (!isError) return;
+
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 404) {
+        toast.error("존재하지 않는 감상평입니다");
+        router.replace("/favories");
+      }
+    }
+  }, [isError, error, router]);
+
+  useEffect(() => {
+    if (!favoryData || !me) return;
+
+    if (favoryData.userId !== me.id) {
+      toast.error("편집 권한이 없습니다");
+      router.replace("/favories");
+    }
+  }, [favoryData, me, router]);
 
   useEffect(() => {
     if (favoryData) {
@@ -122,24 +135,29 @@ export default function EditFavoryForm({ mediaType }: { mediaType: string }) {
     });
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading)
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <div className="space-y-[42px] p-4 lg:space-y-[52px] lg:p-6">
+      <div className="space-y-[42px] p-4 md:p-6">
         <div className="flex items-center gap-2">
           <Image
             src={logo}
             alt="로고 아이콘"
-            className="w-[86px] md:w-[114px] lg:w-[134px]"
+            className="w-[86px] md:w-[114px]"
           />
-          <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold lg:text-xl">
+          <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold">
             {translatedMediaType} 감상평 수정하기
           </h2>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-6">
-            {Selector && <Selector disabled selected={selectedMedia} />}
+            <MediaSelector type={mediaType} disabled selected={selectedMedia} />
             <div className="mb-6">
               <Input
                 {...register("title")}

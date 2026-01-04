@@ -2,14 +2,16 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { notFound, useRouter } from "next/navigation";
-import { ImageOff, Music4, Share } from "lucide-react";
+import { ImageOff, Share } from "lucide-react";
 import { useMyData } from "@/lib/hooks/useUsers";
 import { useDeleteFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useCommentList } from "@/lib/hooks/useComments";
 import {
+  CATEGORY_BUTTON,
   CREATOR_FALLBACK,
   MEDIA_TYPE_TRANSLATE_MAP,
 } from "@/lib/utils/constants";
+import { getMediaSearchUrl } from "@/lib/utils/getMediaUrl";
 import formatTime from "@/lib/utils/formatTime";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
@@ -81,7 +83,21 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   if (favoryDetailError || commentListError)
     return <div>에러가 발생했습니다</div>;
 
+  const handleMediaClick = () => {
+    if (!favoryDetail) return;
+
+    const url = getMediaSearchUrl(
+      favoryDetail.mediaType,
+      favoryDetail.mediaTitle,
+      favoryDetail.mediaCreator ?? undefined,
+    );
+
+    window.open(url, "_blank", "noopener,noreferrer");
+    return;
+  };
+
   const isMine = me?.id === favoryDetail.userId;
+  const { icon: Icon, text } = CATEGORY_BUTTON[favoryDetail?.mediaType];
 
   const CommentSection = (
     <div className="mt-6">
@@ -221,9 +237,9 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
             </div>
             <div className="my-[52px] flex justify-center gap-2 md:my-[96px]">
               {/* API 연동 예정 */}
-              <Button>
-                <Music4 className="h-4 w-4" />
-                지금 들으러 가기
+              <Button onClick={handleMediaClick}>
+                <Icon className="h-4 w-4" />
+                {text}
               </Button>
               <Button variant="outline" onClick={handleCopyLink}>
                 <Share className="h-4 w-4" />

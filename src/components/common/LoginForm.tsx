@@ -58,16 +58,16 @@ export default function LoginForm() {
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <div className="space-y-[42px] px-4 py-[42px] lg:space-y-[52px] lg:px-6 lg:py-[52px]">
+      <div className="space-y-[42px] px-4 py-[42px]">
         <div className="flex flex-col items-center">
           <Link href="/" className="inline-block text-center">
             <Image
               src={logo}
               alt="로고 아이콘"
-              className="w-[62px] drop-shadow-md md:w-[83px] lg:w-[110px]"
+              className="w-[62px] drop-shadow-md md:w-[83px]"
             />
           </Link>
-          <p className="text-md text-black-500 mt-4 text-center md:text-lg lg:text-xl">
+          <p className="text-md text-black-500 mt-4 text-center md:text-lg">
             오늘도 만나서 반가워요!
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function LoginForm() {
             />
             <button
               type="button"
-              className="absolute top-[41px] right-3 h-[18px] w-[18px] cursor-pointer md:top-[46px] lg:top-[47px] lg:h-6 lg:w-6"
+              className="absolute top-[41px] right-3 h-[18px] w-[18px] cursor-pointer md:top-[46px]"
               onClick={() => setShowPw(!showPw)}
               aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
             >
@@ -127,9 +127,9 @@ export default function LoginForm() {
           </Button>
         </form>
 
-        <div className="mb-8 flex items-center gap-2 md:gap-4 lg:mb-10 lg:gap-6">
+        <div className="mb-8 flex items-center gap-2 md:gap-4">
           <div className="bg-black-100 h-px flex-1 rounded" />
-          <p className="lg:text-md text-black-500 text-center text-xs md:text-sm">
+          <p className="text-black-500 text-center text-xs md:text-sm">
             회원이 아니신가요?&nbsp;
             <Link
               href="/signup"

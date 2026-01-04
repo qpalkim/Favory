@@ -23,7 +23,11 @@ axiosServerHelper.interceptors.response.use(
 
     const { response, config } = error;
 
-    if (response?.status === 401 || response?.status === 403) {
+    if (
+      response?.status === 401 ||
+      response?.status === 403 ||
+      response?.status === 500
+    ) {
       const baseURL = process.env.NEXT_PUBLIC_API_URL;
       const cookieStore = await cookies();
       const refreshToken = cookieStore.get("refreshToken")?.value;
