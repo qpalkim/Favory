@@ -10,7 +10,7 @@ const profileImgVariants = cva("relative rounded-full shrink-0", {
       sm: "w-[24px] h-[24px] md:w-[32px] md:h-[32px]",
       md: "w-[32px] h-[32px] md:w-[36px] md:h-[36px]",
       lg: "w-[60px] h-[60px] md:w-[85px] md:h-[85px]",
-      xl: "w-[72px] h-[72px] md:w-[112px] md:h-[112px]",
+      xl: "w-[72px] h-[72px] md:w-[92px] md:h-[92px]",
     },
     clickable: {
       true: "cursor-pointer transition-opacity duration-200 hover:opacity-80",
