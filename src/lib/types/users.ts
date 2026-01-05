@@ -1,5 +1,15 @@
 import z from "zod";
 
+export const profileCateogrySchema = z.enum([
+  "MUSIC",
+  "MOVIE",
+  "DRAMA",
+  "BOOK",
+  "COMMENT",
+]);
+
+export type ProfileCategory = z.infer<typeof profileCateogrySchema>;
+
 // 내 정보 및 유저 정보 조회 API 타입
 export const userResponseSchema = z.object({
   id: z.number(),

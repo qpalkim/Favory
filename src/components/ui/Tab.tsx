@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const tabVariants = cva(
-  "whitespace-nowrap flex items-center justify-center cursor-pointer p-3 md:p-4 lg:p-6 transition-colors border-b-2 border-transparent duration-200 ease-in-out font-medium text-md md:text-lg lg:text-xl",
+  "whitespace-nowrap flex items-center justify-center cursor-pointer p-3 md:p-4 transition-colors border-b-2 border-transparent duration-200 ease-in-out font-medium text-md md:text-lg",
   {
     variants: {
       variant: {
@@ -18,20 +17,21 @@ const tabVariants = cva(
   },
 );
 
-interface TabItem {
+export interface TabItem {
   id: string;
   label: string;
-  content: React.ReactNode;
+  content?: React.ReactNode;
 }
 
 interface TabProps {
   items: TabItem[];
+  value: string;
+  onChange: (id: string) => void;
   className?: string;
 }
 
-export default function Tab({ items, className }: TabProps) {
-  const [activeTab, setActiveTab] = useState(items[0]?.id);
-  const activeTabItem = items.find((item) => item.id === activeTab);
+export default function Tab({ items, value, onChange, className }: TabProps) {
+  const activeTabItem = items.find((item) => item.id === value);
 
   return (
     <div className={cn("w-full", className)}>
@@ -44,14 +44,14 @@ export default function Tab({ items, className }: TabProps) {
           {items.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => onChange(item.id)}
               className={cn(
                 tabVariants({
-                  variant: activeTab === item.id ? "active" : "default",
+                  variant: value === item.id ? "active" : "default",
                 }),
               )}
               role="tab"
-              aria-selected={activeTab === item.id}
+              aria-selected={value === item.id}
               aria-controls={`tab-panel-${item.id}`}
               id={`tab-${item.id}`}
             >
