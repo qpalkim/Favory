@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { FileUp } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -14,6 +15,7 @@ import {
   EditProfileRequest,
   editProfileRequestSchema,
 } from "@/lib/types/users";
+import { ErrorResponse } from "@/lib/types/errors";
 import Button from "../ui/Button";
 import ProfileImg from "../ui/ProfileImg";
 import Input from "../ui/Input";
@@ -32,6 +34,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     handleSubmit,
     reset,
     watch,
+    setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm<EditProfileRequest>({
     resolver: zodResolver(editProfileRequestSchema),
@@ -45,14 +48,11 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
   useEffect(() => {
     if (!me) return;
 
-    if (me) {
-      const init = {
-        nickname: me.nickname || "",
-        profileImageUrl: me.profileImageUrl || undefined,
-        profileMessage: me.profileMessage ?? undefined,
-      };
-      reset(init);
-    }
+    reset({
+      nickname: me.nickname || "",
+      profileImageUrl: me.profileImageUrl ?? undefined,
+      profileMessage: me.profileMessage ?? undefined,
+    });
   }, [me, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +87,20 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
 
       if (prevNickname !== nextNickname)
         router.replace(`/profile/@${nextNickname}`);
-    } catch {
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+      const field = error.response?.data?.field;
+
+      if (status === 400) {
+        if (field === "nickname") {
+          setError("nickname", {
+            type: "manual",
+            message: "이미 존재하는 닉네임입니다",
+          });
+        }
+        return;
+      }
       toast.error("프로필 수정에 실패했습니다");
     }
   };
