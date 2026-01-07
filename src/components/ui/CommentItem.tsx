@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { CommentResponse } from "@/lib/types/comments";
 import { useDeleteComment, useEditComment } from "@/lib/hooks/useComments";
 import formatTime from "@/lib/utils/formatTime";
-import ProfileImg from "./ProfileImg";
+import ProfileImage from "./ProfileImage";
 import Dropdown from "./Dropdown";
 import Textarea from "./Textarea";
 import Button from "./Button";
@@ -66,7 +66,7 @@ export default function CommentItem({
   return (
     <>
       <div className="flex gap-2 py-6 lg:max-w-[660px]">
-        <ProfileImg
+        <ProfileImage
           src={comment.userImageUrl}
           clickable
           onClick={() => setIsProfileOpen(true)}

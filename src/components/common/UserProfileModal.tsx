@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImage from "../ui/ProfileImage";
 import Button from "../ui/Button";
 
 interface UserProfileModalProps {
@@ -24,7 +24,7 @@ export default function UserProfileModal({
         />
       </div>
       <div className="flex flex-col items-center space-y-1">
-        <ProfileImg src={imageUrl} />
+        <ProfileImage src={imageUrl} />
         <p className="text-black-500 text-md md:text-lg">{nickname}</p>
       </div>
       <Button className="w-full" href={`/profile/@${nickname}`}>

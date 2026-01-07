@@ -17,7 +17,7 @@ import {
 } from "@/lib/types/users";
 import { ErrorResponse } from "@/lib/types/errors";
 import Button from "../ui/Button";
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImage from "../ui/ProfileImage";
 import Input from "../ui/Input";
 
 interface EditProfileModalProps {
@@ -112,7 +112,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
       </h4>
       <div className="flex items-center gap-3 md:gap-4">
         <div className="flex items-center gap-3 md:gap-4">
-          <ProfileImg
+          <ProfileImage
             src={watchProfileImage || me?.profileImageUrl || null}
             size="lg"
           />

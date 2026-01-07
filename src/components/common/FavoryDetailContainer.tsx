@@ -15,7 +15,7 @@ import { getMediaSearchUrl } from "@/lib/utils/getMediaUrl";
 import formatTime from "@/lib/utils/formatTime";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImage from "../ui/ProfileImage";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Dropdown from "../ui/Dropdown";
@@ -218,7 +218,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
             )}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <ProfileImg
+                <ProfileImage
                   src={favoryDetail.userImageUrl}
                   clickable
                   onClick={() => setIsProfileOpen(true)}

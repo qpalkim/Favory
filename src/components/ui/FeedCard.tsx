@@ -4,7 +4,7 @@ import { CREATOR_FALLBACK } from "@/lib/utils/constants";
 import Image from "next/image";
 import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
-import ProfileImg from "./ProfileImg";
+import ProfileImage from "./ProfileImage";
 import Modal from "./Modal";
 import UserProfileModal from "../common/UserProfileModal";
 
@@ -53,7 +53,7 @@ export default function FeedCard({ favory }: FeedCardProps) {
               {favory.content}
             </p>
             <div className="mt-1 flex items-center gap-2 md:mt-2">
-              <ProfileImg
+              <ProfileImage
                 src={favory.userImageUrl}
                 size="sm"
                 clickable

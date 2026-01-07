@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { ProfileCategory, UserResponse } from "@/lib/types/users";
-import ProfileImg from "@/components/ui/ProfileImg";
+import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import EditProfileModal from "../EditProfileModal";
@@ -56,7 +56,7 @@ export default function ProfileSidebar({
       <div className="grid grid-cols-[416px_minmax(0,660px)]">
         <div className="flex flex-col items-center justify-center p-8">
           <div className="relative">
-            <ProfileImg
+            <ProfileImage
               size="xl"
               src={user.profileImageUrl}
               className="-mt-18"

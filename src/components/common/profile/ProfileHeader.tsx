@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pencil } from "lucide-react";
 import { ProfileCategory, UserResponse } from "@/lib/types/users";
 import Tab, { TabItem } from "@/components/ui/Tab";
-import ProfileImg from "@/components/ui/ProfileImg";
+import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import EditProfileModal from "../EditProfileModal";
@@ -44,7 +44,7 @@ export default function ProfileHeader({
     <>
       <div className="mx-auto flex flex-col items-center justify-center">
         <div className="relative">
-          <ProfileImg
+          <ProfileImage
             size="xl"
             src={user.profileImageUrl}
             className="-mt-8 md:-mt-12"

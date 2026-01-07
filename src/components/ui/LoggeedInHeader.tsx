@@ -7,7 +7,7 @@ import { logout } from "@/lib/actions/logoutAction";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_white.svg";
-import ProfileImg from "./ProfileImg";
+import ProfileImage from "./ProfileImage";
 import Dropdown from "./Dropdown";
 import Badge from "./Badge";
 import Modal from "./Modal";
@@ -74,7 +74,7 @@ export default function LoggedInHeader({
           </Link>
           <Dropdown
             options={options}
-            trigger={<ProfileImg src={image} size="sm" clickable />}
+            trigger={<ProfileImage src={image} size="sm" clickable />}
           />
         </div>
       </div>

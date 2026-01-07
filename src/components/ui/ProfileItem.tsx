@@ -1,6 +1,6 @@
 import { UserResponse } from "@/lib/types/users";
 import Link from "next/link";
-import ProfileImg from "./ProfileImg";
+import ProfileImage from "./ProfileImage";
 
 interface ProfileItemProps {
   profile: UserResponse;
@@ -15,7 +15,7 @@ export default function ProfileItem({ profile }: ProfileItemProps) {
       <div
         className={`flex gap-[10px] md:gap-4 ${profile.profileMessage ? "items-start" : "items-center"}`}
       >
-        <ProfileImg
+        <ProfileImage
           src={profile.profileImageUrl}
           className="pointer-events-none"
         />
