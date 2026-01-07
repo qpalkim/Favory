@@ -78,7 +78,8 @@ export default function CommentItem({
                 {comment.userNickname}
               </p>
               <p className="text-black-200 truncate text-xs leading-tight font-light md:text-sm">
-                {formatTime(comment.updatedAt || comment.createdAt)}
+                {formatTime(comment.createdAt)}
+                {comment.createdAt !== comment.updatedAt && "(수정됨)"}
               </p>
             </div>
 
