@@ -9,17 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLogin, useSignUp } from "@/lib/hooks/useAuth";
 import { SignUpRequest, signUpRequestSchema } from "@/lib/types/auth";
+import { ErrorResponse } from "@/lib/types/errors";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green_vertical.svg";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-
-type SignUpErrorResponse = {
-  message: string;
-  details: null;
-  field: string;
-};
 
 export default function SignUpForm() {
   const queryClient = useQueryClient();
@@ -48,7 +43,7 @@ export default function SignUpForm() {
       toast.success("회원가입에 성공했습니다");
       router.push("/favories");
     } catch (err) {
-      const error = err as AxiosError<SignUpErrorResponse>;
+      const error = err as AxiosError<ErrorResponse>;
       const status = error.response?.status;
       const field = error.response?.data?.field;
 
@@ -56,7 +51,7 @@ export default function SignUpForm() {
         if (field === "email") {
           setError("email", {
             type: "manual",
-            message: " 이미 존재하는 이메일입니다",
+            message: "이미 존재하는 이메일입니다",
           });
         } else if (field === "nickname") {
           setError("nickname", {
