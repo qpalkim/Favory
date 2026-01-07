@@ -1,6 +1,9 @@
 import { axiosClientHelper } from "../network/axiosClientHelper";
 import { safeResponse } from "../network/safeResponse";
 import {
+  EditProfileRequest,
+  EditProfileResponse,
+  editProfileResponseSchema,
   ProfileImageUrlParams,
   ProfileImageUrlRequest,
   ProfileImageUrlResponse,
@@ -33,4 +36,16 @@ export const putProfileImageUrl = async (
     formData,
   );
   return safeResponse(response.data, profileImageUrlResponseSchema);
+};
+
+// 프로필 수정 요청 API
+export const editMyData = async (
+  id: number,
+  data: EditProfileRequest,
+): Promise<EditProfileResponse> => {
+  const response = await axiosClientHelper.patch<EditProfileResponse>(
+    `/users/${id}`,
+    data,
+  );
+  return safeResponse(response.data, editProfileResponseSchema);
 };

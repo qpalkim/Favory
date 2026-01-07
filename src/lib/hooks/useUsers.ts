@@ -1,12 +1,18 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  EditProfileRequest,
   ProfileImageUrlParams,
   profileImageUrlParamsSchema,
   ProfileImageUrlRequest,
   profileImageUrlRequestSchema,
   UserResponse,
 } from "../types/users";
-import { getMyData, getUserData, putProfileImageUrl } from "../apis/users";
+import {
+  editMyData,
+  getMyData,
+  getUserData,
+  putProfileImageUrl,
+} from "../apis/users";
 
 // 유저 정보 조회 훅
 export const useUserData = (id?: number) => {
@@ -34,6 +40,7 @@ export const useMyData = () => {
 
 // 프로필 이미지 등록/수정 훅
 export const useProfileImageUrl = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (
       params: ProfileImageUrlParams & ProfileImageUrlRequest,
@@ -41,6 +48,24 @@ export const useProfileImageUrl = () => {
       profileImageUrlParamsSchema.parse({ id: params.id });
       profileImageUrlRequestSchema.parse({ file: params.file });
       return putProfileImageUrl(params);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["me"] });
+      queryClient.invalidateQueries({
+        queryKey: ["users", variables.id],
+      });
+    },
+  });
+};
+
+// 프로필 수정 훅
+export const useEditMyData = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: EditProfileRequest) => editMyData(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["me"] });
+      queryClient.invalidateQueries({ queryKey: ["users", id] });
     },
   });
 };
