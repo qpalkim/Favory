@@ -77,10 +77,7 @@ export default function ProfileHeader({
 
       {isOpen && (
         <Modal onClose={() => setIsOpen(false)}>
-          <EditProfileModal
-            onClose={() => setIsOpen(false)}
-            src={user.profileImageUrl}
-          />
+          <EditProfileModal onClose={() => setIsOpen(false)} />
         </Modal>
       )}
     </>
