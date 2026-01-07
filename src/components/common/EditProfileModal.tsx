@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -39,6 +40,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
 
   const watchProfileImage = watch("profileImageUrl");
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   useEffect(() => {
     if (!me) return;
@@ -72,11 +74,19 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
   };
 
   const onSubmit = async (data: EditProfileRequest) => {
+    if (!me) return;
+
+    const prevNickname = me.nickname;
+    const nextNickname = data.nickname;
+
     try {
       await editMyDataMutation.mutateAsync(data);
       queryClient.invalidateQueries({ queryKey: ["me"] });
       toast.success("프로필 수정에 성공했습니다");
       onClose();
+
+      if (prevNickname !== nextNickname)
+        router.replace(`/profile/@${nextNickname}`);
     } catch {
       toast.error("프로필 수정에 실패했습니다");
     }
