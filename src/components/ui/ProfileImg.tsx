@@ -25,7 +25,7 @@ const profileImgVariants = cva("relative rounded-full shrink-0", {
 
 interface ProfileImgProps extends VariantProps<typeof profileImgVariants> {
   src: string | null;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   clickable?: boolean;
   className?: string;
 }
@@ -47,6 +47,7 @@ export default function ProfileImg({
         src={src || defaultProfile}
         alt="프로필 이미지"
         fill
+        unoptimized
       />
     </div>
   );
