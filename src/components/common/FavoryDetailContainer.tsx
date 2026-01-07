@@ -228,15 +228,14 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                     {favoryDetail.userNickname}
                   </p>
                   <p className="text-black-200 truncate text-xs leading-tight font-light md:text-sm">
-                    {formatTime(
-                      favoryDetail.createdAt || favoryDetail.updatedAt,
-                    )}
+                    {formatTime(favoryDetail.createdAt)}
+                    {favoryDetail.createdAt !== favoryDetail.updatedAt &&
+                      "(수정됨)"}
                   </p>
                 </div>
               </div>
             </div>
             <div className="my-[52px] flex justify-center gap-2 md:my-[96px]">
-              {/* API 연동 예정 */}
               <Button onClick={handleMediaClick}>
                 <Icon className="h-4 w-4" />
                 {text}

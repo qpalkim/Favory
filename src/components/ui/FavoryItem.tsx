@@ -44,6 +44,7 @@ export default function FavoryItem({
               </h2>
               <p className="text-black-200 truncate text-[10px] leading-tight font-light md:text-xs">
                 {formatTime(favory.createdAt)}
+                {favory.createdAt !== favory.updatedAt && "(수정됨)"}
               </p>
             </div>
             <p className="text-black-200 md:text-md mt-1 truncate text-xs leading-tight">
