@@ -49,11 +49,8 @@ export const useProfileImageUrl = () => {
       profileImageUrlRequestSchema.parse({ file: params.file });
       return putProfileImageUrl(params);
     },
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
-      queryClient.invalidateQueries({
-        queryKey: ["users", variables.id],
-      });
     },
   });
 };
@@ -64,7 +61,6 @@ export const useEditMyData = (id: number) => {
   return useMutation({
     mutationFn: (data: EditProfileRequest) => editMyData(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["me"] });
       queryClient.invalidateQueries({ queryKey: ["users", id] });
     },
   });
