@@ -22,20 +22,22 @@ export default function CommentContent() {
 
   return (
     <div className="p-6 lg:p-0">
-      <div className="mb-4 flex items-center justify-between">
-        <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
-          내가 등록한 댓글 {data?.totalElements ?? 0}개
-        </h5>
-        <SelectOption
-          options={SORT_OPTIONS}
-          disabled={isFetching}
-          onSelect={(option) => {
-            if (sortType === option.value) return;
-            setSortType(option.value as "latest" | "oldest");
-            setCurrentPage(1);
-          }}
-        />
-      </div>
+      {(isLoading || (data && data?.totalElements > 0)) && (
+        <div className="mb-4 flex items-center justify-between">
+          <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
+            내가 등록한 댓글 {data?.totalElements ?? 0}개
+          </h5>
+          <SelectOption
+            options={SORT_OPTIONS}
+            disabled={isFetching}
+            onSelect={(option) => {
+              if (sortType === option.value) return;
+              setSortType(option.value as "latest" | "oldest");
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+      )}
 
       {isLoading ? (
         <div>
