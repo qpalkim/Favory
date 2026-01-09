@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { CommentResponse } from "@/lib/types/comments";
 import { useDeleteComment, useEditComment } from "@/lib/hooks/useComments";
+import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
 import ProfileImage from "./ProfileImage";
 import Dropdown from "./Dropdown";
@@ -110,10 +111,15 @@ export default function CommentItem({
                   </Button>
                 </div>
               </div>
-            ) : (
-              <p
-                className={`text-black-500 md:text-md mt-2 text-sm leading-tight ${profile ? "line-clamp-2" : ""}`}
+            ) : profile ? (
+              <Link
+                href={`/favories/${comment.favoryId}`} // 경로 미디어 타입 추가 필요
+                className="text-black-500 md:text-md mt-2 line-clamp-2 block text-sm leading-tight hover:underline"
               >
+                {comment.content}
+              </Link>
+            ) : (
+              <p className="text-black-500 md:text-md mt-2 text-sm leading-tight">
                 {comment.content}
               </p>
             )}

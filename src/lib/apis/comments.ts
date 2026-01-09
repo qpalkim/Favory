@@ -10,6 +10,8 @@ import {
   EditCommentResponse,
   editCommentResponseSchema,
   GetCommentListParams,
+  MyCommentListResponse,
+  myCommentListResponseSchema,
 } from "../types/comments";
 
 // 댓글 목록 조회 API
@@ -48,4 +50,13 @@ export const editComment = async (
 // 댓글 삭제 API
 export const deleteComment = async (id: number): Promise<void> => {
   await axiosClientHelper.delete(`/comments/${id}`);
+};
+
+// 내가 등록한 댓글 목록 조회 API
+export const getMyCommentList = async (params: GetCommentListParams) => {
+  const response = await axiosClientHelper.get<MyCommentListResponse>(
+    `/comments/me`,
+    { params },
+  );
+  return safeResponse(response.data, myCommentListResponseSchema);
 };

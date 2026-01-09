@@ -10,12 +10,14 @@ import {
   CommentListResponse,
   EditCommentRequest,
   GetCommentListParams,
+  MyCommentListResponse,
 } from "../types/comments";
 import {
   addComment,
   deleteComment,
   editComment,
   getCommentList,
+  getMyCommentList,
 } from "../apis/comments";
 
 // 댓글 목록 조회 훅
@@ -60,5 +62,13 @@ export const useDeleteComment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
+  });
+};
+
+// 내가 등록한 댓글 목록 조회 훅
+export const useMyCommentList = (params: GetCommentListParams) => {
+  return useQuery<MyCommentListResponse>({
+    queryKey: ["comments", "me", params],
+    queryFn: () => getMyCommentList(params),
   });
 };
