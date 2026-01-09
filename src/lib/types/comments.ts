@@ -66,3 +66,8 @@ export type EditCommentRequest = z.infer<typeof editCommentRequestSchema>;
 export const editCommentResponseSchema = commentResponseSchema;
 
 export type EditCommentResponse = z.infer<typeof editCommentResponseSchema>;
+
+// 내가 등록한 댓글 목록 응답 API 타입
+export const myCommentListResponseSchema = commentListResponseSchema;
+
+export type MyCommentListResponse = z.infer<typeof myCommentListResponseSchema>;
