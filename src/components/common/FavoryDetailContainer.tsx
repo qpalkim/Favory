@@ -15,7 +15,7 @@ import { getMediaSearchUrl } from "@/lib/utils/getMediaUrl";
 import formatTime from "@/lib/utils/formatTime";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImage from "../ui/ProfileImage";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Dropdown from "../ui/Dropdown";
@@ -218,7 +218,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
             )}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <ProfileImg
+                <ProfileImage
                   src={favoryDetail.userImageUrl}
                   clickable
                   onClick={() => setIsProfileOpen(true)}
@@ -228,15 +228,14 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                     {favoryDetail.userNickname}
                   </p>
                   <p className="text-black-200 truncate text-xs leading-tight font-light md:text-sm">
-                    {formatTime(
-                      favoryDetail.createdAt || favoryDetail.updatedAt,
-                    )}
+                    {formatTime(favoryDetail.createdAt)}
+                    {favoryDetail.createdAt !== favoryDetail.updatedAt &&
+                      "(수정됨)"}
                   </p>
                 </div>
               </div>
             </div>
             <div className="my-[52px] flex justify-center gap-2 md:my-[96px]">
-              {/* API 연동 예정 */}
               <Button onClick={handleMediaClick}>
                 <Icon className="h-4 w-4" />
                 {text}

@@ -4,7 +4,7 @@ import { useMyData } from "@/lib/hooks/useUsers";
 import { useAddComment } from "@/lib/hooks/useComments";
 import { CommentListResponse } from "@/lib/types/comments";
 import CommentItem from "../ui/CommentItem";
-import ProfileImg from "../ui/ProfileImg";
+import ProfileImage from "../ui/ProfileImage";
 import Textarea from "../ui/Textarea";
 import Button from "../ui/Button";
 
@@ -50,7 +50,7 @@ export default function FavoryCommentList({
         댓글 {commentList?.totalElements ?? 0}개
       </h5>
       <div className="mt-6 flex gap-2">
-        <ProfileImg src={me?.profileImageUrl || null} />
+        <ProfileImage src={me?.profileImageUrl || null} />
         <div className="w-full">
           <Textarea
             placeholder="댓글을 작성해 보세요"

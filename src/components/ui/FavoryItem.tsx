@@ -5,7 +5,7 @@ import { Favory } from "@/lib/types/favories";
 import Image from "next/image";
 import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
-import ProfileImg from "./ProfileImg";
+import ProfileImage from "./ProfileImage";
 import Badge from "./Badge";
 import Modal from "./Modal";
 import UserProfileModal from "../common/UserProfileModal";
@@ -26,7 +26,7 @@ export default function FavoryItem({
     <>
       <div className="border-black-100 flex gap-[10px] overflow-hidden border-b py-4 last:border-b-0 md:gap-4 md:py-6 lg:max-w-[660px]">
         {!profile && (
-          <ProfileImg
+          <ProfileImage
             src={favory.userImageUrl}
             className="flex-shrink-0"
             clickable
@@ -44,6 +44,7 @@ export default function FavoryItem({
               </h2>
               <p className="text-black-200 truncate text-[10px] leading-tight font-light md:text-xs">
                 {formatTime(favory.createdAt)}
+                {favory.createdAt !== favory.updatedAt && "(수정됨)"}
               </p>
             </div>
             <p className="text-black-200 md:text-md mt-1 truncate text-xs leading-tight">

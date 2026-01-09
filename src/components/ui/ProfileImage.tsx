@@ -4,7 +4,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
 import defaultProfile from "@/assets/icon/defaultProfile.svg";
 
-const profileImgVariants = cva("relative rounded-full shrink-0", {
+const profileImageVariants = cva("relative rounded-full shrink-0", {
   variants: {
     size: {
       sm: "w-[24px] h-[24px] md:w-[32px] md:h-[32px]",
@@ -23,23 +23,23 @@ const profileImgVariants = cva("relative rounded-full shrink-0", {
   },
 });
 
-interface ProfileImgProps extends VariantProps<typeof profileImgVariants> {
+interface ProfileImageProps extends VariantProps<typeof profileImageVariants> {
   src: string | null;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   clickable?: boolean;
   className?: string;
 }
 
-export default function ProfileImg({
+export default function ProfileImage({
   src,
   onClick,
   size,
   clickable,
   className,
-}: ProfileImgProps) {
+}: ProfileImageProps) {
   return (
     <div
-      className={cn(profileImgVariants({ size, clickable }), className)}
+      className={cn(profileImageVariants({ size, clickable }), className)}
       onClick={clickable ? onClick : undefined}
     >
       <Image
@@ -47,6 +47,7 @@ export default function ProfileImg({
         src={src || defaultProfile}
         alt="프로필 이미지"
         fill
+        unoptimized
       />
     </div>
   );
