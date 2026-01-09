@@ -35,7 +35,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     reset,
     watch,
     setError,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid, isSubmitting, isDirty },
   } = useForm<EditProfileRequest>({
     resolver: zodResolver(editProfileRequestSchema),
     mode: "onChange",
@@ -162,7 +162,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
           className="w-full"
           type="submit"
           isLoading={isSubmitting}
-          disabled={!isValid}
+          disabled={!isValid || !isDirty}
         >
           수정하기
         </Button>
