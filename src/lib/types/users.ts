@@ -59,7 +59,10 @@ export const editProfileRequestSchema = z.object({
   profileMessage: z
     .string()
     .max(30, { message: "30자 이내로 작성해 주세요" })
-    .optional(),
+    .optional()
+    .refine((v) => v === undefined || v === "" || v.trim().length > 0, {
+      message: "띄어쓰기만 입력할 수 없습니다",
+    }),
 });
 
 export type EditProfileRequest = z.infer<typeof editProfileRequestSchema>;
