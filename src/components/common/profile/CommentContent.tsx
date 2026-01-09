@@ -21,7 +21,7 @@ export default function CommentContent() {
   if (isError) return <div>에러가 발생했습니다</div>;
 
   return (
-    <div className="p-6">
+    <div className="p-6 lg:p-0">
       <div className="mb-4 flex items-center justify-between">
         <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
           내가 등록한 댓글 {data?.totalElements ?? 0}개

@@ -30,7 +30,7 @@ export default function ProfileLayout({
         <main className="flex-1">{children}</main>
       </div>
 
-      <div className="flex max-w-[1200px] justify-between gap-6">
+      <div className="flex max-w-[1200px] items-start justify-between gap-6">
         {/* PC */}
         <div className="hidden max-w-[416px] rounded-xl bg-white shadow-lg md:rounded-2xl lg:block">
           <ProfileSidebar
