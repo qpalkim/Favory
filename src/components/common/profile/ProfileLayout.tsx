@@ -7,7 +7,7 @@ interface Props {
   onTabChange: (tab: ProfileCategory) => void;
   children: React.ReactNode;
   isMyProfile: boolean;
-  user: UserResponse | null; // 추후 null 타입 제거 예정
+  user: UserResponse;
 }
 
 export default function ProfileLayout({

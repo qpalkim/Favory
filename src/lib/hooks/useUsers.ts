@@ -14,12 +14,12 @@ import {
   putProfileImageUrl,
 } from "../apis/users";
 
-// 유저 정보 조회 훅
-export const useUserData = (id?: number) => {
+// 닉네임 기반 유저 정보 조회 훅
+export const useUserData = (nickname?: string) => {
   return useQuery<UserResponse>({
-    queryKey: ["users", id],
-    queryFn: () => getUserData(id!),
-    enabled: !!id,
+    queryKey: ["users", nickname],
+    queryFn: () => getUserData(nickname!),
+    enabled: !!nickname,
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
