@@ -55,7 +55,6 @@ export const editProfileRequestSchema = z.object({
       message: "영문 또는 숫자로 작성해 주세요",
     })
     .optional(),
-  profileImageUrl: z.string().optional(), // 추후 제거 예정
   profileMessage: z
     .string()
     .max(30, { message: "30자 이내로 작성해 주세요" })
