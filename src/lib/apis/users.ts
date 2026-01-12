@@ -12,9 +12,11 @@ import {
   userResponseSchema,
 } from "../types/users";
 
-// 유저 정보 조회 API
-export const getUserData = async (id: number) => {
-  const response = await axiosClientHelper.get<UserResponse>(`/users/${id}`);
+// 닉네임 기반 유저 정보 조회 API
+export const getUserData = async (nickname: string) => {
+  const response = await axiosClientHelper.get<UserResponse>(
+    `/users/profile/${nickname}`,
+  );
   return safeResponse(response.data, userResponseSchema);
 };
 
