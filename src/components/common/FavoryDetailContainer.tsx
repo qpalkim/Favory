@@ -33,17 +33,20 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const deleteFavory = useDeleteFavory(id);
   const [currentPage, setCurrentPage] = useState(0);
   const size = 5;
 
   const handleDelete = async () => {
     try {
+      setIsDeleting(true);
       await deleteFavory.mutateAsync();
       setIsDeleteOpen(false);
       toast.success("감상평이 삭제되었습니다");
       router.replace("/favories");
     } catch {
+      setIsDeleting(false);
       toast.error("감상평 삭제에 실패했습니다");
     }
   };
@@ -80,7 +83,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   const translatedMediaType =
     MEDIA_TYPE_TRANSLATE_MAP[normalizedType] || normalizedType;
 
-  if (favoryDetailError || commentListError)
+  if ((favoryDetailError || commentListError) && !isDeleting)
     return <div>에러가 발생했습니다</div>;
 
   const handleMediaClick = () => {
