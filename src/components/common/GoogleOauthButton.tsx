@@ -36,12 +36,17 @@ export default function GoogleOauthButton() {
         strategy="afterInteractive"
         onLoad={() => {
           if (!window.google) return;
+          console.log(
+            "Google Client Id:",
+            process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+          );
 
           window.google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
             callback: async (res: google.accounts.id.CredentialResponse) => {
               if (!res.credential)
                 return toast.error("구글 인증 중, 문제가 발생했습니다");
+              console.log("Google id_token:", res.credential);
               try {
                 await googleOauth({ token: res.credential });
                 await queryClient.invalidateQueries({ queryKey: ["me"] });
