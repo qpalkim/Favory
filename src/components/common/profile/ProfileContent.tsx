@@ -1,11 +1,13 @@
-import { ProfileCategory } from "@/lib/types/users";
+import { useProfile } from "@/lib/contexts/ProfileContext";
 import MusicContent from "./MusicContent";
 import MovieContent from "./MovieContent";
 import DramaContent from "./DramaContent";
 import BookContent from "./BookContent";
 import CommentContent from "./CommentContent";
 
-export default function ProfileContent({ tab }: { tab: ProfileCategory }) {
+export default function ProfileContent() {
+  const { tab } = useProfile();
+
   switch (tab) {
     case "MUSIC":
       return <MusicContent />;

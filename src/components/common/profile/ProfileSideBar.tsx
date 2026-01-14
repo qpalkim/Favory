@@ -8,18 +8,12 @@ import {
   Tv,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { ProfileCategory, UserResponse } from "@/lib/types/users";
+import { useProfile } from "@/lib/contexts/ProfileContext";
+import { ProfileCategory } from "@/lib/types/users";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import EditProfileModal from "../EditProfileModal";
-
-interface Props {
-  tab: ProfileCategory;
-  onTabChange: (tab: ProfileCategory) => void;
-  isMyProfile: boolean;
-  user: UserResponse;
-}
 
 const TAB_ITEMS: {
   id: ProfileCategory;
@@ -33,13 +27,9 @@ const TAB_ITEMS: {
   { id: "COMMENT", label: "댓글", icon: MessageCircleMore },
 ];
 
-export default function ProfileSidebar({
-  tab,
-  onTabChange,
-  isMyProfile,
-  user,
-}: Props) {
+export default function ProfileSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { tab, setTab, user, isMyProfile } = useProfile();
 
   const getTabItems = (isMyProfile: boolean) => {
     if (!isMyProfile) {
@@ -48,8 +38,6 @@ export default function ProfileSidebar({
     return TAB_ITEMS;
   };
   const tabItems = getTabItems(isMyProfile);
-
-  if (!user) return <div>사용자 정보 없음</div>;
 
   return (
     <>
@@ -83,7 +71,7 @@ export default function ProfileSidebar({
               return (
                 <button
                   key={id}
-                  onClick={() => onTabChange(id)}
+                  onClick={() => setTab(id)}
                   role="tab"
                   aria-selected={isActive}
                   className={cn(

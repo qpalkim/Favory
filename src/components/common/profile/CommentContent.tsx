@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { useProfile } from "@/lib/contexts/ProfileContext";
 import { useMyCommentList } from "@/lib/hooks/useComments";
-import { UserResponse } from "@/lib/types/users";
 import { SORT_OPTIONS } from "@/lib/utils/constants";
 import Pagination from "@/components/ui/Pagination";
 import SelectOption from "@/components/ui/SelectOption";
@@ -8,7 +8,8 @@ import CommentItem from "@/components/ui/CommentItem";
 import CommentItemSkeleton from "@/components/skeleton/CommentItemSkeleton";
 import Empty from "../Empty";
 
-export default function CommentContent({ user }: { user: UserResponse }) {
+export default function CommentContent() {
+  const { user } = useProfile();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const size = 5;
