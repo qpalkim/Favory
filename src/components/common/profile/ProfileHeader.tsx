@@ -3,28 +3,26 @@ import { Pencil } from "lucide-react";
 import { useProfile } from "@/lib/contexts/ProfileContext";
 import { ProfileCategory } from "@/lib/types/users";
 import Tab, { TabItem } from "@/components/ui/Tab";
+import { PROFILE_TABS } from "@/lib/utils/constants";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import EditProfileModal from "../EditProfileModal";
-
-const TAB_ITEMS: TabItem[] = [
-  { id: "MUSIC", label: "음악" },
-  { id: "MOVIE", label: "영화" },
-  { id: "DRAMA", label: "드라마" },
-  { id: "BOOK", label: "도서" },
-  { id: "COMMENT", label: "댓글" },
-];
 
 export default function ProfileHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const { tab, setTab, user, isMyProfile } = useProfile();
 
   const getTabItems = (isMyProfile: boolean): TabItem[] => {
+    const items = Object.values(PROFILE_TABS).map(({ id, label }) => ({
+      id,
+      label,
+    }));
+
     if (!isMyProfile) {
-      return TAB_ITEMS.filter((item) => item.id !== "COMMENT");
+      return items.filter((item) => item.id !== "COMMENT");
     }
-    return TAB_ITEMS;
+    return items;
   };
   const tabItems = getTabItems(isMyProfile);
 

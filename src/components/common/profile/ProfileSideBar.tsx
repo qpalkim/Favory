@@ -1,41 +1,24 @@
 import { useState } from "react";
-import {
-  BookOpen,
-  Clapperboard,
-  MessageCircleMore,
-  Music4,
-  Pencil,
-  Tv,
-} from "lucide-react";
+import { Pencil } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useProfile } from "@/lib/contexts/ProfileContext";
-import { ProfileCategory } from "@/lib/types/users";
+import { PROFILE_TABS } from "@/lib/utils/constants";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import EditProfileModal from "../EditProfileModal";
-
-const TAB_ITEMS: {
-  id: ProfileCategory;
-  label: string;
-  icon: React.ElementType;
-}[] = [
-  { id: "MUSIC", label: "음악", icon: Music4 },
-  { id: "MOVIE", label: "영화", icon: Clapperboard },
-  { id: "DRAMA", label: "드라마", icon: Tv },
-  { id: "BOOK", label: "도서", icon: BookOpen },
-  { id: "COMMENT", label: "댓글", icon: MessageCircleMore },
-];
 
 export default function ProfileSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const { tab, setTab, user, isMyProfile } = useProfile();
 
   const getTabItems = (isMyProfile: boolean) => {
+    const items = Object.values(PROFILE_TABS);
+
     if (!isMyProfile) {
-      return TAB_ITEMS.filter((item) => item.id !== "COMMENT");
+      return items.filter((item) => item.id !== "COMMENT");
     }
-    return TAB_ITEMS;
+    return items;
   };
   const tabItems = getTabItems(isMyProfile);
 
@@ -75,7 +58,7 @@ export default function ProfileSidebar() {
                   role="tab"
                   aria-selected={isActive}
                   className={cn(
-                    "text-md flex cursor-pointer items-center gap-4 rounded-lg px-6 py-4 transition-colors duration-200",
+                    "flex cursor-pointer items-center gap-4 rounded-lg px-6 py-4 text-lg transition-colors duration-200",
                     isActive
                       ? "bg-green-10 font-semibold text-green-600"
                       : "text-black-200 hover:opacity-80 hover:transition-opacity",
