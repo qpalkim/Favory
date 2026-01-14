@@ -15,6 +15,7 @@ import Image from "next/image";
 import logo from "@/assets/logo/logo_green_vertical.svg";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import GoogleOauthButton from "./GoogleOauthButton";
 
 export default function SignUpForm() {
   const queryClient = useQueryClient();
@@ -171,9 +172,7 @@ export default function SignUpForm() {
           >
             회원가입하기
           </Button>
-          <Button size="lg" variant="outline">
-            Google 간편 가입하기
-          </Button>
+          <GoogleOauthButton type="signup" />
         </form>
 
         <div className="mb-8 flex items-center gap-2 md:gap-4">

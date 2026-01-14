@@ -33,7 +33,6 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     register,
     handleSubmit,
     reset,
-    watch,
     setError,
     formState: { errors, isValid, isSubmitting, isDirty },
   } = useForm<EditProfileRequest>({
@@ -41,7 +40,6 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     mode: "onChange",
   });
 
-  const watchProfileImage = watch("profileImageUrl");
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -50,7 +48,6 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
 
     reset({
       nickname: me.nickname || "",
-      profileImageUrl: me.profileImageUrl ?? undefined,
       profileMessage: me.profileMessage ?? undefined,
     });
   }, [me, reset]);
@@ -112,10 +109,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
       </h4>
       <div className="flex items-center gap-3 md:gap-4">
         <div className="flex items-center gap-3 md:gap-4">
-          <ProfileImage
-            src={watchProfileImage || me?.profileImageUrl || null}
-            size="lg"
-          />
+          <ProfileImage src={me?.profileImageUrl || null} size="lg" />
           <input
             type="file"
             accept="image/*"

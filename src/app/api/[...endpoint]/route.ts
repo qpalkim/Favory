@@ -50,7 +50,10 @@ export const POST = async (request: NextRequest) => {
     );
     const accessToken = apiResponse.data.accessToken;
     const refreshToken = apiResponse.data.refreshToken;
-    if (endPoint === "/login") {
+
+    const shouldSetAuthCookie = ["/login", "/login/GOOGLE"].includes(endPoint);
+
+    if (shouldSetAuthCookie && accessToken && refreshToken) {
       response.cookies.set("accessToken", accessToken, {
         httpOnly: true,
         sameSite: "lax",
