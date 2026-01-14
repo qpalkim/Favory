@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMyCommentList } from "@/lib/hooks/useComments";
+import { UserResponse } from "@/lib/types/users";
 import { SORT_OPTIONS } from "@/lib/utils/constants";
 import Pagination from "@/components/ui/Pagination";
 import SelectOption from "@/components/ui/SelectOption";
@@ -7,16 +8,19 @@ import CommentItem from "@/components/ui/CommentItem";
 import CommentItemSkeleton from "@/components/skeleton/CommentItemSkeleton";
 import Empty from "../Empty";
 
-export default function CommentContent() {
+export default function CommentContent({ user }: { user: UserResponse }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const size = 5;
 
-  const { data, isLoading, isFetching, isError } = useMyCommentList({
-    page: currentPage - 1,
-    size,
-    sort: sortType,
-  });
+  const { data, isLoading, isFetching, isError } = useMyCommentList(
+    user.nickname,
+    {
+      page: currentPage - 1,
+      size,
+      sort: sortType,
+    },
+  );
 
   if (isError) return <div>에러가 발생했습니다</div>;
 
