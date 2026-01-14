@@ -65,10 +65,13 @@ export const useDeleteComment = () => {
   });
 };
 
-// 내가 등록한 댓글 목록 조회 훅
-export const useMyCommentList = (params: GetCommentListParams) => {
+// 닉네임 기반 댓글 목록 조회 훅
+export const useMyCommentList = (
+  nickname: string,
+  params: GetCommentListParams,
+) => {
   return useQuery<MyCommentListResponse>({
-    queryKey: ["comments", "me", params],
-    queryFn: () => getMyCommentList(params),
+    queryKey: ["comments", nickname, params],
+    queryFn: () => getMyCommentList(nickname, params),
   });
 };

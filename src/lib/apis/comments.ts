@@ -52,10 +52,13 @@ export const deleteComment = async (id: number): Promise<void> => {
   await axiosClientHelper.delete(`/comments/${id}`);
 };
 
-// 내가 등록한 댓글 목록 조회 API
-export const getMyCommentList = async (params: GetCommentListParams) => {
+// 닉네임 기반 댓글 목록 조회 API
+export const getMyCommentList = async (
+  nickname: string,
+  params: GetCommentListParams,
+) => {
   const response = await axiosClientHelper.get<MyCommentListResponse>(
-    `/comments/me`,
+    `/comments/${nickname}`,
     { params },
   );
   return safeResponse(response.data, myCommentListResponseSchema);
