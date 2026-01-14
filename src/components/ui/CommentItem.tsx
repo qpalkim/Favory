@@ -69,8 +69,8 @@ export default function CommentItem({
       <div className="flex gap-2 py-6 lg:max-w-[660px]">
         <ProfileImage
           src={comment.userImageUrl}
-          clickable
-          onClick={() => setIsProfileOpen(true)}
+          clickable={!profile}
+          onClick={!profile ? () => setIsProfileOpen(true) : undefined}
         />
         <div className="relative flex flex-1">
           <div className="flex min-w-0 flex-1 flex-col">
