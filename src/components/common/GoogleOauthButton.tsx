@@ -7,7 +7,24 @@ import { toast } from "react-toastify";
 import Script from "next/script";
 import Button from "@/components/ui/Button";
 
-export default function GoogleOauthButton() {
+type GoogleOauthButtonProps = {
+  type: "signup" | "login";
+};
+
+const TEXT = {
+  signup: {
+    button: "Google 간편 가입하기",
+    success: "구글 간편 가입에 성공했습니다",
+    fail: "구글 간편 가입에 실패했습니다",
+  },
+  login: {
+    button: "Google 간편 로그인하기",
+    success: "구글 간편 로그인에 성공했습니다",
+    fail: "구글 간편 로그인에 실패했습니다",
+  },
+};
+
+export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const [ready, setReady] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
   const queryClient = useQueryClient();
@@ -46,14 +63,13 @@ export default function GoogleOauthButton() {
             callback: async (res: google.accounts.id.CredentialResponse) => {
               if (!res.credential)
                 return toast.error("구글 인증 중, 문제가 발생했습니다");
-              console.log("Google id_token:", res.credential);
               try {
                 await googleOauth({ token: res.credential });
                 await queryClient.invalidateQueries({ queryKey: ["me"] });
-                toast.success("구글 간편 가입에 성공했습니다");
+                toast.success(TEXT[type].success);
                 router.push("/favories");
               } catch {
-                toast.error("구글 간편 가입에 실패했습니다");
+                toast.error(TEXT[type].fail);
               }
             },
           });
@@ -66,7 +82,7 @@ export default function GoogleOauthButton() {
         onClick={handleClick}
         disabled={!ready}
       >
-        Google 간편 가입하기
+        {TEXT[type].button}
       </Button>
     </>
   );

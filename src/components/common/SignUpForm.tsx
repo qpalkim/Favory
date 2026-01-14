@@ -172,7 +172,7 @@ export default function SignUpForm() {
           >
             회원가입하기
           </Button>
-          <GoogleOauthButton />
+          <GoogleOauthButton type="signup" />
         </form>
 
         <div className="mb-8 flex items-center gap-2 md:gap-4">
