@@ -45,7 +45,10 @@ export async function generateMetadata({
       },
     };
   } catch {
-    notFound();
+    return {
+      title: "오류 | Favory",
+      description: "감상평을 불러오는 중 문제가 발생했습니다",
+    };
   }
 }
 

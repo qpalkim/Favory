@@ -24,8 +24,8 @@ export const signUpRequestSchema = z
       .min(1, { message: "닉네임은 필수 입력입니다" })
       .min(3, { message: "3자에서 10자 사이로 입력해 주세요" })
       .max(10, { message: "3자에서 10자 사이로 입력해 주세요" })
-      .regex(/^[A-Za-z0-9]+$/, {
-        message: "영문 또는 숫자로 작성해 주세요",
+      .regex(/^[a-z0-9]+$/, {
+        message: "영문 소문자 또는 숫자로 작성해 주세요",
       }),
   })
   .refine((data) => data.password === data.passwordConfirmation, {

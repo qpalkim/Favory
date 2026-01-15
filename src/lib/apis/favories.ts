@@ -12,6 +12,8 @@ import {
   FavoryListResponse,
   favoryListResponseSchema,
   GetFavoryListParams,
+  UserFavoryListResponse,
+  userFavoryListResponseSchema,
 } from "../types/favories";
 
 // Favory 목록 조회 API
@@ -55,4 +57,16 @@ export const editFavory = async (
 // Favory 삭제 API
 export const deleteFavory = async (id: number): Promise<void> => {
   await axiosClientHelper.delete(`/favories/${id}`);
+};
+
+// 닉네임 기반 Favory 목록 조회 API
+export const getUserFavoryList = async (
+  nickname: string,
+  params: GetFavoryListParams,
+) => {
+  const response = await axiosClientHelper.get<UserFavoryListResponse>(
+    `/favories/users/${nickname}`,
+    { params },
+  );
+  return safeResponse(response.data, userFavoryListResponseSchema);
 };

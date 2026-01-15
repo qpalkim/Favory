@@ -11,6 +11,7 @@ import {
   FavoryDetailResponse,
   FavoryListResponse,
   GetFavoryListParams,
+  UserFavoryListResponse,
 } from "../types/favories";
 import {
   addFavory,
@@ -18,6 +19,7 @@ import {
   editFavory,
   getFavoryDetail,
   getFavoryList,
+  getUserFavoryList,
 } from "../apis/favories";
 
 // Favory 목록 조회 훅
@@ -70,5 +72,16 @@ export const useDeleteFavory = (id: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favories"] });
     },
+  });
+};
+
+// 닉네임 기반 Favory 목록 조회 훅
+export const useUserFavoryList = (
+  nickname: string,
+  params: GetFavoryListParams,
+) => {
+  return useQuery<UserFavoryListResponse>({
+    queryKey: ["favories", nickname, params],
+    queryFn: () => getUserFavoryList(nickname, params),
   });
 };

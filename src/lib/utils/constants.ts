@@ -1,4 +1,10 @@
-import { BookOpen, Clapperboard, Music4, Tv } from "lucide-react";
+import {
+  BookOpen,
+  Clapperboard,
+  MessageCircleMore,
+  Music4,
+  Tv,
+} from "lucide-react";
 
 export const MEDIA_TYPE_TRANSLATE_MAP: Record<string, string> = {
   music: "음악",
@@ -27,3 +33,31 @@ export const CATEGORY_BUTTON = {
   DRAMA: { icon: Tv, text: "지금 보러 가기" },
   BOOK: { icon: BookOpen, text: "지금 읽으러 가기" },
 };
+
+export const PROFILE_TABS = {
+  MUSIC: {
+    id: "MUSIC",
+    label: "음악",
+    icon: Music4,
+  },
+  MOVIE: {
+    id: "MOVIE",
+    label: "영화",
+    icon: Clapperboard,
+  },
+  DRAMA: {
+    id: "DRAMA",
+    label: "드라마",
+    icon: Tv,
+  },
+  BOOK: {
+    id: "BOOK",
+    label: "도서",
+    icon: BookOpen,
+  },
+  COMMENT: {
+    id: "COMMENT",
+    label: "댓글",
+    icon: MessageCircleMore,
+  },
+} as const;

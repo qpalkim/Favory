@@ -10,6 +10,7 @@ import SelectOption from "../ui/SelectOption";
 import Pagination from "../ui/Pagination";
 import FeedCardSkeleton from "../skeleton/FeedCardSkeleton";
 import Empty from "./Empty";
+import RetryError from "../ui/RetryError";
 
 const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
   { label: "전체", value: undefined },
@@ -28,7 +29,7 @@ export default function FavoryListContainer() {
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const itemsPerPage = isPC ? 16 : isTablet ? 12 : 8;
 
-  const { data, isLoading, isFetching, isError } = useFavoryList({
+  const { data, isLoading, isFetching, isError, refetch } = useFavoryList({
     page: currentPage - 1,
     size: itemsPerPage,
     sort: sortType,
@@ -48,7 +49,7 @@ export default function FavoryListContainer() {
     setCurrentPage(1);
   }, [itemsPerPage]);
 
-  if (isError) return <div>에러가 발생했습니다</div>;
+  if (isError) return <RetryError onRetry={refetch} />;
 
   return (
     <div className="mx-auto max-w-[1200px] px-4">

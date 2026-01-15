@@ -23,6 +23,7 @@ import Button from "@/components/ui/Button";
 import Badge from "../ui/Badge";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import MediaSelector from "../ui/MediaSelector";
+import RetryError from "../ui/RetryError";
 
 export default function EditFavoryForm({
   mediaType,
@@ -50,7 +51,13 @@ export default function EditFavoryForm({
   const translatedMediaType =
     MEDIA_TYPE_TRANSLATE_MAP[mediaType.toLowerCase()] || mediaType;
   const { data: me } = useMyData();
-  const { data: favoryData, isLoading, isError, error } = useFavoryDetail(id);
+  const {
+    data: favoryData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useFavoryDetail(id);
   const { mutate } = useEditFavory(id);
   const [initialData, setInitialData] = useState<EditFavoryRequest | null>(
     null,
@@ -139,6 +146,15 @@ export default function EditFavoryForm({
     return (
       <div className="flex min-h-screen items-center justify-center">
         <LoadingSpinner />
+      </div>
+    );
+
+  if (isError)
+    return (
+      <div className="relatvie z-10 -mx-4 -my-[52px] bg-white md:mx-0 md:-my-[70px] lg:-my-[100px]">
+        <div className="flex h-full min-h-[80vh] items-center justify-center">
+          <RetryError onRetry={refetch} />
+        </div>
       </div>
     );
 

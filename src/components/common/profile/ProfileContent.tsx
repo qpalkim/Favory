@@ -1,23 +1,18 @@
-import { ProfileCategory } from "@/lib/types/users";
-import MusicContent from "./MusicContent";
-import MovieContent from "./MovieContent";
-import DramaContent from "./DramaContent";
-import BookContent from "./BookContent";
+import { useProfile } from "@/lib/contexts/ProfileContext";
+import { PROFILE_TABS } from "@/lib/utils/constants";
 import CommentContent from "./CommentContent";
+import FavoryContent from "./FavoryContent";
 
-export default function ProfileContent({ tab }: { tab: ProfileCategory }) {
-  switch (tab) {
-    case "MUSIC":
-      return <MusicContent />;
-    case "MOVIE":
-      return <MovieContent />;
-    case "DRAMA":
-      return <DramaContent />;
-    case "BOOK":
-      return <BookContent />;
-    case "COMMENT":
-      return <CommentContent />;
-    default:
-      return null;
-  }
+export default function ProfileContent() {
+  const { tab } = useProfile();
+  if (tab === PROFILE_TABS.COMMENT.id) return <CommentContent />;
+
+  const tabs = Object.values(PROFILE_TABS).filter(
+    (t) => t.id !== PROFILE_TABS.COMMENT.id,
+  );
+
+  const currentTab = tabs.find((t) => t.id === tab);
+  if (!currentTab) return null;
+
+  return <FavoryContent type={currentTab.id} label={currentTab.label} />;
 }
