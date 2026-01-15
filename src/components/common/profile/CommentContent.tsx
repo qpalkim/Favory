@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useProfile } from "@/lib/contexts/ProfileContext";
 import { useMyCommentList } from "@/lib/hooks/useComments";
 import { SORT_OPTIONS } from "@/lib/utils/constants";
-import Pagination from "@/components/ui/Pagination";
 import SelectOption from "@/components/ui/SelectOption";
+import Pagination from "@/components/ui/Pagination";
 import CommentItem from "@/components/ui/CommentItem";
 import CommentItemSkeleton from "@/components/skeleton/CommentItemSkeleton";
 import Empty from "../Empty";
+import RetryError from "@/components/ui/RetryError";
 
 export default function CommentContent() {
   const { user } = useProfile();
@@ -14,7 +15,7 @@ export default function CommentContent() {
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const size = 5;
 
-  const { data, isLoading, isFetching, isError } = useMyCommentList(
+  const { data, isLoading, isFetching, isError, refetch } = useMyCommentList(
     user.nickname,
     {
       page: currentPage - 1,
@@ -23,7 +24,7 @@ export default function CommentContent() {
     },
   );
 
-  if (isError) return <div>에러가 발생했습니다</div>;
+  if (isError) return <RetryError onRetry={refetch} />;
 
   return (
     <div className="p-6 lg:p-0">
@@ -56,8 +57,8 @@ export default function CommentContent() {
         </div>
       ) : (
         <>
-          {data?.content.map((comment, index) => {
-            const isLast = index === data.content.length - 1;
+          {data?.content.map((comment, idx) => {
+            const isLast = idx === data.content.length - 1;
 
             return (
               <div
