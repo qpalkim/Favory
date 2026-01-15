@@ -53,10 +53,6 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
         strategy="afterInteractive"
         onLoad={() => {
           if (!window.google) return;
-          console.log(
-            "Google Client Id:",
-            process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-          );
 
           window.google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
