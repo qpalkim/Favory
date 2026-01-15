@@ -22,6 +22,7 @@ import Pagination from "../ui/Pagination";
 import FavoryItemSkeleton from "../skeleton/FavoryItemSkeleton";
 import ProfileItemSkeleton from "../skeleton/ProfileItemSkeleton";
 import Empty from "./Empty";
+import RetryError from "../ui/RetryError";
 
 const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
   { label: "전체", value: undefined },
@@ -40,17 +41,18 @@ export default function SearchContainer() {
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const isPC = useMediaQuery("(min-width: 1024px)");
-  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
-  const itemsPerPage = isPC ? 10 : isTablet ? 8 : 6;
+  const isTabletPc = useMediaQuery("(min-width: 768px)");
+  const itemsPerPage = isTabletPc ? 8 : 6;
 
-  const { data, isLoading, isFetching, isError } = useSearchFavoryList({
-    keyword,
-    category: category,
-    sort: sortType,
-    size: itemsPerPage,
-    page: currentPage - 1,
-  });
+  const { data, isLoading, isFetching, isError, refetch } = useSearchFavoryList(
+    {
+      keyword,
+      category: category,
+      sort: sortType,
+      size: itemsPerPage,
+      page: currentPage - 1,
+    },
+  );
   const totalPages = data?.totalPages ?? 0;
 
   const isTagSearch = keyword.startsWith("#");
@@ -74,6 +76,8 @@ export default function SearchContainer() {
     data: recentSearchList,
     isLoading: isRecentSearchListLoading,
     isFetching: isRecentSearchListFetching,
+    isError: isRecentSearchError,
+    refetch: isRecentSearchRefetch,
   } = useRecentSearchList();
   const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
 
@@ -91,7 +95,17 @@ export default function SearchContainer() {
     setCurrentPage(1);
   };
 
-  if (isError) return <div>에러가 발생했습니다</div>;
+  if (isError || isRecentSearchError)
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center">
+        <RetryError
+          onRetry={() => {
+            refetch();
+            isRecentSearchRefetch();
+          }}
+        />
+      </div>
+    );
 
   return (
     <div className="mx-auto min-h-screen max-w-[1200px] p-4 md:mt-6">
@@ -233,20 +247,20 @@ export default function SearchContainer() {
                 ))
               )}
             </div>
+
+            {!isLoading && totalPages > 1 && (
+              <div className="my-16 flex justify-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onChange={setCurrentPage}
+                  disabled={isLoading || isFetching}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
-
-      {!isLoading && totalPages > 1 && (
-        <div className="my-16 flex justify-center">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onChange={setCurrentPage}
-            disabled={isLoading || isFetching}
-          />
-        </div>
-      )}
     </div>
   );
 }

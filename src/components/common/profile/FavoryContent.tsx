@@ -82,7 +82,7 @@ export default function FavoryContent({ type, label }: FavoryContentProps) {
       )}
 
       {!isLoading && data && data.totalPages > 1 && (
-        <div className="my-12 flex justify-center">
+        <div className="my-16 flex justify-center">
           <Pagination
             currentPage={currentPage}
             totalPages={data.totalPages}
