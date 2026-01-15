@@ -58,7 +58,7 @@ export const getMyCommentList = async (
   params: GetCommentListParams,
 ) => {
   const response = await axiosClientHelper.get<MyCommentListResponse>(
-    `/comments/${nickname}`,
+    `/comments/users/${nickname}`,
     { params },
   );
   return safeResponse(response.data, myCommentListResponseSchema);
