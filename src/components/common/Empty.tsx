@@ -28,7 +28,7 @@ const EMPTY_MESSAGES = {
     Icon: MessageCircleMore,
   },
   favory: {
-    title: "해당 타입의 감상평이 없어요",
+    title: "해당 카테고리의 감상평이 없어요",
     description: "가장 먼저 감상평을 작성해 보세요",
     Icon: FolderOpen,
   },
