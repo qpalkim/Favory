@@ -65,7 +65,7 @@ export const getUserFavoryList = async (
   params: GetFavoryListParams,
 ) => {
   const response = await axiosClientHelper.get<UserFavoryListResponse>(
-    `/favories/${nickname}`,
+    `/favories/users/${nickname}`,
     { params },
   );
   return safeResponse(response.data, userFavoryListResponseSchema);
