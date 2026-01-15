@@ -4,18 +4,19 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import Banner from "./Banner";
 import BannerSkeleton from "../skeleton/BannerSkeleton";
+import RetryError from "../ui/RetryError";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
 
 export default function BannerWrapper() {
-  const { data, isLoading, isError } = useFavoryList({
+  const { data, isLoading, isError, refetch } = useFavoryList({
     page: 0,
     size: 4,
     sort: "latest",
   });
   if (isLoading && !data) return <BannerSkeleton />;
-  if (isError) return <div>에러가 발생했습니다</div>;
+  if (isError) return <RetryError onRetry={refetch} />;
   const favories = data?.content ?? [];
 
   return (

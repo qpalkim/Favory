@@ -26,6 +26,7 @@ import FavoryCommentList from "./FavoryCommentList";
 import FavoryDetailContainerSkeleton from "../skeleton/FavoryDetailContainerSkeleton";
 import Pagination from "../ui/Pagination";
 import Empty from "./Empty";
+import RetryError from "../ui/RetryError";
 
 export default function FavoryDetailContainer({ id }: { id: number }) {
   const router = useRouter();
@@ -64,27 +65,36 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     data: favoryDetail,
     isLoading: favoryDetailLoading,
     isError: favoryDetailError,
+    refetch: favoryDetailRefetch,
   } = useFavoryDetail(id);
 
   const {
     data: commentList,
     isLoading: commentListLoading,
     isError: commentListError,
+    refetch: commentListRefetch,
   } = useCommentList(id, { page: currentPage, size });
 
   if (favoryDetailLoading || commentListLoading)
     return <FavoryDetailContainerSkeleton />;
 
-  if (!favoryDetail) return notFound();
+  if ((favoryDetailError || commentListError) && !isDeleting)
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center">
+        <RetryError
+          onRetry={() => {
+            favoryDetailRefetch();
+            commentListRefetch();
+          }}
+        />
+      </div>
+    );
 
-  if (!commentList) return <Empty type="comment" />;
+  if (!favoryDetail || !commentList) return null;
 
   const normalizedType = favoryDetail?.mediaType?.toLowerCase();
   const translatedMediaType =
     MEDIA_TYPE_TRANSLATE_MAP[normalizedType] || normalizedType;
-
-  if ((favoryDetailError || commentListError) && !isDeleting)
-    return <div>에러가 발생했습니다</div>;
 
   const handleMediaClick = () => {
     if (!favoryDetail) return;
