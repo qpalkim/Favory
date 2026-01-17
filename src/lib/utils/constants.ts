@@ -27,14 +27,14 @@ export const SORT_OPTIONS = [
   { label: "등록순", value: "oldest" },
 ];
 
-export const CATEGORY_BUTTON: Record<MediaType, {icon: LucideIcon, text: string }> = {
+export const CATEGORY_BUTTON: Record<MediaType, { icon: LucideIcon, text: string }> = {
   MUSIC: { icon: Music4, text: "지금 들으러 가기" },
   MOVIE: { icon: Clapperboard, text: "지금 보러 가기" },
   DRAMA: { icon: Tv, text: "지금 보러 가기" },
   BOOK: { icon: BookOpen, text: "지금 읽으러 가기" },
 };
 
-export const PROFILE_TABS = {
+export const MEDIA_TYPE_META = {
   MUSIC: {
     id: "MUSIC",
     label: "음악",

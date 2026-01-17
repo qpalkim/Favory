@@ -3,7 +3,7 @@ import { Pencil } from "lucide-react";
 import { useProfile } from "@/lib/contexts/ProfileContext";
 import { ProfileCategory } from "@/lib/types/users";
 import Tab, { TabItem } from "@/components/ui/Tab";
-import { PROFILE_TABS } from "@/lib/utils/constants";
+import { MEDIA_TYPE_META } from "@/lib/utils/constants";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
@@ -14,7 +14,7 @@ export default function ProfileHeader() {
   const { tab, setTab, user, isMyProfile } = useProfile();
 
   const getTabItems = (isMyProfile: boolean): TabItem[] => {
-    const items = Object.values(PROFILE_TABS).map(({ id, label }) => ({
+    const items = Object.values(MEDIA_TYPE_META).map(({ id, label }) => ({
       id,
       label,
     }));

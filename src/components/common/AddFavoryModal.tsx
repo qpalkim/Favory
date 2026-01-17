@@ -1,21 +1,17 @@
-import { BookOpen, Clapperboard, Music4, Tv, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
+import { MEDIA_TYPE_META } from "@/lib/utils/constants";
 import Badge from "../ui/Badge";
-
-const MEDIA_TYPE_OPTIONS = [
-  { key: "music", label: "음악", icon: Music4 },
-  { key: "movie", label: "영화", icon: Clapperboard },
-  { key: "drama", label: "드라마", icon: Tv },
-  { key: "book", label: "도서", icon: BookOpen },
-];
 
 export default function AddFavoryModal({ onClose }: { onClose: () => void }) {
   const router = useRouter();
 
-  const handleSelect = (type: string) => {
+  const handleSelect = (mediaType: string) => {
     onClose();
-    router.push(`/add/${type}`);
+    router.push(`/add/${mediaType}`);
   };
+
+  const mediaButtons = Object.values(MEDIA_TYPE_META).filter((button) => button.id !== "COMMENT",);
 
   return (
     <>
@@ -34,8 +30,8 @@ export default function AddFavoryModal({ onClose }: { onClose: () => void }) {
         카테고리를 선택해 주세요
       </p>
       <div className="mt-6 flex gap-2">
-        {MEDIA_TYPE_OPTIONS.map(({ key, label, icon: Icon }) => (
-          <Badge key={key} size="lg" onClick={() => handleSelect(key)}>
+        {mediaButtons.map(({ id, label, icon: Icon }) => (
+          <Badge key={id} size="lg" onClick={() => handleSelect(id.toLowerCase())}>
             <Icon className="mr-1 h-[14px] w-[14px] md:h-[18px] md:w-[18px]" />
             {label}
           </Badge>
