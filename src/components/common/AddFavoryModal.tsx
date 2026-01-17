@@ -6,7 +6,7 @@ const MEDIA_TYPE_OPTIONS = [
   { key: "music", label: "음악", icon: Music4 },
   { key: "movie", label: "영화", icon: Clapperboard },
   { key: "drama", label: "드라마", icon: Tv },
-  { key: "book", label: "서적", icon: BookOpen },
+  { key: "book", label: "도서", icon: BookOpen },
 ];
 
 export default function AddFavoryModal({ onClose }: { onClose: () => void }) {
