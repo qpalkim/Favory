@@ -113,7 +113,7 @@ export default function CommentItem({
               </div>
             ) : profile ? (
               <Link
-                href={`/favories/${comment.favoryId}`} // 경로 미디어 타입 추가 필요
+                href={`/favories/${comment.mediaType.toLowerCase()}/${comment.favoryId}`} 
                 className="text-black-500 md:text-md mt-2 line-clamp-2 block text-sm leading-tight hover:underline"
               >
                 {comment.content}
