@@ -1,4 +1,5 @@
 import z from "zod";
+import { mediaTypeSchema } from "./favories";
 
 // 공통 댓글 응답 API 타입
 export const commentResponseSchema = z.object({
@@ -8,6 +9,7 @@ export const commentResponseSchema = z.object({
   userNickname: z.string(),
   userImageUrl: z.string().nullable(),
   content: z.string().min(1),
+  mediaType: mediaTypeSchema,
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),

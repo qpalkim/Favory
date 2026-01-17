@@ -230,7 +230,7 @@ export default function HeroSection() {
         </SectionCard>
       </div>
       <h1 className="mt-6 text-right text-lg font-semibold text-white md:mt-[52px] md:text-xl lg:mt-0 lg:text-2xl">
-        내가 좋아하는 음악, 영화, 드라마, 서적을
+        내가 좋아하는 음악, 영화, 드라마, 도서를
         <br />한 곳에 모아 저장해 보세요
       </h1>
     </motion.section>

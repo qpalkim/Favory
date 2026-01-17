@@ -17,7 +17,7 @@ const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
   { label: "음악", value: "MUSIC" },
   { label: "영화", value: "MOVIE" },
   { label: "드라마", value: "DRAMA" },
-  { label: "서적", value: "BOOK" },
+  { label: "도서", value: "BOOK" },
 ];
 
 export default function FavoryListContainer() {

@@ -14,7 +14,7 @@ import {
 import { useMyData } from "@/lib/hooks/useUsers";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
 import { useAddFavory } from "@/lib/hooks/useFavories";
-import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
+import { MEDIA_TYPE_LABEL_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -48,7 +48,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
   const [tagInputError, setTagInputError] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null); // 선택된 미디어 정보
   const translatedMediaType =
-    MEDIA_TYPE_TRANSLATE_MAP[mediaType.toLowerCase()] || mediaType;
+    MEDIA_TYPE_LABEL_MAP[mediaType] || mediaType;
   const addMedia = useAddMedia();
   const addFavory = useAddFavory();
   const [mediaId, setMediaId] = useState<number | null>(null);

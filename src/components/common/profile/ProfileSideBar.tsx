@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pencil } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useProfile } from "@/lib/contexts/ProfileContext";
-import { PROFILE_TABS } from "@/lib/utils/constants";
+import { MEDIA_TYPE_META } from "@/lib/utils/constants";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
@@ -13,7 +13,7 @@ export default function ProfileSidebar() {
   const { tab, setTab, user, isMyProfile } = useProfile();
 
   const getTabItems = (isMyProfile: boolean) => {
-    const items = Object.values(PROFILE_TABS);
+    const items = Object.values(MEDIA_TYPE_META);
 
     if (!isMyProfile) {
       return items.filter((item) => item.id !== "COMMENT");

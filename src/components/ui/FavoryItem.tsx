@@ -35,7 +35,7 @@ export default function FavoryItem({
         )}
         <Link
           href={`/favories/${favory.mediaType.toLowerCase()}/${favory.id}`}
-          className="flex min-w-0 flex-1 justify-between gap-3"
+          className="flex min-w-0 flex-1 justify-between gap-3 group"
         >
           <div className="min-w-0 flex-1">
             <div className="flex items-baseline justify-between">
@@ -51,7 +51,7 @@ export default function FavoryItem({
               {favory.mediaCreator || "정보 없음"} •{" "}
               {favory.mediaYear || "연도 정보 없음"}
             </p>
-            <h3 className="text-black-500 mt-2 truncate text-sm leading-tight font-medium md:text-lg">
+            <h3 className="text-black-500 mt-2 truncate text-sm leading-tight font-medium md:text-lg group-hover:underline">
               {favory.title}
             </h3>
             <p className="text-black-500 md:text-md mt-1 truncate text-sm leading-tight">
