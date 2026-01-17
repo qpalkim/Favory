@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ImageOff, Share } from "lucide-react";
 import { useMyData } from "@/lib/hooks/useUsers";
 import { useDeleteFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
