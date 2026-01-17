@@ -20,7 +20,7 @@ export default function ProfileItem({ profile }: ProfileItemProps) {
           className="pointer-events-none"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-black-500 truncate text-sm leading-tight font-semibold md:text-lg">
+          <p className="text-black-500 truncate text-sm leading-tight font-semibold md:text-lg hover:underline">
             {profile.nickname}
           </p>
           {profile.profileMessage && (

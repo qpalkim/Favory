@@ -51,7 +51,7 @@ export default function FavoryItem({
               {favory.mediaCreator || "정보 없음"} •{" "}
               {favory.mediaYear || "연도 정보 없음"}
             </p>
-            <h3 className={`text-black-500 mt-2 truncate text-sm leading-tight font-medium md:text-lg  ${profile ? "hover:underline" : ""}`}>
+            <h3 className="text-black-500 mt-2 truncate text-sm leading-tight font-medium md:text-lg hover:underline">
               {favory.title}
             </h3>
             <p className="text-black-500 md:text-md mt-1 truncate text-sm leading-tight">
