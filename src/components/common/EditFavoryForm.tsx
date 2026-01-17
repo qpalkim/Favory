@@ -14,7 +14,7 @@ import {
 } from "@/lib/types/favories";
 import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useMyData } from "@/lib/hooks/useUsers";
-import { MEDIA_TYPE_TRANSLATE_MAP } from "@/lib/utils/constants";
+import { MEDIA_TYPE_LABEL_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -49,7 +49,7 @@ export default function EditFavoryForm({
   const params = useParams();
   const id = Number(params.id);
   const translatedMediaType =
-    MEDIA_TYPE_TRANSLATE_MAP[mediaType.toLowerCase()] || mediaType;
+    MEDIA_TYPE_LABEL_MAP[mediaType] || mediaType;
   const { data: me } = useMyData();
   const {
     data: favoryData,
