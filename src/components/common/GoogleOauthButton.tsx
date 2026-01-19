@@ -31,7 +31,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (!window.google || !ready) {
+    if (!window.google) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
     };
@@ -78,6 +78,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
         size="lg"
         variant="outline"
         onClick={handleGooglePrompt}
+        disabled={!ready}
       >
         {TEXT[type].button}
       </Button>
