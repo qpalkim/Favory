@@ -36,7 +36,11 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
       return;
     };
     try {
-      window.google.accounts.id.prompt();
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isDismissedMoment()) return;
+        if (notification.isSkippedMoment()) return;
+        if (notification.isNotDisplayed()) return;
+      });
     } catch (err) {
       if ((err as DOMException).name !== "AbortError") {
         toast.error("구글 인증 중, 문제가 발생했습니다");
