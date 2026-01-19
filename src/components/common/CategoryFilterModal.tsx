@@ -37,7 +37,7 @@ export default function CategoryFilterModal({
             드라마
           </Button>
           <Button size="sm" variant="outline" onClick={onClose}>
-            서적
+            도서
           </Button>
         </div>
       </div>

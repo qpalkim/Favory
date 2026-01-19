@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ImageOff, Share } from "lucide-react";
 import { useMyData } from "@/lib/hooks/useUsers";
 import { useDeleteFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
@@ -9,7 +9,7 @@ import { useCommentList } from "@/lib/hooks/useComments";
 import {
   CATEGORY_BUTTON,
   CREATOR_FALLBACK,
-  MEDIA_TYPE_TRANSLATE_MAP,
+  MEDIA_TYPE_LABEL_MAP,
 } from "@/lib/utils/constants";
 import { getMediaSearchUrl } from "@/lib/utils/getMediaUrl";
 import formatTime from "@/lib/utils/formatTime";
@@ -92,9 +92,9 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
 
   if (!favoryDetail || !commentList) return null;
 
-  const normalizedType = favoryDetail?.mediaType?.toLowerCase();
+  const normalizedType = favoryDetail?.mediaType;
   const translatedMediaType =
-    MEDIA_TYPE_TRANSLATE_MAP[normalizedType] || normalizedType;
+    MEDIA_TYPE_LABEL_MAP[normalizedType] || normalizedType;
 
   const handleMediaClick = () => {
     if (!favoryDetail) return;

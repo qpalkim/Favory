@@ -64,78 +64,66 @@ export default function CommentItem({
     setIsEditing(false);
   };
 
-  return (
+  const Content = (
     <>
-      <div className="flex gap-2 py-6 lg:max-w-[660px]">
-        <ProfileImage
-          src={comment.userImageUrl}
-          clickable={!profile}
-          onClick={!profile ? () => setIsProfileOpen(true) : undefined}
-        />
-        <div className="relative flex flex-1">
-          <div className="flex min-w-0 flex-1 flex-col">
-            <div className="flex flex-col gap-0.5">
-              <p className="text-black-500 md:text-md truncate text-sm leading-tight font-medium">
-                {comment.userNickname}
-              </p>
-              <p className="text-black-200 truncate text-xs leading-tight font-light md:text-sm">
-                {formatTime(comment.createdAt)}
-                {comment.createdAt !== comment.updatedAt && "(수정됨)"}
-              </p>
-            </div>
-
-            {isMine && isEditing ? (
-              <div className="mt-2 w-full">
-                <Textarea
-                  className="min-h-[72px] md:min-h-[92px]"
-                  value={editedContent}
-                  onChange={(e) => setEditedContent(e.target.value)}
-                  error={isOverLimit ? "100자 이내로 작성해 주세요" : ""}
-                  placeholder="댓글을 작성해 보세요"
-                />
-                <div className="mt-2 flex justify-end gap-1">
-                  <Button size="sm" variant="outline" onClick={handleCancel}>
-                    취소
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={handleSave}
-                    disabled={
-                      !editedContent.trim() ||
-                      editedContent.trim() === comment.content.trim() ||
-                      isOverLimit
-                    }
-                    isLoading={editComment.isPending}
-                  >
-                    수정
-                  </Button>
-                </div>
-              </div>
-            ) : profile ? (
-              <Link
-                href={`/favories/${comment.favoryId}`} // 경로 미디어 타입 추가 필요
-                className="text-black-500 md:text-md mt-2 line-clamp-2 block text-sm leading-tight hover:underline"
-              >
-                {comment.content}
-              </Link>
-            ) : (
-              <p className="text-black-500 md:text-md mt-2 text-sm leading-tight">
-                {comment.content}
-              </p>
-            )}
-          </div>
-
-          {isMine && !isEditing && (
-            <div className="absolute top-0 right-0">
-              <Dropdown
-                options={[
-                  { label: "수정하기", onClick: () => setIsEditing(true) },
-                  { label: "삭제하기", onClick: () => setIsDeleteOpen(true) },
-                ]}
-              />
-            </div>
-          )}
+      <div className="flex min-w-0 flex-1 flex-col relative">
+        <div className="flex flex-col gap-0.5">
+          <p className="text-black-500 md:text-md truncate text-sm leading-tight font-medium">
+            {comment.userNickname}
+          </p>
+          <p className="text-black-200 truncate text-xs leading-tight font-light md:text-sm">
+            {formatTime(comment.createdAt)}
+            {comment.createdAt !== comment.updatedAt && "(수정됨)"}
+          </p>
         </div>
+
+        {isMine && isEditing ? (
+          <div className="mt-2 w-full">
+            <Textarea
+              className="min-h-[72px] md:min-h-[92px]"
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              error={isOverLimit ? "100자 이내로 작성해 주세요" : ""}
+              placeholder="댓글을 작성해 보세요"
+            />
+            <div className="mt-2 flex justify-end gap-1">
+              <Button size="sm" variant="outline" onClick={handleCancel}>
+                취소
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={
+                  !editedContent.trim() ||
+                  editedContent.trim() === comment.content.trim() ||
+                  isOverLimit
+                }
+                isLoading={editComment.isPending}
+              >
+                수정
+              </Button>
+            </div>
+          </div>
+        ) : profile ? (
+          <p className="text-black-500 md:text-md mt-2 line-clamp-2 block text-sm leading-tight group-hover:underline">
+            {comment.content}
+          </p>
+        ) : (
+          <p className="text-black-500 md:text-md mt-2 text-sm leading-tight">
+            {comment.content}
+          </p>
+        )}
+
+        {isMine && !isEditing && (
+          <div className="absolute top-0 right-0">
+            <Dropdown
+              options={[
+                { label: "수정하기", onClick: () => setIsEditing(true) },
+                { label: "삭제하기", onClick: () => setIsDeleteOpen(true) },
+              ]}
+            />
+          </div>
+        )}
       </div>
 
       {isProfileOpen && (
@@ -158,5 +146,25 @@ export default function CommentItem({
         </Modal>
       )}
     </>
+  )
+  return profile ? (
+    <Link
+      href={`/favories/${comment.mediaType.toLowerCase()}/${comment.favoryId}`}
+      className="block"
+    >
+      <div className="flex gap-2 py-6 lg:max-w-[660px] group cursor-pointer">
+        <ProfileImage src={comment.userImageUrl} clickable={false} />
+        {Content}
+      </div>
+    </Link>
+  ) : (
+    <div className="flex gap-2 py-6 lg:max-w-[660px]">
+      <ProfileImage
+        src={comment.userImageUrl}
+        clickable
+        onClick={() => setIsProfileOpen(true)}
+      />
+      {Content}
+    </div>
   );
 }

@@ -29,7 +29,7 @@ const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
   { label: "음악", value: "MUSIC" },
   { label: "영화", value: "MOVIE" },
   { label: "드라마", value: "DRAMA" },
-  { label: "서적", value: "BOOK" },
+  { label: "도서", value: "BOOK" },
   { label: "프로필", value: "PROFILE" },
 ];
 
@@ -95,7 +95,7 @@ export default function SearchContainer() {
     setCurrentPage(1);
   };
 
-  if (isError || isRecentSearchError)
+  if (isError)
     return (
       <div className="flex min-h-[80vh] items-center justify-center">
         <RetryError
@@ -146,6 +146,11 @@ export default function SearchContainer() {
                   />
                 ))}
               </>
+            ) : isRecentSearchError ? (
+              <div className="my-6 flex w-full justify-center">
+                <p className="text-black-200 md:text-md mt-2 text-center text-sm whitespace-pre-line">로그인 후, 이용 가능합니다
+                </p>
+              </div>
             ) : recentSearchList && recentSearchList.length > 0 ? (
               recentSearchList.map((recentSearch, idx) => (
                 <Badge

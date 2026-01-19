@@ -30,14 +30,16 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const handleClick = () => {
-    if (!window.google || !ready) return;
-
+  const handleGooglePrompt = () => {
+    if (!window.google || !ready) {
+      toast.info("현재 브라우저에서는 지원하지 않습니다")
+      return;
+    };
     try {
       window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment())
-          return;
         if (notification.isDismissedMoment()) return;
+        if (notification.isSkippedMoment()) return;
+        if (notification.isNotDisplayed()) return;
       });
     } catch (err) {
       if ((err as DOMException).name !== "AbortError") {
@@ -75,8 +77,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
       <Button
         size="lg"
         variant="outline"
-        onClick={handleClick}
-        disabled={!ready}
+        onClick={handleGooglePrompt}
       >
         {TEXT[type].button}
       </Button>
