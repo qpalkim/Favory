@@ -35,14 +35,8 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
     };
-
     try {
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          toast.info("현재 브라우저에서는 지원하지 않습니다")
-          return;
-        }
-      });
+      window.google.accounts.id.prompt();
     } catch (err) {
       if ((err as DOMException).name !== "AbortError") {
         toast.error("구글 인증 중, 문제가 발생했습니다");
