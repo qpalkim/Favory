@@ -14,6 +14,7 @@ import {
 import {
   EditProfileRequest,
   editProfileRequestSchema,
+  profileImageUrlRequestSchema,
 } from "@/lib/types/users";
 import { ErrorResponse } from "@/lib/types/errors";
 import Button from "../ui/Button";
@@ -55,6 +56,14 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !me) return;
+
+    const result = profileImageUrlRequestSchema.safeParse({ file });
+
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      e.target.value = "";
+      return;
+    }
 
     uploadProfileImage.mutate(
       { id: me.id, file },

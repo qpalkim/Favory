@@ -28,9 +28,26 @@ export const profileImageUrlParamsSchema = z.object({
 
 export type ProfileImageUrlParams = z.infer<typeof profileImageUrlParamsSchema>;
 
+//프로필 이미지 등록/수정 파일 검증용 API타입
+export const profileImageFileSchema = z.instanceof(File).refine((file) =>
+  [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "image/x-icon",
+  ].includes(file.type),
+  {
+    message: "지원되지 않는 이미지 파일입니다",
+  },
+).refine((file) => file.size <= 5 * 1024 * 1024, {
+  message: "5MB 이하의 파일만 등록 가능합니다"
+});
+
+
 // 프로필 이미지 등록/수정 요청 API 타입
 export const profileImageUrlRequestSchema = z.object({
-  file: z.instanceof(File),
+  file: profileImageFileSchema,
 });
 
 export type ProfileImageUrlRequest = z.infer<
@@ -38,7 +55,9 @@ export type ProfileImageUrlRequest = z.infer<
 >;
 
 // 프로필 이미지 등록/수정 응답 API 타입
-export const profileImageUrlResponseSchema = z.unknown(); // 응답 스키마 정의 필요
+export const profileImageUrlResponseSchema = z.object({
+  profileImageUrl: z.string().min(1),
+});
 
 export type ProfileImageUrlResponse = z.infer<
   typeof profileImageUrlResponseSchema
