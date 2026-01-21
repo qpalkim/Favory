@@ -9,7 +9,7 @@ import Button from "../ui/Button";
 import SelectOption from "../ui/SelectOption";
 import Pagination from "../ui/Pagination";
 import FeedCardSkeleton from "../skeleton/FeedCardSkeleton";
-import Empty from "./Empty";
+import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
 
 const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [

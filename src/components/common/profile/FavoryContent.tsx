@@ -7,7 +7,7 @@ import SelectOption from "@/components/ui/SelectOption";
 import Pagination from "@/components/ui/Pagination";
 import FavoryItem from "@/components/ui/FavoryItem";
 import FavoryItemSkeleton from "@/components/skeleton/FavoryItemSkeleton";
-import Empty from "../Empty";
+import Empty from "../../ui/Empty";
 import RetryError from "@/components/ui/RetryError";
 
 interface FavoryContentProps {

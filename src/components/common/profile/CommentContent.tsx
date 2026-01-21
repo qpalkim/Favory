@@ -6,7 +6,7 @@ import SelectOption from "@/components/ui/SelectOption";
 import Pagination from "@/components/ui/Pagination";
 import CommentItem from "@/components/ui/CommentItem";
 import CommentItemSkeleton from "@/components/skeleton/CommentItemSkeleton";
-import Empty from "../Empty";
+import Empty from "../../ui/Empty";
 import RetryError from "@/components/ui/RetryError";
 
 export default function CommentContent() {

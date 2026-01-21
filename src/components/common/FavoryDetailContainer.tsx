@@ -25,7 +25,7 @@ import UserProfileModal from "./modal/UserProfileModal";
 import FavoryCommentList from "./FavoryCommentList";
 import FavoryDetailContainerSkeleton from "../skeleton/FavoryDetailContainerSkeleton";
 import Pagination from "../ui/Pagination";
-import Empty from "./Empty";
+import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
 
 export default function FavoryDetailContainer({ id }: { id: number }) {

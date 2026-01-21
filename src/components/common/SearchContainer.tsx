@@ -21,7 +21,7 @@ import SelectOption from "../ui/SelectOption";
 import Pagination from "../ui/Pagination";
 import FavoryItemSkeleton from "../skeleton/FavoryItemSkeleton";
 import ProfileItemSkeleton from "../skeleton/ProfileItemSkeleton";
-import Empty from "./Empty";
+import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
 
 const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
