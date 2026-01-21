@@ -32,7 +32,7 @@ export function Label({
 }
 
 export function Error({ children }: { children: ReactNode }) {
-  return <span className="text-error-100 ml-3 block text-xs">{children}</span>;
+  return <span className="text-error-100 mt-2 ml-3 block text-xs">{children}</span>;
 }
 
 const textareaVariants = cva(
@@ -59,7 +59,7 @@ const textareaVariants = cva(
 
 export interface TextareaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement>,
-    VariantProps<typeof textareaVariants> {
+  VariantProps<typeof textareaVariants> {
   label?: string;
   error?: string;
   ref?: Ref<HTMLTextAreaElement>;
@@ -78,7 +78,7 @@ export default function Textarea({
   const id = useId();
 
   return (
-    <>
+    <div className="flex flex-col">
       {label && (
         <Label required={required} htmlFor={id}>
           {label}
@@ -99,6 +99,6 @@ export default function Textarea({
         {...props}
       />
       {error && <Error>{error}</Error>}
-    </>
+    </div>
   );
 }

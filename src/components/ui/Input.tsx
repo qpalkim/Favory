@@ -56,7 +56,7 @@ const inputVariants = cva(
 
 export interface InputProps
   extends InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
+  VariantProps<typeof inputVariants> {
   label?: string;
   error?: string;
   ref?: Ref<HTMLInputElement>;
@@ -74,7 +74,7 @@ export default function Input({
   const id = useId();
 
   return (
-    <>
+    <div className="flex flex-col">
       {label && (
         <Label required={required} htmlFor={id}>
           {label}
@@ -92,6 +92,6 @@ export default function Input({
         {...props}
       />
       {error && <Error>{error}</Error>}
-    </>
+    </div>
   );
 }

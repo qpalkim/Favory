@@ -112,7 +112,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
   };
 
   return (
-    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <h4 className="text-black-500 text-lg font-semibold md:text-[20px]">
         프로필 수정하기
       </h4>
@@ -140,16 +140,14 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
           </Button>
         </div>
       </div>
-      <div>
-        <Input
-          label="닉네임"
-          required
-          placeholder="닉네임을 입력해 주세요"
-          {...register("nickname")}
-          error={errors.nickname?.message}
-        />
-      </div>
-      <div>
+      <Input
+        label="닉네임"
+        required
+        placeholder="닉네임을 입력해 주세요"
+        {...register("nickname")}
+        error={errors.nickname?.message}
+      />
+      <div className="mb-10">
         <Input
           label="한 줄 소개"
           placeholder="나와 어울리는 한 줄을 입력해 보세요"

@@ -64,13 +64,13 @@ export default function EditFavoryForm({
   );
   const selectedMedia: MediaItem | null = favoryData
     ? {
-        title: favoryData.mediaTitle,
-        creator: favoryData.mediaCreator,
-        year: favoryData.mediaYear,
-        imageUrl: favoryData.mediaImageUrl,
-        mediaType: favoryData.mediaType,
-        externalId: favoryData.mediaId.toString(), // 추후 일치시키기
-      }
+      title: favoryData.mediaTitle,
+      creator: favoryData.mediaCreator,
+      year: favoryData.mediaYear,
+      imageUrl: favoryData.mediaImageUrl,
+      mediaType: favoryData.mediaType,
+      externalId: favoryData.mediaId.toString(),
+    }
     : null;
 
   useEffect(() => {
@@ -160,7 +160,7 @@ export default function EditFavoryForm({
 
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <div className="space-y-[42px] p-4 md:p-6">
+      <div className="space-y-10 p-4 md:p-6">
         <div className="flex items-center gap-2">
           <Image
             src={logo}
@@ -171,63 +171,61 @@ export default function EditFavoryForm({
             {translatedMediaType} 감상평 수정하기
           </h2>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-6">
-            <MediaSelector type={mediaType} disabled selected={selectedMedia} />
-            <div className="mb-6">
-              <Input
-                {...register("title")}
-                placeholder="감상평의 제목을 입력해 주세요"
-                label="제목"
-                required
-                error={errors.title?.message}
-              />
-            </div>
-            <div className="mb-6">
-              <Textarea
-                {...register("content")}
-                placeholder="감상평을 자유롭게 작성해 주세요"
-                label="내용"
-                variant="form"
-                required
-                error={errors.content?.message}
-              />
-            </div>
-            <div className="mb-[42px]">
-              <Input
-                placeholder="태그를 작성해 보세요"
-                label="태그"
-                value={tagInput}
-                onChange={(e) => {
-                  setTagInput(e.target.value);
-                  setTagInputError("");
-                }}
-                onKeyDown={onKeyDownTag}
-                error={tagInputError || errors.tagNames?.message}
-              />
-              <div className="mt-2 flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
-                  <Badge
-                    key={tag}
-                    clickable={false}
-                    className="flex items-center gap-1"
-                  >
-                    #{tag}
-                    <X
-                      className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
-                      strokeWidth={2}
-                      onClick={() =>
-                        updateTags(tags.filter((_, i) => i !== index))
-                      }
-                    />
-                  </Badge>
-                ))}
-              </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <MediaSelector type={mediaType} disabled selected={selectedMedia} />
+          <Input
+            required
+            label="제목"
+            placeholder="감상평의 제목을 입력해 주세요"
+            {...register("title")}
+            error={errors.title?.message}
+          />
+
+          <Textarea
+            required
+            label="내용"
+            placeholder="감상평을 자유롭게 작성해 주세요"
+            variant="form"
+            {...register("content")}
+            error={errors.content?.message}
+          />
+
+          <div className="mb-10">
+            <Input
+              label="태그"
+              placeholder="태그를 작성해 보세요"
+              value={tagInput}
+              onChange={(e) => {
+                setTagInput(e.target.value);
+                setTagInputError("");
+              }}
+              onKeyDown={onKeyDownTag}
+              error={tagInputError || errors.tagNames?.message}
+            />
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tags.map((tag, index) => (
+                <Badge
+                  key={tag}
+                  clickable={false}
+                  className="flex items-center gap-1"
+                >
+                  #{tag}
+                  <X
+                    className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
+                    strokeWidth={2}
+                    onClick={() =>
+                      updateTags(tags.filter((_, i) => i !== index))
+                    }
+                  />
+                </Badge>
+              ))}
             </div>
           </div>
+
           <Button
-            type="submit"
             size="lg"
+            type="submit"
             isLoading={isSubmitting}
             disabled={
               !isValid ||
