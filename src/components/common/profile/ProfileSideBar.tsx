@@ -24,9 +24,9 @@ export default function ProfileSidebar() {
 
   return (
     <>
-      <div className="grid grid-cols-[416px_minmax(0,660px)]">
-        <div className="flex flex-col items-center justify-center p-8">
-          <div className="relative">
+      <div className="grid grid-cols-[minmax(0,416px)]">
+        <div className="flex flex-col justify-center p-8">
+          <div className="relative mx-auto">
             <ProfileImage
               size="xl"
               src={user.profileImageUrl}
@@ -41,11 +41,11 @@ export default function ProfileSidebar() {
               </Button>
             )}
           </div>
-          <p className="text-2lg my-6 font-semibold text-green-600">
+          <p className="mx-auto text-2lg my-6 font-semibold text-green-600">
             {user.nickname}
           </p>
           {user.profileMessage && (
-            <p className="text-md text-black-500 mb-8">{user.profileMessage}</p>
+            <p className="mx-auto text-md text-black-500 mb-8">{user.profileMessage}</p>
           )}
           <div className="flex w-full flex-col gap-2">
             {tabItems.map(({ id, label, icon: Icon }) => {
