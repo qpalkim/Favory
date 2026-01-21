@@ -8,7 +8,7 @@ import formatTime from "@/lib/utils/formatTime";
 import ProfileImage from "./ProfileImage";
 import Badge from "./Badge";
 import Modal from "./Modal";
-import UserProfileModal from "../common/UserProfileModal";
+import UserProfileModal from "../common/modal/UserProfileModal";
 
 interface FavoryItemProps {
   favory: Favory;

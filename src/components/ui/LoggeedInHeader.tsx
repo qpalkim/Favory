@@ -11,7 +11,7 @@ import ProfileImage from "./ProfileImage";
 import Dropdown from "./Dropdown";
 import Badge from "./Badge";
 import Modal from "./Modal";
-import AddFavoryModal from "../common/AddFavoryModal";
+import AddFavoryModal from "../common/modal/AddFavoryModal";
 
 export default function LoggedInHeader({
   image,

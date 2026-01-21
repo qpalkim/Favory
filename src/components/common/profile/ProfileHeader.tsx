@@ -7,7 +7,7 @@ import { MEDIA_TYPE_META } from "@/lib/utils/constants";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
-import EditProfileModal from "../EditProfileModal";
+import EditProfileModal from "../modal/EditProfileModal";
 
 export default function ProfileHeader() {
   const [isOpen, setIsOpen] = useState(false);

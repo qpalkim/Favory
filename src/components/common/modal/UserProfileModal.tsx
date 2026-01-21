@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
-import ProfileImage from "../ui/ProfileImage";
-import Button from "../ui/Button";
+import ProfileImage from "../../ui/ProfileImage";
+import Button from "../../ui/Button";
 
 interface UserProfileModalProps {
   imageUrl: string | null;

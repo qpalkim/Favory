@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { MEDIA_TYPE_META } from "@/lib/utils/constants";
-import Badge from "../ui/Badge";
+import Badge from "../../ui/Badge";
 
 export default function AddFavoryModal({ onClose }: { onClose: () => void }) {
   const router = useRouter();

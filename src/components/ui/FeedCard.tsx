@@ -6,7 +6,7 @@ import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
 import ProfileImage from "./ProfileImage";
 import Modal from "./Modal";
-import UserProfileModal from "../common/UserProfileModal";
+import UserProfileModal from "../common/modal/UserProfileModal";
 
 interface FeedCardProps {
   favory: Favory;

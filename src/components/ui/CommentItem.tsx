@@ -9,8 +9,8 @@ import Dropdown from "./Dropdown";
 import Textarea from "./Textarea";
 import Button from "./Button";
 import Modal from "./Modal";
-import UserProfileModal from "../common/UserProfileModal";
-import DeleteItemModal from "../common/DeleteItemModal";
+import UserProfileModal from "../common/modal/UserProfileModal";
+import DeleteItemModal from "../common/modal/DeleteItemModal";
 
 interface CommentItemProps {
   comment: Comment;

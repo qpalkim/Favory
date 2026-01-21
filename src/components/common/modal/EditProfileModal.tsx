@@ -17,9 +17,9 @@ import {
   profileImageUrlRequestSchema,
 } from "@/lib/types/users";
 import { ErrorResponse } from "@/lib/types/errors";
-import Button from "../ui/Button";
-import ProfileImage from "../ui/ProfileImage";
-import Input from "../ui/Input";
+import Button from "../../ui/Button";
+import ProfileImage from "../../ui/ProfileImage";
+import Input from "../../ui/Input";
 
 interface EditProfileModalProps {
   onClose: () => void;

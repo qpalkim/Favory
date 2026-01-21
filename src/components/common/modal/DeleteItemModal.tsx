@@ -1,5 +1,5 @@
 import { AlertCircle } from "lucide-react";
-import Button from "../ui/Button";
+import Button from "../../ui/Button";
 
 interface DeleteItemModalProps {
   onClose: () => void;
