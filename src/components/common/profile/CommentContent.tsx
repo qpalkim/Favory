@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useProfile } from "@/lib/contexts/ProfileContext";
-import { useMyCommentList } from "@/lib/hooks/useComments";
+import { useUserCommentList } from "@/lib/hooks/useComments";
 import { SORT_OPTIONS } from "@/lib/utils/constants";
 import SelectOption from "@/components/ui/SelectOption";
 import Pagination from "@/components/ui/Pagination";
@@ -15,7 +15,7 @@ export default function CommentContent() {
   const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
   const size = 5;
 
-  const { data, isLoading, isFetching, isError, refetch } = useMyCommentList(
+  const { data, isLoading, isFetching, isError, refetch } = useUserCommentList(
     user.nickname,
     {
       page: currentPage - 1,

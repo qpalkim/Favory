@@ -51,7 +51,7 @@ export const deleteComment = async (id: number): Promise<void> => {
 };
 
 // 닉네임 기반 댓글 목록 조회 API
-export const getMyCommentList = async (
+export const getUserCommentList = async (
   nickname: string,
   params: GetCommentListParams,
 ) => {

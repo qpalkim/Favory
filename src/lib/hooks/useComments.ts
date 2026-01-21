@@ -16,7 +16,7 @@ import {
   deleteComment,
   editComment,
   getCommentList,
-  getMyCommentList,
+  getUserCommentList,
 } from "../apis/comments";
 
 // 댓글 목록 조회 훅
@@ -65,12 +65,12 @@ export const useDeleteComment = () => {
 };
 
 // 닉네임 기반 댓글 목록 조회 훅
-export const useMyCommentList = (
+export const useUserCommentList = (
   nickname: string,
   params: GetCommentListParams,
 ) => {
   return useQuery<CommentListResponse>({
     queryKey: ["comments", nickname, params],
-    queryFn: () => getMyCommentList(nickname, params),
+    queryFn: () => getUserCommentList(nickname, params),
   });
 };
