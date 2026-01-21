@@ -1,6 +1,6 @@
 import z from "zod";
 import { favorySchema } from "./favories";
-import { userResponseSchema } from "./users";
+import { userSchema } from "./users";
 
 // 공통 카테고리 API 타입
 export const categorySchema = z.enum([
@@ -28,7 +28,7 @@ export type GetSearchFavoryListParams = z.infer<
 
 // 검색 결과 조회 응답 API 타입
 export const searchFavoryListResponseSchema = z.object({
-  content: z.union([z.array(favorySchema), z.array(userResponseSchema)]),
+  content: z.union([z.array(favorySchema), z.array(userSchema)]),
   pageNumber: z.number(),
   pageSize: z.number(),
   totalElements: z.number(),
@@ -39,7 +39,7 @@ export type SearchFavoryListResponse = z.infer<
   typeof searchFavoryListResponseSchema
 >;
 
-// 최근 검색어 조회 응답 API 타입
+// 최근 검색어 목록 조회 응답 API 타입
 export const recentSearchListResponseSchema = z.array(z.string());
 
 export type RecentSearchListResponse = z.infer<

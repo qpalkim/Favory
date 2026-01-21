@@ -26,7 +26,7 @@ export const getRecentSearchList = async () => {
   return safeResponse(response.data, recentSearchListResponseSchema);
 };
 
-// 최근 검색어 전체 삭제 API
+// 최근 검색어 목록 전체 삭제 API
 export const deleteSearchRecent = async () => {
   await axiosClientHelper.delete("/search/recent");
 };

@@ -10,8 +10,8 @@ export const profileCateogrySchema = z.enum([
 
 export type ProfileCategory = z.infer<typeof profileCateogrySchema>;
 
-// 내 정보 및 유저 정보 조회 API 타입
-export const userResponseSchema = z.object({
+// 공통 내 정보 및 유저 정보 API 타입
+export const userSchema = z.object({
   id: z.number(),
   email: z.string().optional(),
   nickname: z.string().min(3).max(10),
@@ -19,7 +19,7 @@ export const userResponseSchema = z.object({
   profileMessage: z.string().max(30).nullable(),
 });
 
-export type UserResponse = z.infer<typeof userResponseSchema>;
+export type User = z.infer<typeof userSchema>;
 
 // 프로필 이미지 등록/수정 요청 파라미터 API 타입
 export const profileImageUrlParamsSchema = z.object({
@@ -86,6 +86,6 @@ export const editProfileRequestSchema = z.object({
 export type EditProfileRequest = z.infer<typeof editProfileRequestSchema>;
 
 // 프로필 수정 응답 API 타입
-export const editProfileResponseSchema = userResponseSchema;
+export const editProfileResponseSchema = userSchema;
 
 export type EditProfileResponse = z.infer<typeof editProfileResponseSchema>;

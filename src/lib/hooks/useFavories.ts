@@ -11,7 +11,6 @@ import {
   FavoryDetailResponse,
   FavoryListResponse,
   GetFavoryListParams,
-  UserFavoryListResponse,
 } from "../types/favories";
 import {
   addFavory,
@@ -33,7 +32,7 @@ export const useFavoryList = (params: GetFavoryListParams) => {
   });
 };
 
-// Favory 등록 요청 훅
+// Favory 등록 훅
 export const useAddFavory = () => {
   const queryClient = useQueryClient();
   return useMutation<AddFavoryResponse, unknown, AddFavoryRequest>({
@@ -52,7 +51,7 @@ export const useFavoryDetail = (id: number) => {
   });
 };
 
-// Favory 수정 요청 훅
+// Favory 수정 훅
 export const useEditFavory = (id: number) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -64,7 +63,7 @@ export const useEditFavory = (id: number) => {
   });
 };
 
-// Favory 삭제 요청 훅
+// Favory 삭제 훅
 export const useDeleteFavory = (id: number) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -80,7 +79,7 @@ export const useUserFavoryList = (
   nickname: string,
   params: GetFavoryListParams,
 ) => {
-  return useQuery<UserFavoryListResponse>({
+  return useQuery<FavoryListResponse>({
     queryKey: ["favories", nickname, params],
     queryFn: () => getUserFavoryList(nickname, params),
   });

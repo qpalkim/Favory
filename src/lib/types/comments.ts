@@ -1,8 +1,8 @@
 import z from "zod";
 import { mediaTypeSchema } from "./favories";
 
-// 공통 댓글 응답 API 타입
-export const commentResponseSchema = z.object({
+// 공통 댓글 API 타입
+export const commentSchema = z.object({
   id: z.number(),
   favoryId: z.number(),
   userId: z.number(),
@@ -15,7 +15,7 @@ export const commentResponseSchema = z.object({
   deletedAt: z.string().nullable(),
 });
 
-export type CommentResponse = z.infer<typeof commentResponseSchema>;
+export type Comment = z.infer<typeof commentSchema>;
 
 // 댓글 목록 조회 파라미터 API 타입
 export const getCommentListParamsSchema = z.object({
@@ -28,7 +28,7 @@ export type GetCommentListParams = z.infer<typeof getCommentListParamsSchema>;
 
 // 댓글 목록 조회 응답 API 타입
 export const commentListResponseSchema = z.object({
-  content: z.array(commentResponseSchema),
+  content: z.array(commentSchema),
   pageNumber: z.number(),
   pageSize: z.number(),
   totalElements: z.number(),
@@ -50,7 +50,7 @@ export const addCommentRequestSchema = z.object({
 export type AddCommentRequest = z.infer<typeof addCommentRequestSchema>;
 
 // 댓글 등록 응답 API 타입
-export const addCommentResponseSchema = commentResponseSchema;
+export const addCommentResponseSchema = commentSchema;
 
 export type AddCommentResponse = z.infer<typeof addCommentResponseSchema>;
 
@@ -65,11 +65,7 @@ export const editCommentRequestSchema = z.object({
 export type EditCommentRequest = z.infer<typeof editCommentRequestSchema>;
 
 // 댓글 수정 응답 API 타입
-export const editCommentResponseSchema = commentResponseSchema;
+export const editCommentResponseSchema = commentSchema;
 
 export type EditCommentResponse = z.infer<typeof editCommentResponseSchema>;
 
-// 닉네임 기반 댓글 목록 응답 API 타입
-export const myCommentListResponseSchema = commentListResponseSchema;
-
-export type MyCommentListResponse = z.infer<typeof myCommentListResponseSchema>;

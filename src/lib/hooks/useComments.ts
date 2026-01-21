@@ -10,7 +10,6 @@ import {
   CommentListResponse,
   EditCommentRequest,
   GetCommentListParams,
-  MyCommentListResponse,
 } from "../types/comments";
 import {
   addComment,
@@ -70,7 +69,7 @@ export const useMyCommentList = (
   nickname: string,
   params: GetCommentListParams,
 ) => {
-  return useQuery<MyCommentListResponse>({
+  return useQuery<CommentListResponse>({
     queryKey: ["comments", nickname, params],
     queryFn: () => getMyCommentList(nickname, params),
   });

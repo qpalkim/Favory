@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Category } from "@/lib/types/search";
-import { UserResponse } from "@/lib/types/users";
+import { User } from "@/lib/types/users";
 import { Favory } from "@/lib/types/favories";
 import {
   useDeleteRecentSearchList,
@@ -69,8 +69,8 @@ export default function SearchContainer() {
   const isProfileCategory = category === "PROFILE";
   const favoryList: Favory[] =
     !isProfileCategory && data ? (data.content as Favory[]) : [];
-  const profileList: UserResponse[] =
-    isProfileCategory && data ? (data.content as UserResponse[]) : [];
+  const profileList: User[] =
+    isProfileCategory && data ? (data.content as User[]) : [];
 
   const {
     data: recentSearchList,

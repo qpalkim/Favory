@@ -5,7 +5,7 @@ import {
   profileImageUrlParamsSchema,
   ProfileImageUrlRequest,
   profileImageUrlRequestSchema,
-  UserResponse,
+  User,
 } from "../types/users";
 import {
   editMyData,
@@ -16,7 +16,7 @@ import {
 
 // 닉네임 기반 유저 정보 조회 훅
 export const useUserData = (nickname?: string) => {
-  return useQuery<UserResponse>({
+  return useQuery<User>({
     queryKey: ["users", nickname],
     queryFn: () => getUserData(nickname!),
     enabled: !!nickname,
@@ -28,7 +28,7 @@ export const useUserData = (nickname?: string) => {
 
 // 내 정보 조회 훅
 export const useMyData = () => {
-  return useQuery<UserResponse>({
+  return useQuery<User>({
     queryKey: ["me"],
     queryFn: getMyData,
     staleTime: 1000 * 60 * 10,

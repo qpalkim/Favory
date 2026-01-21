@@ -39,7 +39,7 @@ export const useRecentSearchList = () => {
   });
 };
 
-// 최근 검색어 전체 삭제 요청 훅
+// 최근 검색어 목록 전체 삭제 훅
 export const useDeleteRecentSearchList = () => {
   const queryClient = useQueryClient();
   return useMutation({

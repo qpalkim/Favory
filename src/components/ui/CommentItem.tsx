@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { CommentResponse } from "@/lib/types/comments";
+import { Comment } from "@/lib/types/comments";
 import { useDeleteComment, useEditComment } from "@/lib/hooks/useComments";
 import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
@@ -13,7 +13,7 @@ import UserProfileModal from "../common/UserProfileModal";
 import DeleteItemModal from "../common/DeleteItemModal";
 
 interface CommentItemProps {
-  comment: CommentResponse;
+  comment: Comment;
   userId?: number | undefined;
   profile?: boolean;
 }

@@ -105,10 +105,3 @@ export type EditFavoryRequest = z.infer<typeof editFavoryRequestSchema>;
 export const editFavoryResponseSchema = favorySchema;
 
 export type EditFavoryResponse = z.infer<typeof editFavoryResponseSchema>;
-
-// 닉네임 기반 Favory 목록 응답 API 타입
-export const userFavoryListResponseSchema = favoryListResponseSchema;
-
-export type UserFavoryListResponse = z.infer<
-  typeof userFavoryListResponseSchema
->;
