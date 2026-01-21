@@ -171,7 +171,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
             <div>
               <div className="flex justify-between">
                 <div>
-                  <h2 className="text-black-500 md:text-2lg text-lg font-semibold">
+                  <h2 className="text-black-500 md:text-2lg text-lg font-semibold break-words">
                     {favoryDetail.mediaTitle}
                   </h2>
                   <p className="text-black-200 text-md md:text-lg">
@@ -202,7 +202,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
               <h3 className="text-black-500 md:text-2lg text-lg font-semibold">
                 {favoryDetail.title}
               </h3>
-              <p className="text-black-500 text-md mt-2 md:text-lg">
+              <p className="text-black-500 whitespace-pre-wrap break-words text-md mt-2 md:text-lg">
                 {favoryDetail.content}
               </p>
             </div>
