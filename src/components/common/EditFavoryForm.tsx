@@ -25,11 +25,12 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import MediaSelector from "../ui/MediaSelector";
 import RetryError from "../ui/RetryError";
 
-export default function EditFavoryForm({
-  mediaType,
-}: {
-  mediaType: MediaType;
-}) {
+export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) {
+  const { data: me } = useMyData();
+  const router = useRouter();
+  const params = useParams();
+  const id = Number(params.id);
+
   const {
     register,
     handleSubmit,
@@ -45,12 +46,9 @@ export default function EditFavoryForm({
   const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
-  const router = useRouter();
-  const params = useParams();
-  const id = Number(params.id);
-  const translatedMediaType =
+  const mediaTypeLabel =
     MEDIA_TYPE_LABEL_MAP[mediaType] || mediaType;
-  const { data: me } = useMyData();
+
   const {
     data: favoryData,
     isLoading,
@@ -62,6 +60,7 @@ export default function EditFavoryForm({
   const [initialData, setInitialData] = useState<EditFavoryRequest | null>(
     null,
   );
+
   const selectedMedia: MediaItem | null = favoryData
     ? {
       title: favoryData.mediaTitle,
@@ -110,24 +109,21 @@ export default function EditFavoryForm({
   };
 
   const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.nativeEvent.isComposing) return;
-    if (e.key === "Enter") {
-      e.preventDefault();
+    if (e.nativeEvent.isComposing || e.key !== "Enter") return;
+    e.preventDefault();
 
-      const cleaned = e.currentTarget.value.replace(/\s+/g, "");
-      const newTag = cleaned.trim();
+    const value = e.currentTarget.value.replace(/\s+/g, "").trim();
 
-      if (!newTag) return;
-      if (tags.includes(newTag)) return setTagInputError("중복된 태그입니다");
-      if (newTag.length > 10)
-        return setTagInputError("10자 이내로 입력해 주세요");
-      if (tags.length >= 3)
-        return setTagInputError("최대 3개까지 입력할 수 있습니다");
+    if (!value) return;
+    if (tags.includes(value)) return setTagInputError("중복된 태그입니다");
+    if (value.length > 10)
+      return setTagInputError("10자 이내로 입력해 주세요");
+    if (tags.length >= 3)
+      return setTagInputError("최대 3개까지 입력할 수 있습니다");
 
-      updateTags([...tags, newTag]);
-      setTagInput("");
-      setTagInputError("");
-    }
+    updateTags([...tags, value]);
+    setTagInput("");
+    setTagInputError("");
   };
 
   const onSubmit = (data: EditFavoryRequest) => {
@@ -139,8 +135,9 @@ export default function EditFavoryForm({
       onError: () => {
         toast.error("감상평 수정에 실패했습니다");
       },
-    });
+    })
   };
+
 
   if (isLoading)
     return (
@@ -159,7 +156,7 @@ export default function EditFavoryForm({
     );
 
   return (
-    <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
+    <section aria-label="감상평 수정 폼" className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
       <div className="space-y-10 p-4 md:p-6">
         <div className="flex items-center gap-2">
           <Image
@@ -168,7 +165,7 @@ export default function EditFavoryForm({
             className="w-[86px] md:w-[114px]"
           />
           <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold">
-            {translatedMediaType} 감상평 수정하기
+            {mediaTypeLabel} 감상평 수정하기
           </h2>
         </div>
 
@@ -237,6 +234,6 @@ export default function EditFavoryForm({
           </Button>
         </form>
       </div>
-    </main>
+    </section>
   );
 }
