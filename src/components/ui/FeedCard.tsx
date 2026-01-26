@@ -6,25 +6,22 @@ import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
 import ProfileImage from "./ProfileImage";
 import Modal from "./Modal";
-import UserProfileModal from "../common/UserProfileModal";
+import UserProfileModal from "../common/modal/UserProfileModal";
 
-interface FeedCardProps {
-  favory: Favory;
-}
-
-export default function FeedCard({ favory }: FeedCardProps) {
+export default function FeedCard({ favory }: { favory: Favory }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
     <>
       <Link
         href={`favories/${favory.mediaType.toLowerCase()}/${favory.id}`}
+        aria-label={`${favory.mediaTitle} 감상평 상세 페이지로 이동`}
         className="relative flex aspect-square h-full min-h-[160px] w-full min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-xl shadow-lg transition-transform duration-200 hover:scale-105"
       >
         {favory.mediaImageUrl ? (
           <Image
             src={favory.mediaImageUrl}
-            alt={favory.mediaTitle}
+            alt={`${favory.mediaTitle} 커버 이미지`}
             width={300}
             height={300}
             className="h-full w-auto object-cover"

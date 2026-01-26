@@ -20,12 +20,12 @@ import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Dropdown from "../ui/Dropdown";
 import Modal from "../ui/Modal";
-import DeleteItemModal from "./DeleteItemModal";
-import UserProfileModal from "./UserProfileModal";
+import DeleteItemModal from "./modal/DeleteItemModal";
+import UserProfileModal from "./modal/UserProfileModal";
 import FavoryCommentList from "./FavoryCommentList";
 import FavoryDetailContainerSkeleton from "../skeleton/FavoryDetailContainerSkeleton";
 import Pagination from "../ui/Pagination";
-import Empty from "./Empty";
+import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
 
 export default function FavoryDetailContainer({ id }: { id: number }) {
@@ -35,9 +35,23 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const deleteFavory = useDeleteFavory(id);
   const [currentPage, setCurrentPage] = useState(0);
-  const size = 5;
+  const PAGE_SIZE = 5;
+  const deleteFavory = useDeleteFavory(id);
+
+  const {
+    data: favoryDetail,
+    isLoading: favoryDetailLoading,
+    isError: favoryDetailError,
+    refetch: favoryDetailRefetch,
+  } = useFavoryDetail(id);
+
+  const {
+    data: commentList,
+    isLoading: commentListLoading,
+    isError: commentListError,
+    refetch: commentListRefetch,
+  } = useCommentList(id, { page: currentPage, size: PAGE_SIZE });
 
   const handleDelete = async () => {
     try {
@@ -61,19 +75,17 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     }
   };
 
-  const {
-    data: favoryDetail,
-    isLoading: favoryDetailLoading,
-    isError: favoryDetailError,
-    refetch: favoryDetailRefetch,
-  } = useFavoryDetail(id);
+  const handleMediaClick = () => {
+    if (!favoryDetail) return;
 
-  const {
-    data: commentList,
-    isLoading: commentListLoading,
-    isError: commentListError,
-    refetch: commentListRefetch,
-  } = useCommentList(id, { page: currentPage, size });
+    const url = getMediaSearchUrl(
+      favoryDetail.mediaType,
+      favoryDetail.mediaTitle,
+      favoryDetail.mediaCreator ?? undefined,
+    );
+    window.open(url, "_blank", "noopener,noreferrer");
+    return;
+  };
 
   if (favoryDetailLoading || commentListLoading)
     return <FavoryDetailContainerSkeleton />;
@@ -92,51 +104,35 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
 
   if (!favoryDetail || !commentList) return null;
 
-  const normalizedType = favoryDetail?.mediaType;
-  const translatedMediaType =
-    MEDIA_TYPE_LABEL_MAP[normalizedType] || normalizedType;
-
-  const handleMediaClick = () => {
-    if (!favoryDetail) return;
-
-    const url = getMediaSearchUrl(
-      favoryDetail.mediaType,
-      favoryDetail.mediaTitle,
-      favoryDetail.mediaCreator ?? undefined,
-    );
-
-    window.open(url, "_blank", "noopener,noreferrer");
-    return;
-  };
-
   const isMine = me?.id === favoryDetail.userId;
+  const mediaTypeLabel =
+    MEDIA_TYPE_LABEL_MAP[favoryDetail?.mediaType] || favoryDetail?.mediaType;
   const { icon: Icon, text } = CATEGORY_BUTTON[favoryDetail?.mediaType];
 
   const CommentSection = (
-    <div className="mt-6">
+    <section aria-label="댓글 영역" className="mt-6">
       <FavoryCommentList favoryId={favoryDetail.id} commentList={commentList} />
-
       {commentList.totalElements === 0 ? (
         <div className="my-12">
           <Empty type="comment" />
         </div>
       ) : (
-        commentList.totalElements > size && (
-          <div className="my-16 flex justify-center">
+        commentList.totalElements > PAGE_SIZE && (
+          <nav aria-label="댓글 페이지네이션" className="my-16 flex justify-center">
             <Pagination
               currentPage={commentList.pageNumber + 1}
               totalPages={commentList.totalPages}
               onChange={(page) => setCurrentPage(page - 1)}
             />
-          </div>
+          </nav>
         )
       )}
-    </div>
+    </section>
   );
 
   return (
     <>
-      <div className="mx-auto flex justify-between gap-6 lg:max-w-[1200px] lg:px-6">
+      <article className="mx-auto flex justify-between gap-6 lg:max-w-[1200px] lg:px-6">
         <div className="relative w-full lg:max-w-[660px]">
           <div className="max-h-[375px] overflow-hidden pb-[100%] md:max-h-[768px] lg:max-h-[660px]">
             {favoryDetail.mediaImageUrl ? (
@@ -145,6 +141,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                   src={favoryDetail.mediaImageUrl}
                   alt={`${favoryDetail.mediaTitle} 커버 이미지`}
                   fill
+                  priority
                   className="object-contain"
                 />
               </div>
@@ -157,57 +154,57 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
               </div>
             )}
           </div>
-          <div className="relative z-10 -mt-6 space-y-6 rounded-t-3xl bg-white p-6 shadow-lg md:-mt-18 md:p-8">
-            <div className="flex items-center gap-2">
+
+          <section className="relative z-10 -mt-6 space-y-6 rounded-t-3xl bg-white p-6 shadow-lg md:-mt-18 md:p-8">
+            <header className="flex items-center gap-2">
               <Image
                 src={logo}
                 className="w-[86px] md:w-[114px]"
                 alt="로고 아이콘"
               />
               <h1 className="text-black-500 md:text-2lg text-[15px] font-medium">
-                {translatedMediaType} 감상평
+                {mediaTypeLabel} 감상평
               </h1>
-            </div>
-            <div>
-              <div className="flex justify-between">
-                <div>
-                  <h2 className="text-black-500 md:text-2lg text-lg font-semibold">
-                    {favoryDetail.mediaTitle}
-                  </h2>
-                  <p className="text-black-200 text-md md:text-lg">
-                    {favoryDetail.mediaCreator ||
-                      CREATOR_FALLBACK[favoryDetail.mediaType]}{" "}
-                    • {favoryDetail.mediaYear || "연도 정보 없음"}
-                  </p>
-                </div>
-                {isMine && (
-                  <Dropdown
-                    options={[
-                      {
-                        label: "수정하기",
-                        onClick: () =>
-                          router.push(
-                            `/favories/${favoryDetail.mediaType.toLowerCase()}/${id}/edit`,
-                          ),
-                      },
-                      {
-                        label: "삭제하기",
-                        onClick: () => setIsDeleteOpen(true),
-                      },
-                    ]}
-                  />
-                )}
-              </div>
-              <hr className="border-black-100 my-3 md:my-4" />
-              <h3 className="text-black-500 md:text-2lg text-lg font-semibold">
-                {favoryDetail.title}
-              </h3>
-              <p className="text-black-500 text-md mt-2 md:text-lg">
-                {favoryDetail.content}
-              </p>
-            </div>
-            {!!favoryDetail.tags?.length && (
+            </header>
+
+            <section className="flex justify-between">
               <div>
+                <h2 className="text-black-500 md:text-2lg text-lg font-semibold break-words">
+                  {favoryDetail.mediaTitle}
+                </h2>
+                <p className="text-black-200 text-md md:text-lg">
+                  {favoryDetail.mediaCreator ||
+                    CREATOR_FALLBACK[favoryDetail.mediaType]}{" "}
+                  • {favoryDetail.mediaYear || "연도 정보 없음"}
+                </p>
+              </div>
+
+              {isMine && (
+                <Dropdown
+                  options={[
+                    {
+                      label: "수정하기",
+                      onClick: () => router.push(`/favories/${favoryDetail.mediaType.toLowerCase()}/${id}/edit`,),
+                    },
+                    {
+                      label: "삭제하기",
+                      onClick: () => setIsDeleteOpen(true),
+                    },
+                  ]}
+                />
+              )}
+            </section>
+
+            <hr className="border-black-100 my-3 md:my-4" />
+            <h3 className="text-black-500 md:text-2lg text-lg font-semibold">
+              {favoryDetail.title}
+            </h3>
+            <p className="text-black-500 whitespace-pre-wrap break-words text-md mt-2 md:text-lg">
+              {favoryDetail.content}
+            </p>
+
+            {!!favoryDetail.tags?.length && (
+              <section>
                 <h3 className="text-black-500 text-[15px] font-semibold md:text-lg">
                   태그
                 </h3>
@@ -227,9 +224,10 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                     </Badge>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
-            <div className="flex items-center justify-between">
+
+            <section className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ProfileImage
                   src={favoryDetail.userImageUrl}
@@ -247,7 +245,8 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                   </p>
                 </div>
               </div>
-            </div>
+            </section>
+
             <div className="my-[52px] flex justify-center gap-2 md:my-[96px]">
               <Button onClick={handleMediaClick}>
                 <Icon className="h-4 w-4" />
@@ -259,16 +258,14 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
               </Button>
             </div>
 
-            {/* 모바일/태블릿 환경 댓글 목록 영역 */}
             <div className="lg:hidden">{CommentSection}</div>
-          </div>
-        </div>
+          </section>
+        </div >
 
-        {/* PC 환경 댓글 목록 영역 */}
-        <div className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]">
+        <aside className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]" >
           {CommentSection}
-        </div>
-      </div>
+        </aside>
+      </article >
 
       {isDeleteOpen && (
         <Modal onClose={() => setIsDeleteOpen(false)}>
@@ -278,17 +275,20 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
             onDelete={handleDelete}
           />
         </Modal>
-      )}
+      )
+      }
 
-      {isProfileOpen && (
-        <Modal onClose={() => setIsProfileOpen(false)}>
-          <UserProfileModal
-            onClose={() => setIsProfileOpen(false)}
-            nickname={favoryDetail.userNickname}
-            imageUrl={favoryDetail.userImageUrl}
-          />
-        </Modal>
-      )}
+      {
+        isProfileOpen && (
+          <Modal onClose={() => setIsProfileOpen(false)}>
+            <UserProfileModal
+              onClose={() => setIsProfileOpen(false)}
+              nickname={favoryDetail.userNickname}
+              imageUrl={favoryDetail.userImageUrl}
+            />
+          </Modal>
+        )
+      }
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,11 +14,12 @@ import {
 import {
   EditProfileRequest,
   editProfileRequestSchema,
+  profileImageUrlRequestSchema,
 } from "@/lib/types/users";
 import { ErrorResponse } from "@/lib/types/errors";
-import Button from "../ui/Button";
-import ProfileImage from "../ui/ProfileImage";
-import Input from "../ui/Input";
+import Button from "../../ui/Button";
+import ProfileImage from "../../ui/ProfileImage";
+import Input from "../../ui/Input";
 
 interface EditProfileModalProps {
   onClose: () => void;
@@ -28,6 +29,9 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
   const { data: me } = useMyData();
   const editMyDataMutation = useEditMyData(me!.id);
   const uploadProfileImage = useProfileImageUrl();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const {
     register,
@@ -40,12 +44,8 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     mode: "onChange",
   });
 
-  const queryClient = useQueryClient();
-  const router = useRouter();
-
   useEffect(() => {
     if (!me) return;
-
     reset({
       nickname: me.nickname || "",
       profileMessage: me.profileMessage ?? undefined,
@@ -55,6 +55,13 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !me) return;
+
+    const result = profileImageUrlRequestSchema.safeParse({ file });
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      e.target.value = "";
+      return;
+    }
 
     uploadProfileImage.mutate(
       { id: me.id, file },
@@ -103,44 +110,48 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
   };
 
   return (
-    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit(onSubmit)}>
-      <h4 className="text-black-500 text-lg font-semibold md:text-[20px]">
+    <form
+      className="space-y-6"
+      onSubmit={handleSubmit(onSubmit)}
+      aria-label="프로필 수정 폼"
+    >
+      <h2 className="text-black-500 text-lg font-semibold md:text-2lg">
         프로필 수정하기
-      </h4>
+      </h2>
+
       <div className="flex items-center gap-3 md:gap-4">
-        <div className="flex items-center gap-3 md:gap-4">
-          <ProfileImage src={me?.profileImageUrl || null} size="lg" />
-          <input
-            type="file"
-            accept="image/*"
-            id="profile-image-input"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-          <Button
-            variant="outline"
-            onClick={() =>
-              document.getElementById("profile-image-input")?.click()
-            }
-          >
-            <FileUp
-              className="h-4 w-4 text-green-600 md:h-[18px] md:w-[18px]"
-              strokeWidth={1.5}
-            />
-            이미지 불러오기
-          </Button>
-        </div>
-      </div>
-      <div>
-        <Input
-          label="닉네임"
-          required
-          placeholder="닉네임을 입력해 주세요"
-          {...register("nickname")}
-          error={errors.nickname?.message}
+        <ProfileImage src={me?.profileImageUrl || null} size="lg" />
+        <input
+          type="file"
+          accept="image/*"
+          id="profile-image-input"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          className="hidden"
         />
+        <Button
+          ariaLabel="프로필 이미지 업로드"
+          variant="outline"
+          onClick={() =>
+            document.getElementById("profile-image-input")?.click()
+          }
+        >
+          <FileUp
+            className="h-4 w-4 text-green-600 md:h-[18px] md:w-[18px]"
+            strokeWidth={1.5}
+          />
+          이미지 불러오기
+        </Button>
       </div>
-      <div>
+
+      <Input
+        label="닉네임"
+        required
+        placeholder="닉네임을 입력해 주세요"
+        {...register("nickname")}
+        error={errors.nickname?.message}
+      />
+      <div className="mb-10">
         <Input
           label="한 줄 소개"
           placeholder="나와 어울리는 한 줄을 입력해 보세요"
@@ -148,8 +159,9 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
           error={errors.profileMessage?.message}
         />
       </div>
+
       <div className="flex gap-2">
-        <Button className="w-full" variant="outline" onClick={onClose}>
+        <Button className="w-full" variant="outline" onClick={onClose} ariaLabel="프로필 수정 취소">
           취소하기
         </Button>
         <Button
@@ -157,6 +169,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
           type="submit"
           isLoading={isSubmitting}
           disabled={!isValid || !isDirty}
+          ariaLabel="프로필 수정 완료"
         >
           수정하기
         </Button>

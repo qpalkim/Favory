@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { CommentResponse } from "@/lib/types/comments";
+import { Comment } from "@/lib/types/comments";
 import { useDeleteComment, useEditComment } from "@/lib/hooks/useComments";
 import Link from "next/link";
 import formatTime from "@/lib/utils/formatTime";
@@ -9,11 +9,11 @@ import Dropdown from "./Dropdown";
 import Textarea from "./Textarea";
 import Button from "./Button";
 import Modal from "./Modal";
-import UserProfileModal from "../common/UserProfileModal";
-import DeleteItemModal from "../common/DeleteItemModal";
+import UserProfileModal from "../common/modal/UserProfileModal";
+import DeleteItemModal from "../common/modal/DeleteItemModal";
 
 interface CommentItemProps {
-  comment: CommentResponse;
+  comment: Comment;
   userId?: number | undefined;
   profile?: boolean;
 }

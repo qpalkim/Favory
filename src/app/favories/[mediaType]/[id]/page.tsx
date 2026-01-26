@@ -33,7 +33,7 @@ export async function generateMetadata({
             url: favoryDetail.mediaImageUrl ?? "/thumbnail.jpg",
             width: 800,
             height: 600,
-            alt: "Favory 배너",
+            alt: `${favoryDetail.mediaTitle} 감상평 배너`,
           },
         ],
       },

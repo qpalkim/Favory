@@ -20,25 +20,25 @@ const MEDIA_CONFIG: Record<
 > = {
   MUSIC: {
     label: "곡명",
-    placeholder: "노래 제목을 검색하여 선택해 주세요",
+    placeholder: "노래 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "가수 정보 없음",
     imageClassName: "h-10 w-10 rounded object-cover lg:h-12 lg:w-12",
   },
   MOVIE: {
     label: "작품명",
-    placeholder: "영화 제목을 검색하여 선택해 주세요",
+    placeholder: "영화 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "감독 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
   DRAMA: {
     label: "작품명",
-    placeholder: "드라마 제목을 검색하여 선택해 주세요",
+    placeholder: "드라마 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "방송사 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
   BOOK: {
     label: "도서명",
-    placeholder: "도서 제목을 검색하여 선택해 주세요",
+    placeholder: "도서 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "작가 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
@@ -98,19 +98,26 @@ export default function MediaSelector({
 
   return (
     <div className="w-full space-y-2 lg:max-w-[660px]">
-      <label className="text-md lg:text-2lg text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg">
+      <label className="text-md lg:text-lg text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg">
         {config.label}
-        <span className="text-md lg:text-2lg text-error-100 md:text-lg">*</span>
+        <span className="text-md lg:text-lg text-error-100 md:text-lg">*</span>
       </label>
 
       <div className="relative w-full">
         {!selected ? (
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder={config.placeholder}
-          />
+          <div className="w-full">
+            <Input
+              placeholder={config.placeholder}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSearch();
+                }
+              }}
+            />
+          </div>
         ) : (
           <div
             className={`border-black-200 flex items-center justify-between rounded-md border px-3 py-2 ${disabled ? "bg-green-10 cursor-not-allowed border-green-600" : "bg-white"}`}
@@ -144,7 +151,7 @@ export default function MediaSelector({
                 }}
                 className="cursor-pointer"
               >
-                <X className="text-black-200 hover:text-black-300 h-4 w-4 transition-colors duration-200 lg:h-5 lg:w-5" />
+                <X className="text-black-200 hover:text-black-300 h-4 w-4 transition-colors duration-200" />
               </button>
             )}
           </div>

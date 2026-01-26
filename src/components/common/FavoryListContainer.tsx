@@ -9,7 +9,7 @@ import Button from "../ui/Button";
 import SelectOption from "../ui/SelectOption";
 import Pagination from "../ui/Pagination";
 import FeedCardSkeleton from "../skeleton/FeedCardSkeleton";
-import Empty from "./Empty";
+import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
 
 const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
@@ -21,7 +21,7 @@ const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
 ];
 
 export default function FavoryListContainer() {
-  const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
+  const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
   const [mediaType, setMediaType] = useState<MediaType | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -32,7 +32,7 @@ export default function FavoryListContainer() {
   const { data, isLoading, isFetching, isError, refetch } = useFavoryList({
     page: currentPage - 1,
     size: itemsPerPage,
-    sort: sortType,
+    sort: sortOption,
     type: mediaType,
   });
 
@@ -52,9 +52,9 @@ export default function FavoryListContainer() {
   if (isError) return <RetryError onRetry={refetch} />;
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4">
+    <section aria-label="감상평 목록" className="mx-auto max-w-[1200px] px-4">
       <div className="my-6 flex items-center justify-between md:my-8 lg:my-12">
-        <div className="flex gap-1">
+        <div role="group" aria-label="카테고리 필터" className="flex gap-1">
           {MEDIA_TYPES.map((item) => (
             <Button
               key={item.label}
@@ -71,8 +71,8 @@ export default function FavoryListContainer() {
           options={SORT_OPTIONS}
           disabled={isLoading || isFetching}
           onSelect={(option) => {
-            if (sortType == option.value) return;
-            setSortType(option.value as "latest" | "oldest");
+            if (sortOption == option.value) return;
+            setSortOption(option.value as "latest" | "oldest");
             setCurrentPage(1);
           }}
         />
@@ -97,17 +97,17 @@ export default function FavoryListContainer() {
           </div>
 
           {!isLoading && totalPages > 1 && (
-            <div className="my-16 flex justify-center">
+            <nav aria-label="감상평 페이지네이션" className="my-16 flex justify-center">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onChange={setCurrentPage}
                 disabled={isLoading || isFetching}
               />
-            </div>
+            </nav>
           )}
         </>
       )}
-    </div>
+    </section>
   );
 }

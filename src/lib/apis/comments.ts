@@ -10,8 +10,6 @@ import {
   EditCommentResponse,
   editCommentResponseSchema,
   GetCommentListParams,
-  MyCommentListResponse,
-  myCommentListResponseSchema,
 } from "../types/comments";
 
 // 댓글 목록 조회 API
@@ -26,7 +24,7 @@ export const getCommentList = async (
   return safeResponse(response.data, commentListResponseSchema);
 };
 
-// 댓글 등록 요청 API
+// 댓글 등록 API
 export const addComment = async (data: AddCommentRequest) => {
   const response = await axiosClientHelper.post<AddCommentResponse>(
     "/comments",
@@ -53,13 +51,13 @@ export const deleteComment = async (id: number): Promise<void> => {
 };
 
 // 닉네임 기반 댓글 목록 조회 API
-export const getMyCommentList = async (
+export const getUserCommentList = async (
   nickname: string,
   params: GetCommentListParams,
 ) => {
-  const response = await axiosClientHelper.get<MyCommentListResponse>(
+  const response = await axiosClientHelper.get<CommentListResponse>(
     `/comments/users/${nickname}`,
     { params },
   );
-  return safeResponse(response.data, myCommentListResponseSchema);
+  return safeResponse(response.data, commentListResponseSchema);
 };

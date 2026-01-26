@@ -3,10 +3,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ nickname: string }>;
 }) {
-  const paramNickname = decodeURIComponent((await params).nickname).replace(
-    /^@/,
-    "",
-  );
+  const rawNickname = decodeURIComponent((await params).nickname || "");
+  const paramNickname = rawNickname.replace(/^@/, "") || "사용자";
 
   return {
     title: `${paramNickname}님의 프로필 | Favory`,

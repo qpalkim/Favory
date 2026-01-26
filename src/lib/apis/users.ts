@@ -8,25 +8,25 @@ import {
   ProfileImageUrlRequest,
   ProfileImageUrlResponse,
   profileImageUrlResponseSchema,
-  UserResponse,
-  userResponseSchema,
+  User,
+  userSchema,
 } from "../types/users";
 
 // 닉네임 기반 유저 정보 조회 API
 export const getUserData = async (nickname: string) => {
-  const response = await axiosClientHelper.get<UserResponse>(
+  const response = await axiosClientHelper.get<User>(
     `/users/profile/${nickname}`,
   );
-  return safeResponse(response.data, userResponseSchema);
+  return safeResponse(response.data, userSchema);
 };
 
 // 내 정보 조회 API
 export const getMyData = async () => {
-  const response = await axiosClientHelper.get<UserResponse>("/users/me");
-  return safeResponse(response.data, userResponseSchema);
+  const response = await axiosClientHelper.get<User>("/users/me");
+  return safeResponse(response.data, userSchema);
 };
 
-// 프로필 이미지 등록/수정 요청 API
+// 프로필 이미지 등록/수정 API
 export const putProfileImageUrl = async (
   params: ProfileImageUrlParams & ProfileImageUrlRequest,
 ) => {
@@ -40,7 +40,7 @@ export const putProfileImageUrl = async (
   return safeResponse(response.data, profileImageUrlResponseSchema);
 };
 
-// 프로필 수정 요청 API
+// 프로필 수정 API
 export const editMyData = async (
   id: number,
   data: EditProfileRequest,

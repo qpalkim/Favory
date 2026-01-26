@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from "react";
-import { ProfileCategory, UserResponse } from "../types/users";
+import { ProfileCategory, User } from "../types/users";
 
 type ProfileContextValue = {
-  user: UserResponse;
+  user: User;
   isMyProfile: boolean;
   tab: ProfileCategory;
   setTab: (tab: ProfileCategory) => void;
@@ -15,7 +15,7 @@ export const ProfileProvider = ({
   isMyProfile,
   children,
 }: {
-  user: UserResponse;
+  user: User;
   isMyProfile: boolean;
   children: React.ReactNode;
 }) => {

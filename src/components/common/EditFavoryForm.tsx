@@ -25,11 +25,12 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import MediaSelector from "../ui/MediaSelector";
 import RetryError from "../ui/RetryError";
 
-export default function EditFavoryForm({
-  mediaType,
-}: {
-  mediaType: MediaType;
-}) {
+export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) {
+  const { data: me } = useMyData();
+  const router = useRouter();
+  const params = useParams();
+  const id = Number(params.id);
+
   const {
     register,
     handleSubmit,
@@ -45,12 +46,9 @@ export default function EditFavoryForm({
   const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
-  const router = useRouter();
-  const params = useParams();
-  const id = Number(params.id);
-  const translatedMediaType =
+  const mediaTypeLabel =
     MEDIA_TYPE_LABEL_MAP[mediaType] || mediaType;
-  const { data: me } = useMyData();
+
   const {
     data: favoryData,
     isLoading,
@@ -62,15 +60,16 @@ export default function EditFavoryForm({
   const [initialData, setInitialData] = useState<EditFavoryRequest | null>(
     null,
   );
+
   const selectedMedia: MediaItem | null = favoryData
     ? {
-        title: favoryData.mediaTitle,
-        creator: favoryData.mediaCreator,
-        year: favoryData.mediaYear,
-        imageUrl: favoryData.mediaImageUrl,
-        mediaType: favoryData.mediaType,
-        externalId: favoryData.mediaId.toString(), // 추후 일치시키기
-      }
+      title: favoryData.mediaTitle,
+      creator: favoryData.mediaCreator,
+      year: favoryData.mediaYear,
+      imageUrl: favoryData.mediaImageUrl,
+      mediaType: favoryData.mediaType,
+      externalId: favoryData.mediaId.toString(),
+    }
     : null;
 
   useEffect(() => {
@@ -110,24 +109,21 @@ export default function EditFavoryForm({
   };
 
   const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.nativeEvent.isComposing) return;
-    if (e.key === "Enter") {
-      e.preventDefault();
+    if (e.nativeEvent.isComposing || e.key !== "Enter") return;
+    e.preventDefault();
 
-      const cleaned = e.currentTarget.value.replace(/\s+/g, "");
-      const newTag = cleaned.trim();
+    const value = e.currentTarget.value.replace(/\s+/g, "").trim();
 
-      if (!newTag) return;
-      if (tags.includes(newTag)) return setTagInputError("중복된 태그입니다");
-      if (newTag.length > 10)
-        return setTagInputError("10자 이내로 입력해 주세요");
-      if (tags.length >= 3)
-        return setTagInputError("최대 3개까지 입력할 수 있습니다");
+    if (!value) return;
+    if (tags.includes(value)) return setTagInputError("중복된 태그입니다");
+    if (value.length > 10)
+      return setTagInputError("10자 이내로 입력해 주세요");
+    if (tags.length >= 3)
+      return setTagInputError("최대 3개까지 입력할 수 있습니다");
 
-      updateTags([...tags, newTag]);
-      setTagInput("");
-      setTagInputError("");
-    }
+    updateTags([...tags, value]);
+    setTagInput("");
+    setTagInputError("");
   };
 
   const onSubmit = (data: EditFavoryRequest) => {
@@ -139,8 +135,9 @@ export default function EditFavoryForm({
       onError: () => {
         toast.error("감상평 수정에 실패했습니다");
       },
-    });
+    })
   };
+
 
   if (isLoading)
     return (
@@ -159,8 +156,8 @@ export default function EditFavoryForm({
     );
 
   return (
-    <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <div className="space-y-[42px] p-4 md:p-6">
+    <section aria-label="감상평 수정 폼" className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
+      <div className="space-y-10 p-4 md:p-6">
         <div className="flex items-center gap-2">
           <Image
             src={logo}
@@ -168,66 +165,64 @@ export default function EditFavoryForm({
             className="w-[86px] md:w-[114px]"
           />
           <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold">
-            {translatedMediaType} 감상평 수정하기
+            {mediaTypeLabel} 감상평 수정하기
           </h2>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-6">
-            <MediaSelector type={mediaType} disabled selected={selectedMedia} />
-            <div className="mb-6">
-              <Input
-                {...register("title")}
-                placeholder="감상평의 제목을 입력해 주세요"
-                label="제목"
-                required
-                error={errors.title?.message}
-              />
-            </div>
-            <div className="mb-6">
-              <Textarea
-                {...register("content")}
-                placeholder="감상평을 자유롭게 작성해 주세요"
-                label="내용"
-                variant="form"
-                required
-                error={errors.content?.message}
-              />
-            </div>
-            <div className="mb-[42px]">
-              <Input
-                placeholder="태그를 작성해 보세요"
-                label="태그"
-                value={tagInput}
-                onChange={(e) => {
-                  setTagInput(e.target.value);
-                  setTagInputError("");
-                }}
-                onKeyDown={onKeyDownTag}
-                error={tagInputError || errors.tagNames?.message}
-              />
-              <div className="mt-2 flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
-                  <Badge
-                    key={tag}
-                    clickable={false}
-                    className="flex items-center gap-1"
-                  >
-                    #{tag}
-                    <X
-                      className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
-                      strokeWidth={2}
-                      onClick={() =>
-                        updateTags(tags.filter((_, i) => i !== index))
-                      }
-                    />
-                  </Badge>
-                ))}
-              </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <MediaSelector type={mediaType} disabled selected={selectedMedia} />
+          <Input
+            required
+            label="제목"
+            placeholder="감상평의 제목을 입력해 주세요"
+            {...register("title")}
+            error={errors.title?.message}
+          />
+
+          <Textarea
+            required
+            label="내용"
+            placeholder="감상평을 자유롭게 작성해 주세요"
+            variant="form"
+            {...register("content")}
+            error={errors.content?.message}
+          />
+
+          <div className="mb-10">
+            <Input
+              label="태그"
+              placeholder="태그를 입력한 후, Enter를 눌러 주세요"
+              value={tagInput}
+              onChange={(e) => {
+                setTagInput(e.target.value);
+                setTagInputError("");
+              }}
+              onKeyDown={onKeyDownTag}
+              error={tagInputError || errors.tagNames?.message}
+            />
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tags.map((tag, index) => (
+                <Badge
+                  key={tag}
+                  clickable={false}
+                  className="flex items-center gap-1"
+                >
+                  #{tag}
+                  <X
+                    className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
+                    strokeWidth={2}
+                    onClick={() =>
+                      updateTags(tags.filter((_, i) => i !== index))
+                    }
+                  />
+                </Badge>
+              ))}
             </div>
           </div>
+
           <Button
-            type="submit"
             size="lg"
+            type="submit"
             isLoading={isSubmitting}
             disabled={
               !isValid ||
@@ -239,6 +234,6 @@ export default function EditFavoryForm({
           </Button>
         </form>
       </div>
-    </main>
+    </section>
   );
 }

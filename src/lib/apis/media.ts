@@ -29,7 +29,7 @@ export const getMediaExists = async (externalId: string) => {
   return safeResponse(response.data, mediaExistsResponseSchema);
 };
 
-// 미디어 등록 요청 API
+// 미디어 등록 API
 export const addMedia = async (data: AddMediaRequest) => {
   const response = await axiosClientHelper.post<AddMediaResponse>(
     "/media",

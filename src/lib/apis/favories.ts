@@ -12,8 +12,6 @@ import {
   FavoryListResponse,
   favoryListResponseSchema,
   GetFavoryListParams,
-  UserFavoryListResponse,
-  userFavoryListResponseSchema,
 } from "../types/favories";
 
 // Favory 목록 조회 API
@@ -64,9 +62,9 @@ export const getUserFavoryList = async (
   nickname: string,
   params: GetFavoryListParams,
 ) => {
-  const response = await axiosClientHelper.get<UserFavoryListResponse>(
+  const response = await axiosClientHelper.get<FavoryListResponse>(
     `/favories/users/${nickname}`,
     { params },
   );
-  return safeResponse(response.data, userFavoryListResponseSchema);
+  return safeResponse(response.data, favoryListResponseSchema);
 };

@@ -29,7 +29,7 @@ export const useMediaExists = (externalId: string) => {
   });
 };
 
-// 미디어 등록 요청 훅
+// 미디어 등록 훅
 export const useAddMedia = () => {
   return useMutation<AddMediaResponse, unknown, AddMediaRequest>({
     mutationFn: addMedia,

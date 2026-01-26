@@ -1,8 +1,8 @@
-import { UserResponse } from "@/lib/types/users";
+import { User } from "@/lib/types/users";
 import Link from "next/link";
 import ProfileImage from "./ProfileImage";
 
-export default function ProfileItem({ profile }: { profile: UserResponse }) {
+export default function ProfileItem({ profile }: { profile: User }) {
   return (
     <Link
       href={`/profile/@${encodeURIComponent(profile.nickname)}`}

@@ -13,13 +13,22 @@ export default function LoggedOutHeader() {
             className="w-[86px] transition-opacity hover:opacity-80 md:w-[101px]"
           />
         </Link>
-        <Link
-          href="/login"
-          className="text-md md:text-2lg font-semibold text-white transition-opacity hover:opacity-80"
-          aria-label="로그인 페이지로 이동"
-        >
-          로그인
-        </Link>
+        <div className="flex items-center gap-3 md:gap-5">
+          <Link
+            href="/search"
+            className="text-md md:text-2lg font-semibold text-white transition-opacity hover:opacity-80"
+            aria-label="검색 페이지로 이동"
+          >
+            검색
+          </Link>
+          <Link
+            href="/login"
+            className="text-md md:text-2lg font-semibold text-white transition-opacity hover:opacity-80"
+            aria-label="로그인 페이지로 이동"
+          >
+            로그인
+          </Link>
+        </div>
       </div>
     </header>
   );

@@ -3,7 +3,7 @@ import { safeResponse } from "../network/safeResponse";
 import { LoginResponse, loginResponseSchema } from "../types/auth";
 import { AddOauthRequest, OauthProvider } from "../types/oauth";
 
-// 구글 간편 로그인 등록 API
+// 간편 로그인 등록 API
 export const addOauthApps = async (
   provider: OauthProvider,
   data: AddOauthRequest,

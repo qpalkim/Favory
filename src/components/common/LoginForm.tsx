@@ -57,10 +57,12 @@ export default function LoginForm() {
     }
   };
 
+  const iconClass = "text-black-200 hover:text-black-300 h-full w-full"
+
   return (
     <main className="mx-auto max-w-[660px] min-w-[344px] rounded-xl bg-white shadow-lg md:rounded-2xl">
-      <div className="space-y-[42px] px-4 py-[42px]">
-        <div className="flex flex-col items-center">
+      <div className="space-y-10 px-4 py-10">
+        <div className="flex flex-col items-center gap-4">
           <Link href="/" className="inline-block text-center">
             <Image
               src={logo}
@@ -68,23 +70,21 @@ export default function LoginForm() {
               className="w-[62px] drop-shadow-md md:w-[83px]"
             />
           </Link>
-          <p className="text-md text-black-500 mt-4 text-center md:text-lg">
+          <p className="text-md text-black-500 text-center md:text-lg">
             오늘도 만나서 반가워요!
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-6">
-            <Input
-              label="이메일"
-              placeholder="이메일을 입력해 주세요"
-              type="email"
-              {...register("email")}
-              error={errors.email?.message}
-            />
-          </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Input
+            label="이메일"
+            placeholder="이메일을 입력해 주세요"
+            type="email"
+            {...register("email")}
+            error={errors.email?.message}
+          />
 
-          <div className="relative mb-[42px]">
+          <div className="relative mb-10">
             <Input
               label="비밀번호"
               placeholder="비밀번호를 입력해 주세요"
@@ -101,15 +101,9 @@ export default function LoginForm() {
               aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
             >
               {showPw ? (
-                <Eye
-                  className="text-black-200 hover:text-black-300 h-full w-full"
-                  strokeWidth={1}
-                />
+                <Eye className={iconClass} strokeWidth={1} />
               ) : (
-                <EyeOff
-                  className="text-black-200 hover:text-black-300 h-full w-full"
-                  strokeWidth={1}
-                />
+                <EyeOff className={iconClass} strokeWidth={1} />
               )}
             </button>
           </div>
@@ -126,7 +120,7 @@ export default function LoginForm() {
           <GoogleOauthButton type="login" />
         </form>
 
-        <div className="mb-8 flex items-center gap-2 md:gap-4">
+        <div className="mb-8 flex items-center gap-4">
           <div className="bg-black-100 h-px flex-1 rounded" />
           <p className="text-black-500 text-center text-xs md:text-sm">
             회원이 아니신가요?&nbsp;

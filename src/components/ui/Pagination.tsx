@@ -25,13 +25,14 @@ interface PaginationProps extends VariantProps<typeof paginationVariants> {
   disabled?: boolean;
 }
 
+const PAGE_COUNT = 5;
+
 export default function Pagination({
   currentPage,
   totalPages,
   onChange,
   disabled,
 }: PaginationProps) {
-  const PAGE_COUNT = 5;
   const [firstPage, setFirstPage] = useState(1);
 
   useEffect(() => {
@@ -42,18 +43,12 @@ export default function Pagination({
 
     const currentGroup = Math.ceil(currentPage / PAGE_COUNT);
     setFirstPage((currentGroup - 1) * PAGE_COUNT + 1);
-  }, [currentPage, PAGE_COUNT, totalPages]);
+  }, [currentPage, totalPages]);
 
   const handlePageChange = (page: number) => {
-    if (disabled) return;
-    if (page < 1 || page > totalPages) return;
-    if (page === currentPage) return;
+    if (page < 1 || page > totalPages || page === currentPage) return;
     onChange(page);
   };
-
-  const handlePrevPage = () => handlePageChange(currentPage - 1);
-
-  const handleNextPage = () => handlePageChange(currentPage + 1);
 
   const pages = Array.from(
     { length: Math.min(PAGE_COUNT, totalPages - firstPage + 1) },
@@ -61,14 +56,14 @@ export default function Pagination({
   );
 
   return (
-    <div className="flex items-center">
+    <nav aria-label="페이지네이션" className="flex items-center">
       <button
-        onClick={handlePrevPage}
+        onClick={() => handlePageChange(currentPage - 1)}
         disabled={disabled || currentPage === 1}
-        aria-label="이전 페이지"
+        aria-label="이전 페이지로 이동"
         className="mr-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:hidden md:mr-6"
       >
-        <ArrowLeft aria-label="이전 페이지로 이동" className="h-5 w-5" />
+        <ArrowLeft className="h-5 w-5" aria-hidden />
       </button>
 
       <div className="flex items-center gap-2 md:gap-4">
@@ -89,13 +84,13 @@ export default function Pagination({
       </div>
 
       <button
-        onClick={handleNextPage}
+        onClick={() => handlePageChange(currentPage + 1)}
         disabled={disabled || currentPage === totalPages}
-        aria-label="다음 페이지"
+        aria-label="다음 페이지로 이동"
         className="ml-4 cursor-pointer text-green-600 transition-colors hover:text-green-500 disabled:hidden md:ml-6"
       >
-        <ArrowRight aria-label="다음 페이지로 이동" className="h-5 w-5" />
+        <ArrowRight className="h-5 w-5" aria-hidden />
       </button>
-    </div>
+    </nav>
   );
 }

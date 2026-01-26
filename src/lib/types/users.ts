@@ -10,8 +10,8 @@ export const profileCateogrySchema = z.enum([
 
 export type ProfileCategory = z.infer<typeof profileCateogrySchema>;
 
-// 내 정보 및 유저 정보 조회 API 타입
-export const userResponseSchema = z.object({
+// 공통 내 정보 및 유저 정보 API 타입
+export const userSchema = z.object({
   id: z.number(),
   email: z.string().optional(),
   nickname: z.string().min(3).max(10),
@@ -19,7 +19,7 @@ export const userResponseSchema = z.object({
   profileMessage: z.string().max(30).nullable(),
 });
 
-export type UserResponse = z.infer<typeof userResponseSchema>;
+export type User = z.infer<typeof userSchema>;
 
 // 프로필 이미지 등록/수정 요청 파라미터 API 타입
 export const profileImageUrlParamsSchema = z.object({
@@ -28,9 +28,26 @@ export const profileImageUrlParamsSchema = z.object({
 
 export type ProfileImageUrlParams = z.infer<typeof profileImageUrlParamsSchema>;
 
+//프로필 이미지 등록/수정 파일 검증용 API타입
+export const profileImageFileSchema = z.instanceof(File).refine((file) =>
+  [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "image/x-icon",
+  ].includes(file.type),
+  {
+    message: "지원되지 않는 이미지 파일입니다",
+  },
+).refine((file) => file.size <= 5 * 1024 * 1024, {
+  message: "5MB 이하의 파일만 등록 가능합니다"
+});
+
+
 // 프로필 이미지 등록/수정 요청 API 타입
 export const profileImageUrlRequestSchema = z.object({
-  file: z.instanceof(File),
+  file: profileImageFileSchema,
 });
 
 export type ProfileImageUrlRequest = z.infer<
@@ -38,7 +55,9 @@ export type ProfileImageUrlRequest = z.infer<
 >;
 
 // 프로필 이미지 등록/수정 응답 API 타입
-export const profileImageUrlResponseSchema = z.unknown(); // 응답 스키마 정의 필요
+export const profileImageUrlResponseSchema = z.object({
+  profileImageUrl: z.string().min(1),
+});
 
 export type ProfileImageUrlResponse = z.infer<
   typeof profileImageUrlResponseSchema
@@ -67,6 +86,6 @@ export const editProfileRequestSchema = z.object({
 export type EditProfileRequest = z.infer<typeof editProfileRequestSchema>;
 
 // 프로필 수정 응답 API 타입
-export const editProfileResponseSchema = userResponseSchema;
+export const editProfileResponseSchema = userSchema;
 
 export type EditProfileResponse = z.infer<typeof editProfileResponseSchema>;
