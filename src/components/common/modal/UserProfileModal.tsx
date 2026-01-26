@@ -14,22 +14,28 @@ export default function UserProfileModal({
   onClose,
 }: UserProfileModalProps) {
   return (
-    <div className="space-y-6">
+    <section aria-label="사용자 프로필 모달" className="space-y-6">
       <div className="flex justify-end">
-        <X
-          className="text-black-200 h-5 w-5 cursor-pointer md:h-6 md:w-6"
+        <button className="text-black-200 cursor-pointer"
           onClick={onClose}
-          aria-label="모달 닫기 아이콘"
-          strokeWidth={2}
-        />
+          aria-label="모달 닫기 아이콘">
+          <X
+            className="h-5 w-5 md:h-6 md:w-6"
+            strokeWidth={2}
+          />
+        </button>
       </div>
       <div className="flex flex-col items-center space-y-1">
         <ProfileImage src={imageUrl} />
-        <p className="text-black-500 text-md md:text-lg">{nickname}</p>
+        <h2 className="text-black-500 font-medium text-md md:text-lg">{nickname}</h2>
       </div>
-      <Button className="w-full" href={`/profile/@${nickname}`}>
+      <Button
+        className="w-full"
+        href={`/profile/@${nickname}`}
+        ariaLabel={`${nickname} 프로필 페이지로 이동`}
+      >
         프로필 구경하러 가기
       </Button>
-    </div>
+    </section>
   );
 }

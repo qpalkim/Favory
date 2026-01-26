@@ -54,7 +54,7 @@ export default function FavoryListContainer() {
   return (
     <section aria-label="감상평 목록" className="mx-auto max-w-[1200px] px-4">
       <div className="my-6 flex items-center justify-between md:my-8 lg:my-12">
-        <div role="group" aria-label="미디어 타입 필터" className="flex gap-1">
+        <div role="group" aria-label="카테고리 필터" className="flex gap-1">
           {MEDIA_TYPES.map((item) => (
             <Button
               key={item.label}
