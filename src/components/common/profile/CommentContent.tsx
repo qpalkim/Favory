@@ -9,36 +9,36 @@ import CommentItemSkeleton from "@/components/skeleton/CommentItemSkeleton";
 import Empty from "../../ui/Empty";
 import RetryError from "@/components/ui/RetryError";
 
+const PAGE_SIZE = 5;
+
 export default function CommentContent() {
   const { user } = useProfile();
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
-  const size = 5;
+  const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
 
   const { data, isLoading, isFetching, isError, refetch } = useUserCommentList(
-    user.nickname,
-    {
-      page: currentPage - 1,
-      size,
-      sort: sortType,
-    },
+    user.nickname, {
+    page: currentPage - 1,
+    size: PAGE_SIZE,
+    sort: sortOption,
+  },
   );
 
   if (isError) return <RetryError onRetry={refetch} />;
 
   return (
-    <div className="p-6 lg:p-0">
+    <section className="p-6 lg:p-0" aria-label="댓글 목록">
       {(isLoading || (data && data?.totalElements > 0)) && (
         <div className="mb-4 flex items-center justify-between">
-          <h5 className="text-black-500 text-[15px] font-semibold md:text-lg">
+          <h2 className="text-black-500 text-[15px] font-semibold md:text-lg">
             내가 등록한 댓글 {data?.totalElements ?? 0}개
-          </h5>
+          </h2>
           <SelectOption
             options={SORT_OPTIONS}
             disabled={isFetching}
             onSelect={(option) => {
-              if (sortType === option.value) return;
-              setSortType(option.value as "latest" | "oldest");
+              if (sortOption === option.value) return;
+              setSortOption(option.value as "latest" | "oldest");
               setCurrentPage(1);
             }}
           />
@@ -46,42 +46,44 @@ export default function CommentContent() {
       )}
 
       {isLoading ? (
-        <div>
-          {Array.from({ length: 5 }).map((_, idx) => (
-            <CommentItemSkeleton key={idx} />
+        <ul aria-hidden>
+          {Array.from({ length: PAGE_SIZE }).map((_, idx) => (
+            <li key={idx}>
+              <CommentItemSkeleton />
+            </li>
           ))}
-        </div>
+        </ul>
       ) : data?.totalElements === 0 ? (
         <div className="my-12">
           <Empty type="myComment" />
         </div>
       ) : (
-        <>
+        <ul>
           {data?.content.map((comment, idx) => {
             const isLast = idx === data.content.length - 1;
 
             return (
-              <div
+              <li
                 key={comment.id}
                 className={`border-black-100 ${isLast ? "" : "border-b"}`}
               >
                 <CommentItem comment={comment} profile />
-              </div>
+              </li>
             );
           })}
-        </>
+        </ul>
       )}
 
       {!isLoading && data && data.totalPages > 1 && (
-        <div className="my-12 flex justify-center">
+        <nav aria-label="댓글 페이지네이션" className="my-12 flex justify-center">
           <Pagination
             currentPage={currentPage}
             totalPages={data.totalPages}
             onChange={setCurrentPage}
             disabled={isFetching}
           />
-        </div>
+        </nav>
       )}
-    </div>
+    </section>
   );
 }

@@ -7,12 +7,12 @@ export default function ProfileContent() {
   const { tab } = useProfile();
   if (tab === MEDIA_TYPE_META.COMMENT.id) return <CommentContent />;
 
-  const tabs = Object.values(MEDIA_TYPE_META).filter(
+  const mediaTabs = Object.values(MEDIA_TYPE_META).filter(
     (t) => t.id !== MEDIA_TYPE_META.COMMENT.id,
   );
 
-  const currentTab = tabs.find((t) => t.id === tab);
-  if (!currentTab) return null;
+  const activeTab = mediaTabs.find((t) => t.id === tab);
+  if (!activeTab) return null;
 
-  return <FavoryContent type={currentTab.id} label={currentTab.label} />;
+  return <FavoryContent type={activeTab.id} label={activeTab.label} />;
 }

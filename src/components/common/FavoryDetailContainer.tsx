@@ -118,13 +118,13 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
         </div>
       ) : (
         commentList.totalElements > PAGE_SIZE && (
-          <div className="my-16 flex justify-center">
+          <nav aria-label="댓글 페이지네이션" className="my-16 flex justify-center">
             <Pagination
               currentPage={commentList.pageNumber + 1}
               totalPages={commentList.totalPages}
               onChange={(page) => setCurrentPage(page - 1)}
             />
-          </div>
+          </nav>
         )
       )}
     </section>

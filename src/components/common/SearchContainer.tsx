@@ -253,14 +253,14 @@ export default function SearchContainer() {
             </div>
 
             {!isLoading && totalPages > 1 && (
-              <div className="my-16 flex justify-center">
+              <nav aria-label="감상평 페이지네이션" className="my-16 flex justify-center">
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onChange={setCurrentPage}
                   disabled={isLoading || isFetching}
                 />
-              </div>
+              </nav>
             )}
           </section>
         )}

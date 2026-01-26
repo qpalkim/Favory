@@ -22,6 +22,7 @@ export default function Page() {
     error: userError,
     refetch: userRefetch,
   } = useUserData(isMyProfile ? undefined : paramNickname);
+
   const user = isMyProfile ? me : otherUser;
 
   if (isLoading || isUserLoading)
@@ -33,6 +34,7 @@ export default function Page() {
 
   const is404 = (err: unknown) => (err as AxiosError)?.response?.status === 404;
   if (isUserError && is404(userError)) return notFound();
+
   if (isError && is404(error)) return notFound();
 
   if (isError || isUserError)
@@ -46,11 +48,11 @@ export default function Page() {
 
   return (
     <ProfileProvider user={user} isMyProfile={isMyProfile}>
-      <div className="mx-auto mt-8 min-h-screen max-w-[1200px] p-4 md:mt-16">
+      <section className="mx-auto mt-8 min-h-screen max-w-[1200px] p-4 md:mt-16">
         <ProfileLayout>
           <ProfileContent />
         </ProfileLayout>
-      </div>
+      </section>
     </ProfileProvider>
   );
 }
