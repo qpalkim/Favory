@@ -37,34 +37,26 @@ export default function SearchContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const keyword = searchParams.get("keyword")?.trim() ?? "";
+  const isTagSearch = keyword.startsWith("#");
+
   const [category, setCategory] = useState<Category | undefined>(undefined);
-  const [sortType, setSortType] = useState<"latest" | "oldest">("latest");
+  const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const isTabletPc = useMediaQuery("(min-width: 768px)");
-  const itemsPerPage = isTabletPc ? 8 : 6;
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const itemsPerPage = isDesktop ? 8 : 6;
 
   const { data, isLoading, isFetching, isError, refetch } = useSearchFavoryList(
     {
       keyword,
       category: category,
-      sort: sortType,
+      sort: sortOption,
       size: itemsPerPage,
       page: currentPage - 1,
     },
   );
+  const isSearching = isLoading || isFetching;
   const totalPages = data?.totalPages ?? 0;
-
-  const isTagSearch = keyword.startsWith("#");
-  const isProfileDisabled = isTagSearch;
-
-  useEffect(() => {
-    setCurrentPage(1);
-
-    if (keyword.startsWith("#") && category === "PROFILE") {
-      setCategory(undefined);
-    }
-  }, [keyword, category]);
 
   const isProfileCategory = category === "PROFILE";
   const favoryList: Favory[] =
@@ -74,23 +66,28 @@ export default function SearchContainer() {
 
   const {
     data: recentSearchList,
-    isLoading: isRecentSearchListLoading,
-    isFetching: isRecentSearchListFetching,
-    isError: isRecentSearchError,
-    refetch: isRecentSearchRefetch,
+    isLoading: isRecentLoading,
+    isFetching: isRecentFetching,
+    isError: isRecentError,
+    refetch: refetchRecent,
   } = useRecentSearchList();
-  const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
 
-  const isListLoading = isLoading || isFetching;
-  const isRecentListLoading =
-    isRecentSearchListLoading || isRecentSearchListFetching;
+  const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
+  const isRecentListLoading = isRecentLoading || isRecentFetching;
+
+  useEffect(() => {
+    setCurrentPage(1);
+    if (isTagSearch && category === "PROFILE") {
+      setCategory(undefined);
+    }
+  }, [keyword, category, isTagSearch]);
 
   const handleSearch = (term: string) => {
     setCurrentPage(1);
     router.push(`/search?keyword=${encodeURIComponent(term)}`);
   };
 
-  const handleCategoryClick = (type: Category | undefined) => {
+  const handleCategory = (type: Category | undefined) => {
     setCategory(type);
     setCurrentPage(1);
   };
@@ -101,32 +98,34 @@ export default function SearchContainer() {
         <RetryError
           onRetry={() => {
             refetch();
-            isRecentSearchRefetch();
+            refetchRecent();
           }}
         />
       </div>
     );
 
   return (
-    <div className="mx-auto min-h-screen max-w-[1200px] p-4 md:mt-6">
+    <section className="mx-auto min-h-screen max-w-[1200px] p-4 md:mt-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[660px_minmax(0,416px)] lg:justify-between">
-        <div>
+        <section>
           <div className="flex items-center gap-3">
-            <ArrowLeft
-              className="h-6 w-6 cursor-pointer text-green-600 hover:text-green-500 lg:hidden"
-              onClick={() => router.back()}
-            />
+            <button type="button" aria-label="뒤로 가기" onClick={() => router.back()} className="lg:hidden">
+              <ArrowLeft
+                className="h-6 w-6 cursor-pointer text-green-600 hover:text-green-500"
+              /></button>
             <SearchBar onSearch={handleSearch} searchTerm={keyword} />
           </div>
-        </div>
+        </section>
 
-        <div className="lg:row-span-2">
+        <section className="lg:row-span-2">
           <div className="flex items-center justify-between">
-            <h4 className="text-black-500 md:text-2lg text-[15px] font-medium">
+            <h2 className="text-black-500 md:text-2lg text-[15px] font-medium">
               최근 검색어
-            </h4>
+            </h2>
             {recentSearchList && recentSearchList.length > 0 && (
               <button
+                type="button"
+                aria-label="최근 검색어 전체 삭제"
                 disabled={isRecentListLoading}
                 className="text-error-100 cursor-pointer text-xs font-medium disabled:cursor-not-allowed disabled:opacity-40 md:text-sm"
                 onClick={() => deleteRecentSearchList()}
@@ -137,7 +136,7 @@ export default function SearchContainer() {
           </div>
 
           <div className="mt-3 flex flex-wrap gap-2 md:mt-4">
-            {isRecentSearchListLoading || isRecentSearchListFetching ? (
+            {isRecentListLoading ? (
               <>
                 {Array.from({ length: 5 }).map((_, idx) => (
                   <div
@@ -146,18 +145,19 @@ export default function SearchContainer() {
                   />
                 ))}
               </>
-            ) : isRecentSearchError ? (
+            ) : isRecentError ? (
               <div className="my-6 flex w-full justify-center">
-                <p className="text-black-200 md:text-md mt-2 text-center text-sm whitespace-pre-line">로그인 후, 이용 가능합니다
+                <p className="text-black-200 md:text-md mt-2 text-center text-sm whitespace-pre-line">
+                  로그인 후, 이용 가능합니다
                 </p>
               </div>
             ) : recentSearchList && recentSearchList.length > 0 ? (
-              recentSearchList.map((recentSearch, idx) => (
+              recentSearchList.map((term, idx) => (
                 <Badge
-                  key={`${recentSearch}-${idx}`}
-                  onClick={() => handleSearch(recentSearch)}
+                  key={`${term}-${idx}`}
+                  onClick={() => handleSearch(term)}
                 >
-                  {recentSearch}
+                  {term}
                 </Badge>
               ))
             ) : (
@@ -166,42 +166,41 @@ export default function SearchContainer() {
               </div>
             )}
           </div>
-        </div>
+        </section>
 
         {keyword && (
-          <div>
+          <section>
             <div className="flex items-center justify-between md:hidden">
-              <h4 className="text-black-500 md:text-2lg text-[15px] font-medium">
+              <h2 className="text-black-500 md:text-2lg text-[15px] font-medium">
                 검색 결과 {data?.totalElements || 0}개
-              </h4>
+              </h2>
               <SelectOption
                 options={SORT_OPTIONS}
                 disabled={isLoading || isFetching}
                 onSelect={(option) => {
-                  if (sortType === option.value) return;
-                  setSortType(option.value as "latest" | "oldest");
+                  if (sortOption === option.value) return;
+                  setSortOption(option.value as "latest" | "oldest");
                   setCurrentPage(1);
                 }}
               />
             </div>
 
-            <h4 className="text-black-500 md:text-2lg hidden font-medium md:block">
+            <h2 className="text-black-500 md:text-2lg hidden font-medium md:block">
               검색 결과 {data?.totalElements || 0}개
-            </h4>
-
+            </h2>
             <div className="mt-6 flex items-center justify-between">
               <div className="flex items-center gap-1">
                 {MEDIA_TYPES.map((item) => {
                   const isDisabled =
-                    item.value === "PROFILE" && isProfileDisabled;
+                    item.value === "PROFILE" && isTagSearch;
 
                   return (
                     <Button
                       key={item.label}
                       size="sm"
                       variant={category === item.value ? "primary" : "outline"}
-                      onClick={() => handleCategoryClick(item.value)}
-                      disabled={isLoading || isFetching || isDisabled}
+                      onClick={() => handleCategory(item.value)}
+                      disabled={isSearching || isDisabled}
                     >
                       {item.label}
                     </Button>
@@ -213,8 +212,8 @@ export default function SearchContainer() {
                   options={SORT_OPTIONS}
                   disabled={isLoading || isFetching}
                   onSelect={(option) => {
-                    if (sortType === option.value) return;
-                    setSortType(option.value as "latest" | "oldest");
+                    if (sortOption === option.value) return;
+                    setSortOption(option.value as "latest" | "oldest");
                     setCurrentPage(1);
                   }}
                 />
@@ -222,7 +221,7 @@ export default function SearchContainer() {
             </div>
 
             <div className="mt-6">
-              {isListLoading ? (
+              {isSearching ? (
                 isProfileCategory ? (
                   Array.from({ length: 4 }).map((_, idx) => (
                     <ProfileItemSkeleton key={idx} />
@@ -263,9 +262,9 @@ export default function SearchContainer() {
                 />
               </div>
             )}
-          </div>
+          </section>
         )}
       </div>
-    </div>
+    </section>
   );
 }
