@@ -20,25 +20,25 @@ const MEDIA_CONFIG: Record<
 > = {
   MUSIC: {
     label: "곡명",
-    placeholder: "노래 제목을 입력한 후, Enter를 눌러 검색해 주세요",
+    placeholder: "노래 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "가수 정보 없음",
     imageClassName: "h-10 w-10 rounded object-cover lg:h-12 lg:w-12",
   },
   MOVIE: {
     label: "작품명",
-    placeholder: "영화 제목을 입력한 후, Enter를 눌러 검색해 주세요",
+    placeholder: "영화 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "감독 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
   DRAMA: {
     label: "작품명",
-    placeholder: "드라마 제목을 입력한 후, Enter를 눌러 검색해 주세요",
+    placeholder: "드라마 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "방송사 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
   BOOK: {
     label: "도서명",
-    placeholder: "도서 제목을 입력한 후, Enter를 눌러 검색해 주세요",
+    placeholder: "도서 제목을 입력한 후, Enter를 눌러 주세요",
     creatorFallback: "작가 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },

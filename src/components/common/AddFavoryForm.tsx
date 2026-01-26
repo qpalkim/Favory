@@ -188,7 +188,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
           <div className="mb-10">
             <Input
               label="태그"
-              placeholder="태그를 입력한 후, Enter를 눌러 구분해 주세요"
+              placeholder="태그를 입력한 후, Enter를 눌러 주세요"
               value={tagInput}
               onChange={(e) => {
                 setTagInput(e.target.value);
