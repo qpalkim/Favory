@@ -39,13 +39,16 @@ export default function ProfileImage({
 }: ProfileImageProps) {
   return (
     <div
+      role="button"
       className={cn(profileImageVariants({ size, clickable }), className)}
       onClick={clickable ? onClick : undefined}
+      aria-label={clickable ? "사용자 프로필 보기" : undefined}
+      tabIndex={0}
     >
       <Image
         className="rounded-full object-cover"
         src={src || defaultProfile}
-        alt="프로필 이미지"
+        alt="사용자 프로필 이미지"
         fill
         unoptimized
       />
