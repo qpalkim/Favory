@@ -53,7 +53,7 @@ export default function SecondSection() {
         <div className="border-black-200 absolute aspect-square w-[280px] rounded-full border md:w-[450px]"></div>
         <Image
           src={logo}
-          alt="로고 아이콘"
+          alt="Favory 로고"
           className="z-50 w-[92px] md:w-[127px]"
         />
         {icons.map((IconObj, i) => {
@@ -61,9 +61,8 @@ export default function SecondSection() {
           return (
             <motion.div
               key={i}
-              className={`absolute ${IconObj.position} rounded-full border shadow-md ${IconObj.bg} ${
-                IconObj.big ? "p-2 md:p-3" : "p-2 md:p-3"
-              }`}
+              className={`absolute ${IconObj.position} rounded-full border shadow-md ${IconObj.bg} ${IconObj.big ? "p-2 md:p-3" : "p-2 md:p-3"
+                }`}
               style={{ borderColor: IconObj.color }}
               initial={{ opacity: 0, scale: 0.3, rotate: -20 }}
               whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -76,11 +75,10 @@ export default function SecondSection() {
               }}
             >
               <Icon
-                className={`${
-                  IconObj.big
+                className={`${IconObj.big
                     ? "h-[24px] w-[24px] md:h-[36px] md:w-[36px]"
                     : "h-[15px] w-[15px] md:h-[19px] md:w-[19px]"
-                }`}
+                  }`}
                 color={IconObj.color}
                 strokeWidth={1}
               />

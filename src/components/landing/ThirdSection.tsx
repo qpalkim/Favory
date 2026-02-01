@@ -33,7 +33,7 @@ export default function ThirdSection() {
         <div className="absolute top-[40%] left-6 flex items-center justify-center rounded-full border border-green-600 bg-green-500 p-2 shadow-md md:left-8 md:p-3 md:shadow-lg">
           <Image
             src={logo}
-            alt="로고 아이콘"
+            alt="Favory 로고"
             className="aspect-square w-[28px] md:w-[42px]"
           />
         </div>
