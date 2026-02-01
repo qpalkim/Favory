@@ -41,7 +41,7 @@ const icons = [
 export default function ThirdSection() {
   return (
     <motion.section
-      className="mx-auto flex w-fit flex-col justify-center lg:w-full lg:flex-row lg:items-center lg:justify-between lg:px-6"
+      className="mx-auto flex w-fit flex-col justify-center lg:w-full lg:flex-row-reverse lg:items-center lg:justify-between lg:px-6"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -86,7 +86,7 @@ export default function ThirdSection() {
           );
         })}
       </div>
-      <h1 className="mt-6 text-right text-lg font-semibold text-white md:mt-[52px] md:text-xl lg:mt-0 lg:text-2xl">
+      <h1 className="mt-6 text-lg font-semibold text-white md:mt-[52px] md:text-xl lg:mt-0 lg:text-2xl">
         당신의 취향을
         <br />
         쉽고 빠르게 공유해 보세요
