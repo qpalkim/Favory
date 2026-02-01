@@ -86,6 +86,7 @@ export default function MediaSelector({
     if (query.trim()) {
       refetch();
       setIsOpen(true);
+      (document.activeElement as HTMLElement)?.blur();
     }
   };
 
@@ -109,12 +110,16 @@ export default function MediaSelector({
             <Input
               placeholder={config.placeholder}
               value={query}
+              inputMode="search"
+              enterKeyHint="search"
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleSearch();
-                }
+                if (e.nativeEvent.isComposing) return;
+                if (e.key !== "Enter") return;
+
+                e.preventDefault();
+                e.stopPropagation()
+                handleSearch();
               }}
             />
           </div>

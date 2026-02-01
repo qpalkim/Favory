@@ -19,12 +19,15 @@ export default function SearchBar({
     const trimmedValue = value.trim();
     if (!trimmedValue) return;
     onSearch(trimmedValue);
+    (document.activeElement as HTMLElement)?.blur();
   };
 
   return (
     <form role="search" onSubmit={handleSearchSubmit} className="relative w-full">
       <input
         type="search"
+        inputMode="search"
+        enterKeyHint="search"
         aria-label="검색어 입력"
         value={value}
         onChange={(e) => setValue(e.target.value)}
