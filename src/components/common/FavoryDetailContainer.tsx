@@ -160,7 +160,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
               <Image
                 src={logo}
                 className="w-[86px] md:w-[114px]"
-                alt="로고 아이콘"
+                alt="Favory 로고"
               />
               <h1 className="text-black-500 md:text-2lg text-[15px] font-medium">
                 {mediaTypeLabel} 감상평

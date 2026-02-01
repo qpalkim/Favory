@@ -66,7 +66,7 @@ export default function FirstSection() {
       <h1 className="mt-6 text-lg font-semibold text-white md:mt-[52px] md:text-xl lg:mt-0 lg:text-2xl">
         느낀 점을 작성하여
         <br />
-        짧은 감상 기록을 남겨 보세요
+        나만의 감상평을 기록해 보세요
       </h1>
     </motion.section>
   );

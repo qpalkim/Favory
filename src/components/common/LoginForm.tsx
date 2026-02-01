@@ -66,7 +66,7 @@ export default function LoginForm() {
           <Link href="/" className="inline-block text-center">
             <Image
               src={logo}
-              alt="로고 아이콘"
+              alt="Favory 로고"
               className="w-[62px] drop-shadow-md md:w-[83px]"
             />
           </Link>

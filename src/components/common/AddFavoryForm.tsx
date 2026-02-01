@@ -158,7 +158,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
         <div className="flex items-center gap-2">
           <Image
             src={logo}
-            alt="로고 아이콘"
+            alt="Favory 로고"
             className="w-[86px] md:w-[114px]"
           />
           <h2 className="text-black-500 md:text-2lg text-center text-[15px] font-semibold">
