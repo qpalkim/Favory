@@ -33,18 +33,8 @@ function FloatingStar({ className, animation }: FloatingStarProps) {
 
 export default function MainBanner() {
   return (
-    <motion.section
-      className="relative h-[222px] w-full md:h-[416px] lg:h-[456px]"
-      animate={{
-        background:
-          "linear-gradient(to bottom, #1f4b2c 0%, #076653 25%, #e3ea8f 100%)",
-      }}
-      transition={{
-        duration: 6,
-        repeat: Infinity,
-        repeatType: "mirror",
-        ease: "easeInOut",
-      }}
+    <section
+      className="relative h-[222px] w-full md:h-[416px] lg:h-[456px] bg-gradient-to-b from-green-600 via-green-500 to-green-100"
     >
       <div className="relative mx-auto h-full w-full max-w-[1448px] px-6">
         <FloatingStar
@@ -100,6 +90,6 @@ export default function MainBanner() {
           </Button>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
