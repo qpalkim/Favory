@@ -32,11 +32,17 @@ const isUnsupportedBrowser = () => {
 
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const [ready, setReady] = useState(false);
+  const [oneTapDismissed, setOneTapDismissed] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleGooglePrompt = () => {
+    if (oneTapDismissed) {
+      toast.info("간편 인증을 닫으셔서 일반 로그인 또는 회원가입을 이용해 주세요")
+      return;
+    };
+
     if (isUnsupportedBrowser()) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
@@ -49,7 +55,11 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
 
     try {
       window.google.accounts.id.prompt((notification) => {
-        if (notification.isDismissedMoment()) return;
+        if (notification.isDismissedMoment()) {
+          setOneTapDismissed(true);
+          return;
+        };
+
         if (notification.isSkippedMoment()) return;
         if (notification.isNotDisplayed()) return;
       });
