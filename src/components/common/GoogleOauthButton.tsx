@@ -25,21 +25,10 @@ const TEXT = {
 };
 
 
-const isSupportedBrowser = () => {
-  if (typeof window === "undefined") return false;
-
+const isUnsupportedBrowser = () => {
   const ua = navigator.userAgent.toLowerCase();
-
-  const isEdge = ua.includes("edg");
-  const isFirefox = ua.includes("firefox");
-
-  return !isEdge && !isFirefox;
+  return ua.includes("edg") || ua.includes("firefox");
 }
-
-const isIOSSafari = () => {
-  const ua = navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(ua) && ua.includes("safari");
-};
 
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const [ready, setReady] = useState(false);
@@ -48,7 +37,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (!isSupportedBrowser()) {
+    if (isUnsupportedBrowser()) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
     };
@@ -60,13 +49,9 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
 
     try {
       window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() && !isIOSSafari()) {
-          toast.info("현재 브라우저에서는 지원하지 않습니다")
-          return;
-        }
-
-        if (notification.isSkippedMoment()) return;
         if (notification.isDismissedMoment()) return;
+        if (notification.isSkippedMoment()) return;
+        if (notification.isNotDisplayed()) return;
       });
     } catch (err) {
       if ((err as DOMException).name !== "AbortError") {
