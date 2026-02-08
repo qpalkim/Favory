@@ -35,8 +35,8 @@ export default function FavoryContent({ type, label }: FavoryContentProps) {
   return (
     <section className="p-6 lg:p-0" aria-label={`${label} 감상평 목록`}>
       {(isLoading || (data && data?.totalElements > 0)) && (
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-black-500 text-[15px] font-semibold md:text-lg">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="min-w-0 flex-1 text-black-500 text-[15px] font-semibold md:text-lg">
             {isMyProfile
               ? `내가 등록한 ${label} 감상평 ${data?.totalElements ?? 0}개`
               : `${user.nickname}님이 등록한 ${label} 감상평 ${data?.totalElements ?? 0}개`}
