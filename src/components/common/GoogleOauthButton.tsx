@@ -24,7 +24,6 @@ const TEXT = {
   },
 };
 
-
 const isUnsupportedBrowser = () => {
   const ua = navigator.userAgent.toLowerCase();
   return ua.includes("edg") || ua.includes("firefox");
@@ -32,34 +31,19 @@ const isUnsupportedBrowser = () => {
 
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const [ready, setReady] = useState(false);
-  const [oneTapDismissed, setOneTapDismissed] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (oneTapDismissed) {
-      toast.info("간편 인증을 닫으셔서 일반 로그인 또는 회원가입을 이용해 주세요")
-      return;
-    };
-
-    if (isUnsupportedBrowser()) {
-      toast.info("현재 브라우저에서는 지원하지 않습니다")
-      return;
-    };
-
-    if (!window.google || !ready) {
-      toast.info("구글 인증을 불러오는 중입니다")
+    if (isUnsupportedBrowser() || !window.google || !ready) {
+      toast.info("현재 브라우저에서는 지원하지 않습니다");
       return;
     }
 
     try {
       window.google.accounts.id.prompt((notification) => {
-        if (notification.isDismissedMoment()) {
-          setOneTapDismissed(true);
-          return;
-        };
-
+        if (notification.isDismissedMoment()) return;
         if (notification.isSkippedMoment()) return;
         if (notification.isNotDisplayed()) return;
       });
@@ -81,11 +65,8 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
           window.google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
             callback: async (res: google.accounts.id.CredentialResponse) => {
-              if (!res.credential) {
-                toast.error("구글 인증 중, 문제가 발생했습니다");
-                return;
-              }
-
+              if (!res.credential)
+                return toast.error("구글 인증 중, 문제가 발생했습니다");
               try {
                 await googleOauth({ token: res.credential });
                 await queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -96,7 +77,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
               }
             },
           });
-          setReady(true)
+          setReady(true);
         }}
       />
       <Button
