@@ -30,12 +30,16 @@ const isSupportedBrowser = () => {
 
   const ua = navigator.userAgent.toLowerCase();
 
-  const isChrome = ua.includes("chrome") && !ua.includes("edg") && !ua.includes("opr");
+  const isEdge = ua.includes("edg");
+  const isFirefox = ua.includes("firefox");
 
-  const isSafari = ua.includes("safari") && !ua.includes("chrome");
-
-  return isChrome || isSafari;
+  return !isEdge && !isFirefox;
 }
+
+const isIOSSafari = () => {
+  const ua = navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(ua) && ua.includes("safari");
+};
 
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const [ready, setReady] = useState(false);
@@ -56,7 +60,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
 
     try {
       window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed()) {
+        if (notification.isNotDisplayed() && !isIOSSafari()) {
           toast.info("현재 브라우저에서는 지원하지 않습니다")
           return;
         }
