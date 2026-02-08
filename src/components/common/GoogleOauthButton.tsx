@@ -36,15 +36,10 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (isUnsupportedBrowser()) {
+    if (isUnsupportedBrowser() || !window.google || !ready) {
       toast.info("현재 브라우저에서는 지원하지 않습니다");
       return;
     }
-
-    if (!window.google || !ready) {
-      toast.info("현재 브라우저에서는 지원하지 않습니다")
-      return;
-    };
 
     try {
       window.google.accounts.id.prompt((notification) => {
