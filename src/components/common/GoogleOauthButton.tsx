@@ -24,6 +24,19 @@ const TEXT = {
   },
 };
 
+
+const isSupportedBrowser = () => {
+  if (typeof window === "undefined") return false;
+
+  const ua = navigator.userAgent.toLowerCase();
+
+  const isChrome = ua.includes("chrome") && !ua.includes("edg") && !ua.includes("opr");
+
+  const isSafari = ua.includes("safari") && !ua.includes("chrome");
+
+  return isChrome || isSafari;
+}
+
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const [ready, setReady] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
@@ -31,15 +44,25 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (!window.google || !ready) {
+    if (!isSupportedBrowser()) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
     };
+
+    if (!window.google || !ready) {
+      toast.info("구글 인증을 불러오는 중입니다")
+      return;
+    }
+
     try {
       window.google.accounts.id.prompt((notification) => {
-        if (notification.isDismissedMoment()) return;
+        if (notification.isNotDisplayed()) {
+          toast.info("현재 브라우저에서는 지원하지 않습니다")
+          return;
+        }
+
         if (notification.isSkippedMoment()) return;
-        if (notification.isNotDisplayed()) return;
+        if (notification.isDismissedMoment()) return;
       });
     } catch (err) {
       if ((err as DOMException).name !== "AbortError") {
@@ -59,8 +82,11 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
           window.google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
             callback: async (res: google.accounts.id.CredentialResponse) => {
-              if (!res.credential)
-                return toast.error("구글 인증 중, 문제가 발생했습니다");
+              if (!res.credential) {
+                toast.error("구글 인증 중, 문제가 발생했습니다");
+                return;
+              }
+
               try {
                 await googleOauth({ token: res.credential });
                 await queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -71,6 +97,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
               }
             },
           });
+
           setReady(true);
         }}
       />
