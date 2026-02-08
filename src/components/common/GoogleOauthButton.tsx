@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAddOauth } from "@/lib/hooks/useOauth";
@@ -30,19 +31,35 @@ const isUnsupportedBrowser = () => {
 }
 
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
+  const [ready, setReady] = useState(false);
+  const [oneTapDismissed, setOneTapDismissed] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (isUnsupportedBrowser() || !window.google) {
+    if (oneTapDismissed) {
+      toast.info("간편 인증을 닫으셔서 일반 로그인 또는 회원가입을 이용해 주세요")
+      return;
+    };
+
+    if (isUnsupportedBrowser()) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
     };
 
+    if (!window.google || !ready) {
+      toast.info("구글 인증을 불러오는 중입니다")
+      return;
+    }
+
     try {
       window.google.accounts.id.prompt((notification) => {
-        if (notification.isDismissedMoment()) return;
+        if (notification.isDismissedMoment()) {
+          setOneTapDismissed(true);
+          return;
+        };
+
         if (notification.isSkippedMoment()) return;
         if (notification.isNotDisplayed()) return;
       });
@@ -79,6 +96,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
               }
             },
           });
+          setReady(true)
         }}
       />
       <Button
