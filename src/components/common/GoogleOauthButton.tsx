@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAddOauth } from "@/lib/hooks/useOauth";
@@ -30,15 +31,21 @@ const isUnsupportedBrowser = () => {
 }
 
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
+  const [ready, setReady] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (isUnsupportedBrowser() || !window.google) {
+    if (isUnsupportedBrowser()) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
     };
+
+    if (!window.google || !ready) {
+      toast.info("구글 인증을 불러오는 중입니다")
+      return;
+    }
 
     try {
       window.google.accounts.id.prompt((notification) => {
@@ -79,6 +86,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
               }
             },
           });
+          setReady(true)
         }}
       />
       <Button
