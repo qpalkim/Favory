@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAddOauth } from "@/lib/hooks/useOauth";
@@ -24,17 +23,23 @@ const TEXT = {
   },
 };
 
+
+const isUnsupportedBrowser = () => {
+  const ua = navigator.userAgent.toLowerCase();
+  return ua.includes("edg") || ua.includes("firefox");
+}
+
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
-  const [ready, setReady] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (!window.google || !ready) {
+    if (isUnsupportedBrowser() || !window.google) {
       toast.info("현재 브라우저에서는 지원하지 않습니다")
       return;
     };
+
     try {
       window.google.accounts.id.prompt((notification) => {
         if (notification.isDismissedMoment()) return;
@@ -59,8 +64,11 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
           window.google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
             callback: async (res: google.accounts.id.CredentialResponse) => {
-              if (!res.credential)
-                return toast.error("구글 인증 중, 문제가 발생했습니다");
+              if (!res.credential) {
+                toast.error("구글 인증 중, 문제가 발생했습니다");
+                return;
+              }
+
               try {
                 await googleOauth({ token: res.credential });
                 await queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -71,7 +79,6 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
               }
             },
           });
-          setReady(true);
         }}
       />
       <Button
