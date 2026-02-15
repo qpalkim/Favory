@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Music4, Clapperboard, Tv, BookOpen } from "lucide-react";
+import Link from "next/link";
 import wave from "@/assets/vector/wave.svg";
 import ellipse from "@/assets/vector/ellipse.svg";
 import polygon from "@/assets/vector/polygon.svg";
@@ -8,22 +9,26 @@ import line from "@/assets/vector/line.svg";
 
 function SectionCard({
   title,
+  type,
   gradient,
   children,
 }: {
   title: string;
+  type: string;
   gradient: string;
   children: React.ReactNode;
 }) {
   return (
-    <motion.div initial="initial" whileHover="hover">
-      <div
-        className={`relative aspect-square w-[116px] overflow-hidden rounded-lg md:rounded-xl ${gradient} px-3 py-2 shadow-2xl transition-transform duration-300 hover:scale-105 md:w-[218px] md:px-4 md:py-4`}
-      >
-        <h4 className="text-2lg font-medium text-white md:text-2xl">{title}</h4>
-        {children}
-      </div>
-    </motion.div>
+    <Link href={`/favories?type=${type}`}>
+      <motion.div initial="initial" whileHover="hover">
+        <div
+          className={`relative aspect-square w-[116px] overflow-hidden rounded-lg md:rounded-xl ${gradient} px-3 py-2 shadow-2xl transition-transform duration-300 hover:scale-105 md:w-[218px] md:px-4 md:py-4`}
+        >
+          <h4 className="text-2lg font-medium text-white md:text-2xl">{title}</h4>
+          {children}
+        </div>
+      </motion.div>
+    </Link>
   );
 }
 
@@ -45,6 +50,7 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
         <div className="grid grid-cols-2 gap-4">
           <SectionCard
             title="Music"
+            type={"음악"}
             gradient="bg-gradient-to-b from-green-200 to-green-600"
           >
             <motion.img
@@ -91,6 +97,7 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
 
           <SectionCard
             title="Movie"
+            type={"영화"}
             gradient="bg-gradient-to-b from-green-400 to-green-600"
           >
             <motion.img
@@ -155,6 +162,7 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
 
           <SectionCard
             title="Drama"
+            type={"드라마"}
             gradient="bg-gradient-to-b from-green-300 to-green-400"
           >
             <motion.img
@@ -201,6 +209,7 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
 
           <SectionCard
             title="Book"
+            type={"도서"}
             gradient="bg-gradient-to-b from-green-100 to-green-500"
           >
             <motion.img

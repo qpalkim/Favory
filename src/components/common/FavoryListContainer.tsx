@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFavoryList } from "@/lib/hooks/useFavories";
 import { MediaType } from "@/lib/types/favories";
-import { SORT_OPTIONS } from "@/lib/utils/constants";
+import { MEDIA_TYPE_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import FeedCard from "../ui/FeedCard";
 import Button from "../ui/Button";
@@ -21,6 +22,8 @@ const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
 ];
 
 export default function FavoryListContainer() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
   const [mediaType, setMediaType] = useState<MediaType | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,14 +43,39 @@ export default function FavoryListContainer() {
   const totalPages = data?.totalPages ?? 0;
 
   const handleMediaClick = (type: MediaType | undefined) => {
-    if (mediaType === type) return;
-    setMediaType(type);
-    setCurrentPage(1);
+    const label = type ? MEDIA_TYPE_LABEL_MAP[type] : null;
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (label) {
+      params.set("type", label);
+    } else {
+      params.delete("type");
+    }
+
+    const query = params.toString();
+    router.push(query ? `/favories?${query}` : "/favories")
   };
 
   useEffect(() => {
     setCurrentPage(1);
   }, [itemsPerPage]);
+
+  useEffect(() => {
+    const typeLabel = searchParams.get("type");
+
+    if (!typeLabel) {
+      setMediaType(undefined)
+      return;
+    }
+
+    const found = Object.entries(MEDIA_TYPE_LABEL_MAP).find(([, label]) => label === typeLabel);
+
+    if (found) {
+      setMediaType(found[0] as MediaType);
+    } else {
+      setMediaType(undefined);
+    }
+  }, [searchParams]);
 
   if (isError) return <RetryError onRetry={refetch} />;
 
