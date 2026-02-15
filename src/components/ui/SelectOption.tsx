@@ -38,6 +38,8 @@ export default function SelectOption({
   return (
     <Dropdown
       options={dropdownOptions}
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
       trigger={
         <button
           disabled={disabled}
