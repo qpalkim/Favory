@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_white.svg";
@@ -16,10 +17,9 @@ export default function LoggedOutHeader() {
         <div className="flex items-center gap-3 md:gap-5">
           <Link
             href="/search"
-            className="text-md md:text-2lg font-semibold text-white transition-opacity hover:opacity-80"
-            aria-label="검색 페이지로 이동"
+            className="transition-opacity duration-200 hover:opacity-80"
           >
-            검색
+            <Search className="h-6 w-6 text-white md:h-8 md:w-8" />
           </Link>
           <Link
             href="/login"
