@@ -50,7 +50,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={wave.src}
               alt="물결 장식"
-              className="absolute right-0 bottom-0 h-[62px] object-cover md:h-[114px] md:w-[218px]"
+              draggable={false}
+              className="absolute right-0 bottom-0 h-[62px] object-cover md:h-[114px] md:w-[218px] pointer-events-none select-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1.2 }}
               variants={{
@@ -67,7 +68,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={wave.src}
               alt="물결 장식"
-              className="absolute right-0 -bottom-3 h-[45px] object-cover md:h-[82px] md:w-[218px]"
+              draggable={false}
+              className="absolute right-0 -bottom-3 h-[45px] object-cover md:h-[82px] md:w-[218px] pointer-events-none select-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1.2 }}
               variants={{
@@ -94,7 +96,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={ellipse.src}
               alt="큰 원 장식"
-              className="absolute -right-[30%] -bottom-[30%] w-[116px] md:w-[218px]"
+              draggable={false}
+              className="absolute -right-[30%] -bottom-[30%] w-[116px] md:w-[218px] select-none pointer-events-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1 }}
               variants={{
@@ -111,7 +114,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={ellipse.src}
               alt="중간 원 장식"
-              className="absolute -right-[30%] -bottom-[30%] w-[90px] md:w-[180px]"
+              draggable={false}
+              className="absolute -right-[30%] -bottom-[30%] w-[90px] md:w-[180px] select-none pointer-events-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1 }}
               variants={{
@@ -128,7 +132,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={ellipse.src}
               alt="작은 원 장식"
-              className="absolute -right-[10%] -bottom-[10%] w-[40px] md:-right-[30%] md:-bottom-[30%] md:w-[142px]"
+              draggable={false}
+              className="absolute -right-[10%] -bottom-[10%] w-[40px] md:-right-[30%] md:-bottom-[30%] md:w-[142px] select-none pointer-events-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1 }}
               variants={{
@@ -155,7 +160,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={polygon.src}
               alt="삼각형 장식"
-              className="absolute top-1/3 -left-2 aspect-square w-[62px] md:-left-8 md:w-[132px]"
+              draggable={false}
+              className="absolute top-1/3 -left-2 aspect-square w-[62px] md:-left-8 md:w-[132px] select-none pointer-events-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1 }}
               variants={{
@@ -172,7 +178,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={polygon.src}
               alt="삼각형 장식"
-              className="absolute top-1/3 left-[45%] aspect-square w-[62px] md:left-[42%] md:w-[132px]"
+              draggable={false}
+              className="absolute top-1/3 left-[45%] aspect-square w-[62px] md:left-[42%] md:w-[132px] select-none pointer-events-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1 }}
               variants={{
@@ -199,7 +206,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={line.src}
               alt="선 장식"
-              className="absolute top-[10%] right-0 aspect-square w-[79px] md:top-[4%] md:-right-8 md:w-[196px]"
+              draggable={false}
+              className="absolute top-[10%] right-0 aspect-square w-[79px] md:top-[4%] md:-right-8 md:w-[196px] select-none pointer-events-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1 }}
               variants={{
@@ -216,7 +224,8 @@ export default function HeroSection({ scrollRef }: HeroSectionProps) {
             <motion.img
               src={ellipse.src}
               alt="작은 원 장식"
-              className="absolute top-[70%] -left-2 aspect-square w-[45px] md:-left-8 md:w-[96px]"
+              draggable={false}
+              className="absolute top-[70%] -left-2 aspect-square w-[45px] md:-left-8 md:w-[96px] select-none pointer-events-none"
               onContextMenu={(e) => e.preventDefault()}
               animate={{ scale: 1 }}
               variants={{

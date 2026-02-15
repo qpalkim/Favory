@@ -62,7 +62,8 @@ export default function SecondSection() {
           <Image
             src={logo}
             alt="Favory 로고"
-            className="aspect-square w-[28px] md:w-[42px]"
+            draggable={false}
+            className="aspect-square w-[28px] md:w-[42px] select-none pointer-events-none"
           />
         </div>
 

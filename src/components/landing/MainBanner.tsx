@@ -26,7 +26,7 @@ function FloatingStar({ className, animation }: FloatingStarProps) {
         ease: "easeInOut",
       }}
     >
-      <Image src={star} alt="" aria-hidden fill loading="lazy" />
+      <Image src={star} alt="" aria-hidden fill loading="lazy" draggable={false} className="select-none pointer-events-none" />
     </motion.div>
   )
 }
@@ -71,7 +71,7 @@ export default function MainBanner() {
             ease: "easeInOut",
           }}
         >
-          <Image src={logo} alt="Favory 로고" fill priority loading="eager" />
+          <Image src={logo} alt="Favory 로고" fill priority loading="eager" draggable={false} className="select-none pointer-events-none" />
         </motion.div>
         <div className="absolute bottom-8 md:bottom-10 md:left-12 lg:left-40 space-y-1.5 md:space-y-2 lg:space-y-3">
           <h1 className="font-leferiBold text-2lg leading-tight text-white md:text-3xl lg:text-3xl">
