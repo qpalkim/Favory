@@ -2,7 +2,7 @@
 import { cn } from "@/lib/cn";
 import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
-import defaultProfile from "@/assets/icon/defaultProfile.svg";
+import defaultProfile from "@/assets/icon/default_profile.svg";
 
 const profileImageVariants = cva("relative rounded-full shrink-0", {
   variants: {
