@@ -81,7 +81,6 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     const url = getMediaSearchUrl(
       favoryDetail.mediaType,
       favoryDetail.mediaTitle,
-      favoryDetail.mediaCreator ?? undefined,
     );
     window.open(url, "_blank", "noopener,noreferrer");
     return;
