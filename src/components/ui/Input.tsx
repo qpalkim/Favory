@@ -20,7 +20,7 @@ export function Label({
   return (
     <label
       className={cn(
-        "text-md text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg",
+        "text-md text-black-500 flex items-center gap-1 font-medium md:text-lg",
         className,
       )}
       {...props}
@@ -35,6 +35,12 @@ export function Error({ children }: { children: ReactNode }) {
   return (
     <span className="text-error-100 mt-2 ml-3 block text-xs">{children}</span>
   );
+}
+
+export function Desc({ children }: { children: ReactNode }) {
+  return (
+    <span className="text-sm md:text-md text-black-200 mb-2 md:mb-[10px]">{children}</span>
+  )
 }
 
 const inputVariants = cva(
@@ -59,6 +65,7 @@ export interface InputProps
   VariantProps<typeof inputVariants> {
   label?: string;
   error?: string;
+  desc?: string;
   ref?: Ref<HTMLInputElement>;
 }
 
@@ -66,6 +73,7 @@ export default function Input({
   label,
   required,
   error,
+  desc,
   ref,
   state,
   className,
@@ -76,10 +84,11 @@ export default function Input({
   return (
     <div className="flex flex-col">
       {label && (
-        <Label required={required} htmlFor={id}>
+        <Label required={required} htmlFor={id} className={cn(desc ? "mb-0" : "mb-2 md:mb-[10px]")}>
           {label}
         </Label>
       )}
+      {desc && <Desc>{desc}</Desc>}
       <input
         id={id}
         ref={ref}

@@ -2,16 +2,16 @@ import { ImageOff } from "lucide-react";
 import { Favory } from "@/lib/types/favories";
 import Link from "next/link";
 import Image from "next/image";
-import musicBanner from "@/assets/vector/musicBanner.svg";
-import movieBanner from "@/assets/vector/movieBanner.svg";
-import dramaBanner from "@/assets/vector/dramaBanner.svg";
-import bookBanner from "@/assets/vector/bookBanner.svg";
+import bannerMusic from "@/assets/vector/banner_music.svg";
+import bannerMovie from "@/assets/vector/banner_movie.svg";
+import bannerDrama from "@/assets/vector/banner_drama.svg";
+import bannerBook from "@/assets/vector/banner_book.svg";
 
 const CATEGORY_BANNER = {
-  MUSIC: musicBanner,
-  MOVIE: movieBanner,
-  DRAMA: dramaBanner,
-  BOOK: bookBanner,
+  MUSIC: bannerMusic,
+  MOVIE: bannerMovie,
+  DRAMA: bannerDrama,
+  BOOK: bannerBook,
 };
 
 export default function Banner({ favory }: { favory: Favory; }) {

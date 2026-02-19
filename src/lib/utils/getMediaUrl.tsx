@@ -3,19 +3,17 @@ import { MediaType } from "../types/favories";
 export const getMediaSearchUrl = (
   type: MediaType,
   title: string,
-  creator?: string,
 ) => {
-  const query = creator ? `${title} ${creator}` : title;
 
   switch (type) {
     case "MUSIC":
-      return `https://open.spotify.com/search/${encodeURIComponent(query)}`;
+      return `https://open.spotify.com/search/${encodeURIComponent(title)}`;
     case "MOVIE":
     case "DRAMA":
-      return `https://www.google.com/search?q=${encodeURIComponent(`${query} 시청`)}`;
+      return `https://www.google.com/search?q=${encodeURIComponent(`${title} 시청`)}`;
     case "BOOK":
       return `https://www.google.com/search?q=${encodeURIComponent(
-        `${query} 책`,
+        `${title}`,
       )}`;
   }
 };

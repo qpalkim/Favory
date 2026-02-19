@@ -11,11 +11,22 @@ interface DropdownOption {
 interface DropdownProps {
   options: DropdownOption[];
   trigger?: React.ReactNode;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export default function Dropdown({ options, trigger }: DropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Dropdown({ options, trigger, isOpen: controlledOpen, onOpenChange }: DropdownProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const isOpen = controlledOpen ?? internalOpen;
+
+  const setIsOpen = (open: boolean) => {
+    if (controlledOpen === undefined) {
+      setInternalOpen(open);
+    }
+    onOpenChange?.(open);
+  }
 
   useClickOutside(ref, () => setIsOpen(false));
 
@@ -35,13 +46,11 @@ export default function Dropdown({ options, trigger }: DropdownProps) {
           {options.map((option, idx) => (
             <li key={option.label}>
               <button
-                className={`md:text-md text-black-500 hover:bg-black-10 w-full cursor-pointer px-5 py-2 text-center text-xs transition-colors duration-200 ease-in-out md:px-6 ${
-                  idx === 0 ? "rounded-t-lg" : ""
-                } ${
-                  idx === options.length - 1
+                className={`md:text-md text-black-500 hover:bg-black-10 w-full cursor-pointer px-5 py-2 text-center text-xs transition-colors duration-200 ease-in-out md:px-6 ${idx === 0 ? "rounded-t-lg" : ""
+                  } ${idx === options.length - 1
                     ? "rounded-b-lg"
                     : "border-black-200 border-b"
-                }`}
+                  }`}
                 onClick={() => {
                   option.onClick();
                   setIsOpen(false);

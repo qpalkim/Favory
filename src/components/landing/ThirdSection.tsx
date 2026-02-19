@@ -54,7 +54,8 @@ export default function ThirdSection() {
         <Image
           src={logo}
           alt="Favory 로고"
-          className="z-50 w-[92px] md:w-[127px]"
+          draggable={false}
+          className="z-50 w-[92px] md:w-[127px] select-none pointer-events-none"
         />
         {icons.map((IconObj, i) => {
           const Icon = IconObj.component;

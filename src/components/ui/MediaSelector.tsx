@@ -13,6 +13,7 @@ const MEDIA_CONFIG: Record<
   MediaType,
   {
     label: string;
+    desc: string;
     placeholder: string;
     creatorFallback: string;
     imageClassName: string;
@@ -20,25 +21,29 @@ const MEDIA_CONFIG: Record<
 > = {
   MUSIC: {
     label: "곡명",
-    placeholder: "노래 제목을 입력한 후, Enter를 눌러 주세요",
+    desc: "노래 제목 또는 가수를 입력한 후, Enter를 눌러 주세요",
+    placeholder: "예) Love wins all, IU",
     creatorFallback: "가수 정보 없음",
     imageClassName: "h-10 w-10 rounded object-cover lg:h-12 lg:w-12",
   },
   MOVIE: {
     label: "작품명",
-    placeholder: "영화 제목을 입력한 후, Enter를 눌러 주세요",
+    desc: "영화 제목을 입력한 후, Enter를 눌러 주세요",
+    placeholder: "예) 타이타닉",
     creatorFallback: "감독 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
   DRAMA: {
     label: "작품명",
-    placeholder: "드라마 제목을 입력한 후, Enter를 눌러 주세요",
+    desc: "드라마 제목을 입력한 후, Enter를 눌러 주세요",
+    placeholder: "예) 동백꽃 필 무렵",
     creatorFallback: "방송사 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
   BOOK: {
     label: "도서명",
-    placeholder: "도서 제목을 입력한 후, Enter를 눌러 주세요",
+    desc: "도서 제목을 입력한 후, Enter를 눌러 주세요",
+    placeholder: "예) 미드나잇 라이브러리",
     creatorFallback: "작가 정보 없음",
     imageClassName: "h-10 w-auto rounded object-cover lg:h-12",
   },
@@ -98,11 +103,12 @@ export default function MediaSelector({
   };
 
   return (
-    <div className="w-full space-y-2 lg:max-w-[660px]">
-      <label className="text-md lg:text-lg text-black-500 mb-2 flex items-center gap-1 font-medium md:mb-[10px] md:text-lg">
+    <div className="w-full lg:max-w-[660px]">
+      <label className="text-md lg:text-lg text-black-500  flex items-center gap-1 font-medium  md:text-lg">
         {config.label}
         <span className="text-md lg:text-lg text-error-100 md:text-lg">*</span>
       </label>
+      <p className="text-sm md:text-md text-black-200 mb-2 md:mb-[10px]">{config.desc}</p>
 
       <div className="relative w-full">
         {!selected ? (
