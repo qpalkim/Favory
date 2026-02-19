@@ -7,12 +7,14 @@ import {
   Tv,
 } from "lucide-react";
 import { MediaType } from "../types/favories";
+import { Category } from "../types/search";
 
-export const MEDIA_TYPE_LABEL_MAP: Record<MediaType, string> = {
+export const MEDIA_TYPE_LABEL_MAP: Record<Category, string> = {
   MUSIC: "음악",
   MOVIE: "영화",
   DRAMA: "드라마",
   BOOK: "도서",
+  PROFILE: "프로필",
 };
 
 export const CREATOR_FALLBACK = {

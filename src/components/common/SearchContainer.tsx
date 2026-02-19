@@ -10,7 +10,7 @@ import {
   useRecentSearchList,
   useSearchFavoryList,
 } from "@/lib/hooks/useSearch";
-import { SORT_OPTIONS } from "@/lib/utils/constants";
+import { MEDIA_TYPE_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import SearchBar from "../ui/SearchBar";
 import FavoryItem from "../ui/FavoryItem";
@@ -39,7 +39,13 @@ export default function SearchContainer() {
   const keyword = searchParams.get("keyword")?.trim() ?? "";
   const isTagSearch = keyword.startsWith("#");
 
-  const [category, setCategory] = useState<Category | undefined>(undefined);
+  const typeLabel = searchParams.get("type");
+  const category = typeLabel
+    ? (Object.entries(MEDIA_TYPE_LABEL_MAP).find(
+      ([, label]) => label === typeLabel
+    )?.[0] as Category | undefined)
+    : undefined;
+
   const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -49,7 +55,7 @@ export default function SearchContainer() {
   const { data, isLoading, isFetching, isError, refetch } = useSearchFavoryList(
     {
       keyword,
-      category: category,
+      category,
       sort: sortOption,
       size: itemsPerPage,
       page: currentPage - 1,
@@ -75,22 +81,35 @@ export default function SearchContainer() {
   const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
   const isRecentListLoading = isRecentLoading || isRecentFetching;
 
-  useEffect(() => {
-    setCurrentPage(1);
-    if (isTagSearch && category === "PROFILE") {
-      setCategory(undefined);
-    }
-  }, [keyword, category, isTagSearch]);
-
   const handleSearch = (term: string) => {
-    setCurrentPage(1);
-    router.push(`/search?keyword=${encodeURIComponent(term)}`);
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("keyword", term);
+    params.delete("type");
+    router.push(`/search?${params.toString()}`);
   };
 
   const handleCategory = (type: Category | undefined) => {
-    setCategory(type);
-    setCurrentPage(1);
+    const label = type ? MEDIA_TYPE_LABEL_MAP[type] : null;
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (label) params.set("type", label);
+    else params.delete("type");
+
+    router.push(`/search?${params.toString()}`);
   };
+
+
+  useEffect(() => {
+    setCurrentPage(1);
+
+    if (isTagSearch && category === "PROFILE") {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("type");
+      router.replace(`/search?${params.toString()}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTagSearch, category]);
 
   if (isError)
     return (
