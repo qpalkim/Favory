@@ -99,7 +99,6 @@ export default function SearchContainer() {
     router.push(`/search?${params.toString()}`);
   };
 
-
   useEffect(() => {
     setCurrentPage(1);
 

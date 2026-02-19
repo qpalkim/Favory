@@ -24,8 +24,15 @@ const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
 export default function FavoryListContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const typeLabel = searchParams.get("type");
+  const mediaType = typeLabel
+    ? (Object.entries(CATEGORY_LABEL_MAP).find(
+      ([, label]) => label === typeLabel
+    )?.[0] as MediaType | undefined)
+    : undefined;
+
   const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
-  const [mediaType, setMediaType] = useState<MediaType | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
 
   const isPC = useMediaQuery("(min-width: 1024px)");
@@ -42,40 +49,20 @@ export default function FavoryListContainer() {
   const favories = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
 
-  const handleMediaClick = (type: MediaType | undefined) => {
+  const handleMediaType = (type: MediaType | undefined) => {
     const label = type ? CATEGORY_LABEL_MAP[type] : null;
     const params = new URLSearchParams(searchParams.toString());
 
-    if (label) {
-      params.set("type", label);
-    } else {
-      params.delete("type");
-    }
+    if (label) params.set("type", label);
+    else params.delete("type");
 
     const query = params.toString();
-    router.push(query ? `/favories?${query}` : "/favories")
+    router.push(query ? `/favories?${query}` : "/favories");
   };
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [itemsPerPage]);
-
-  useEffect(() => {
-    const typeLabel = searchParams.get("type");
-
-    if (!typeLabel) {
-      setMediaType(undefined)
-      return;
-    }
-
-    const found = Object.entries(CATEGORY_LABEL_MAP).find(([, label]) => label === typeLabel);
-
-    if (found) {
-      setMediaType(found[0] as MediaType);
-    } else {
-      setMediaType(undefined);
-    }
-  }, [searchParams]);
+  }, [mediaType, itemsPerPage]);
 
   if (isError) return <RetryError onRetry={refetch} />;
 
@@ -88,7 +75,7 @@ export default function FavoryListContainer() {
               key={item.label}
               size="sm"
               variant={mediaType === item.value ? "primary" : "outline"}
-              onClick={() => handleMediaClick(item.value)}
+              onClick={() => handleMediaType(item.value)}
               disabled={isLoading || isFetching}
             >
               {item.label}
