@@ -127,8 +127,8 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
     if (tags.includes(value)) return setTagInputError("중복된 태그입니다");
     if (value.length > 10)
       return setTagInputError("10자 이내로 입력해 주세요");
-    if (tags.length >= 3)
-      return setTagInputError("최대 3개까지 입력할 수 있습니다");
+    if (tags.length >= 6)
+      return setTagInputError("최대 6개까지 입력할 수 있습니다");
 
     updateTags([...tags, value]);
     setTagInput("");
@@ -189,7 +189,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
             <Input
               label="태그"
               desc="태그를 입력한 후, Enter를 눌러 주세요"
-              placeholder="각 10자 이하로 최대 3개까지 입력할 수 있어요"
+              placeholder="각 10자 이하로 최대 6개까지 입력할 수 있어요"
               value={tagInput}
               onChange={(e) => {
                 setTagInput(e.target.value);
