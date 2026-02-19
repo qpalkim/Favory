@@ -14,7 +14,7 @@ import {
 } from "@/lib/types/favories";
 import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useMyData } from "@/lib/hooks/useUsers";
-import { MEDIA_TYPE_LABEL_MAP } from "@/lib/utils/constants";
+import { CATEGORY_LABEL_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -47,7 +47,7 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) 
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
   const mediaTypeLabel =
-    MEDIA_TYPE_LABEL_MAP[mediaType] || mediaType;
+    CATEGORY_LABEL_MAP[mediaType] || mediaType;
 
   const {
     data: favoryData,

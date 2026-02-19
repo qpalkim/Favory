@@ -9,7 +9,7 @@ import {
 import { MediaType } from "../types/favories";
 import { Category } from "../types/search";
 
-export const MEDIA_TYPE_LABEL_MAP: Record<Category, string> = {
+export const CATEGORY_LABEL_MAP: Record<Category, string> = {
   MUSIC: "음악",
   MOVIE: "영화",
   DRAMA: "드라마",

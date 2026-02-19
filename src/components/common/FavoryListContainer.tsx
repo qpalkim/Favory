@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useFavoryList } from "@/lib/hooks/useFavories";
 import { MediaType } from "@/lib/types/favories";
-import { MEDIA_TYPE_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
+import { CATEGORY_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import FeedCard from "../ui/FeedCard";
 import Button from "../ui/Button";
@@ -43,7 +43,7 @@ export default function FavoryListContainer() {
   const totalPages = data?.totalPages ?? 0;
 
   const handleMediaClick = (type: MediaType | undefined) => {
-    const label = type ? MEDIA_TYPE_LABEL_MAP[type] : null;
+    const label = type ? CATEGORY_LABEL_MAP[type] : null;
     const params = new URLSearchParams(searchParams.toString());
 
     if (label) {
@@ -68,7 +68,7 @@ export default function FavoryListContainer() {
       return;
     }
 
-    const found = Object.entries(MEDIA_TYPE_LABEL_MAP).find(([, label]) => label === typeLabel);
+    const found = Object.entries(CATEGORY_LABEL_MAP).find(([, label]) => label === typeLabel);
 
     if (found) {
       setMediaType(found[0] as MediaType);

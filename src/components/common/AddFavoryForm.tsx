@@ -14,7 +14,7 @@ import {
 import { useMyData } from "@/lib/hooks/useUsers";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
 import { useAddFavory } from "@/lib/hooks/useFavories";
-import { MEDIA_TYPE_LABEL_MAP } from "@/lib/utils/constants";
+import { CATEGORY_LABEL_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -50,7 +50,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
   const [mediaId, setMediaId] = useState<number | null>(null);
   const [isRegisteringMedia, setIsRegisteringMedia] = useState(false);
   const mediaTypeLabel =
-    MEDIA_TYPE_LABEL_MAP[mediaType] || mediaType;
+    CATEGORY_LABEL_MAP[mediaType] || mediaType;
 
   const addMedia = useAddMedia();
   const addFavory = useAddFavory();

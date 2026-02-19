@@ -9,7 +9,7 @@ import { useCommentList } from "@/lib/hooks/useComments";
 import {
   CATEGORY_BUTTON,
   CREATOR_FALLBACK,
-  MEDIA_TYPE_LABEL_MAP,
+  CATEGORY_LABEL_MAP,
 } from "@/lib/utils/constants";
 import { getMediaSearchUrl } from "@/lib/utils/getMediaUrl";
 import formatTime from "@/lib/utils/formatTime";
@@ -105,7 +105,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
 
   const isMine = me?.id === favoryDetail.userId;
   const mediaTypeLabel =
-    MEDIA_TYPE_LABEL_MAP[favoryDetail?.mediaType] || favoryDetail?.mediaType;
+    CATEGORY_LABEL_MAP[favoryDetail?.mediaType] || favoryDetail?.mediaType;
   const { icon: Icon, text } = CATEGORY_BUTTON[favoryDetail?.mediaType];
 
   const CommentSection = (

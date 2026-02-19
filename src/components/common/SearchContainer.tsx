@@ -10,7 +10,7 @@ import {
   useRecentSearchList,
   useSearchFavoryList,
 } from "@/lib/hooks/useSearch";
-import { MEDIA_TYPE_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
+import { CATEGORY_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import SearchBar from "../ui/SearchBar";
 import FavoryItem from "../ui/FavoryItem";
@@ -41,7 +41,7 @@ export default function SearchContainer() {
 
   const typeLabel = searchParams.get("type");
   const category = typeLabel
-    ? (Object.entries(MEDIA_TYPE_LABEL_MAP).find(
+    ? (Object.entries(CATEGORY_LABEL_MAP).find(
       ([, label]) => label === typeLabel
     )?.[0] as Category | undefined)
     : undefined;
@@ -90,7 +90,7 @@ export default function SearchContainer() {
   };
 
   const handleCategory = (type: Category | undefined) => {
-    const label = type ? MEDIA_TYPE_LABEL_MAP[type] : null;
+    const label = type ? CATEGORY_LABEL_MAP[type] : null;
     const params = new URLSearchParams(searchParams.toString());
 
     if (label) params.set("type", label);
