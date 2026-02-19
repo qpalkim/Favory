@@ -45,9 +45,14 @@ export default function SearchContainer() {
       ([, label]) => label === typeLabel
     )?.[0] as Category | undefined)
     : undefined;
+  const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
 
   const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageParam);
+
+  useEffect(() => {
+    setCurrentPage(pageParam);
+  }, [pageParam]);
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const itemsPerPage = isDesktop ? 8 : 6;
@@ -86,6 +91,7 @@ export default function SearchContainer() {
 
     params.set("keyword", term);
     params.delete("type");
+    params.delete("page");
     router.push(`/search?${params.toString()}`);
   };
 
@@ -96,19 +102,23 @@ export default function SearchContainer() {
     if (label) params.set("type", label);
     else params.delete("type");
 
+    params.delete("page");
+    router.push(`/search?${params.toString()}`);
+  };
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(page));
     router.push(`/search?${params.toString()}`);
   };
 
   useEffect(() => {
-    setCurrentPage(1);
-
     if (isTagSearch && category === "PROFILE") {
       const params = new URLSearchParams(searchParams.toString());
       params.delete("type");
       router.replace(`/search?${params.toString()}`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTagSearch, category]);
+  }, [isTagSearch, category, router, searchParams]);
 
   if (isError)
     return (
@@ -198,7 +208,9 @@ export default function SearchContainer() {
                 onSelect={(option) => {
                   if (sortOption === option.value) return;
                   setSortOption(option.value as "latest" | "oldest");
-                  setCurrentPage(1);
+                  const params = new URLSearchParams(searchParams.toString());
+                  params.set("page", "1");
+                  router.push(`/search?${params.toString()}`);
                 }}
               />
             </div>
@@ -275,7 +287,7 @@ export default function SearchContainer() {
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
-                  onChange={setCurrentPage}
+                  onChange={handlePageChange}
                   disabled={isLoading || isFetching}
                 />
               </nav>

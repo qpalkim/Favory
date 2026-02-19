@@ -31,9 +31,14 @@ export default function FavoryListContainer() {
       ([, label]) => label === typeLabel
     )?.[0] as MediaType | undefined)
     : undefined;
+  const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
 
   const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageParam);
+
+  useEffect(() => {
+    setCurrentPage(pageParam);
+  }, [pageParam]);
 
   const isPC = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
@@ -56,13 +61,16 @@ export default function FavoryListContainer() {
     if (label) params.set("type", label);
     else params.delete("type");
 
+    params.delete("page");
     const query = params.toString();
     router.push(query ? `/favories?${query}` : "/favories");
   };
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [mediaType, itemsPerPage]);
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(page));
+    router.push(`/favories?${params.toString()}`);
+  };
 
   if (isError) return <RetryError onRetry={refetch} />;
 
@@ -88,7 +96,9 @@ export default function FavoryListContainer() {
           onSelect={(option) => {
             if (sortOption == option.value) return;
             setSortOption(option.value as "latest" | "oldest");
-            setCurrentPage(1);
+            const params = new URLSearchParams(searchParams.toString());
+            params.set("page", "1");
+            router.push(`/favories?${params.toString()}`);
           }}
         />
       </div>
@@ -116,7 +126,7 @@ export default function FavoryListContainer() {
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                onChange={setCurrentPage}
+                onChange={handlePageChange}
                 disabled={isLoading || isFetching}
               />
             </nav>
