@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,12 +26,19 @@ interface EditProfileModalProps {
 }
 
 export default function EditProfileModal({ onClose }: EditProfileModalProps) {
-  const { data: me } = useMyData();
-  const editMyDataMutation = useEditMyData(me!.id);
-  const uploadProfileImage = useProfileImageUrl();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const { data: me } = useMyData();
+
+  const editMyDataMutation = useEditMyData(me!.id);
+
+  const uploadProfileImage = useProfileImageUrl();
+
 
   const {
     register,
@@ -46,10 +53,13 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
 
   useEffect(() => {
     if (!me) return;
+
     reset({
       nickname: me.nickname || "",
       profileMessage: me.profileMessage ?? undefined,
     });
+
+    setPreviewImage(me.profileImageUrl ?? null);
   }, [me, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,24 +67,17 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     if (!file || !me) return;
 
     const result = profileImageUrlRequestSchema.safeParse({ file });
+
     if (!result.success) {
       toast.error(result.error.issues[0].message);
       e.target.value = "";
       return;
     }
 
-    uploadProfileImage.mutate(
-      { id: me.id, file },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["me"] });
-          toast.success("프로필 이미지 등록에 성공했습니다");
-        },
-        onError: () => {
-          toast.error("프로필 이미지 등록에 실패했습니다");
-        },
-      },
-    );
+    setSelectedFile(file);
+
+    const previewUrl = URL.createObjectURL(file);
+    setPreviewImage(previewUrl);
   };
 
   const onSubmit = async (data: EditProfileRequest) => {
@@ -84,8 +87,17 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     const nextNickname = data.nickname;
 
     try {
+      if (selectedFile) {
+        await uploadProfileImage.mutateAsync({
+          id: me.id,
+          file: selectedFile,
+        });
+      }
+
       await editMyDataMutation.mutateAsync(data);
+
       queryClient.invalidateQueries({ queryKey: ["me"] });
+
       toast.success("프로필 수정에 성공했습니다");
       onClose();
 
@@ -109,6 +121,9 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     }
   };
 
+  const isImageDirty = selectedFile !== null;
+  const canSubmit = isValid && (isDirty || isImageDirty);
+
   return (
     <form
       className="space-y-6"
@@ -120,7 +135,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
       </h2>
 
       <div className="flex items-center gap-3 md:gap-4">
-        <ProfileImage src={me?.profileImageUrl || null} size="lg" />
+        <ProfileImage src={previewImage ?? me?.profileImageUrl ?? null} size="lg" />
         <input
           type="file"
           accept="image/*"
@@ -168,7 +183,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
           className="w-full"
           type="submit"
           isLoading={isSubmitting}
-          disabled={!isValid || !isDirty}
+          disabled={!canSubmit}
           ariaLabel="프로필 수정 완료"
         >
           수정하기
