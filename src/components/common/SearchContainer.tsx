@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -40,6 +40,7 @@ export default function SearchContainer() {
   const searchParams = useSearchParams();
   const keyword = searchParams.get("keyword")?.trim() ?? "";
   const isTagSearch = keyword.startsWith("#");
+  const createParams = () => new URLSearchParams(searchParams.toString());
 
   const typeLabel = searchParams.get("type");
   const category = typeLabel
@@ -50,11 +51,7 @@ export default function SearchContainer() {
   const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
 
   const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
-  const [currentPage, setCurrentPage] = useState(pageParam);
-
-  useEffect(() => {
-    setCurrentPage(pageParam);
-  }, [pageParam]);
+  const currentPage = pageParam;
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const itemsPerPage = isDesktop ? 8 : 6;
@@ -84,27 +81,27 @@ export default function SearchContainer() {
     isError: isRecentError,
     refetch: refetchRecent,
   } = useRecentSearchList();
-  const uniqueRecentList = [...new Set(recentSearchList ?? [])];
+  const uniqueRecentList = useMemo(() => [...new Set(recentSearchList ?? [])], [recentSearchList]);
 
   const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
   const isRecentListLoading = isRecentLoading || isRecentFetching;
 
   const handleSearch = (term: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-
+    const params = createParams();
     params.set("keyword", term);
     params.delete("type");
     params.delete("page");
     router.push(`/search?${params.toString()}`);
 
     queryClient.invalidateQueries({
-      queryKey: ["search", "recent"]
-    })
+      queryKey: ["search", "recent"],
+      exact: true,
+    });
   };
 
   const handleCategory = (type: Category | undefined) => {
     const label = type ? CATEGORY_LABEL_MAP[type] : null;
-    const params = new URLSearchParams(searchParams.toString());
+    const params = createParams();
 
     if (label) params.set("type", label);
     else params.delete("type");
@@ -114,14 +111,16 @@ export default function SearchContainer() {
   };
 
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = createParams();
+
     params.set("page", String(page));
     router.push(`/search?${params.toString()}`);
   };
 
   useEffect(() => {
+    const params = createParams();
+
     if (isTagSearch && category === "PROFILE") {
-      const params = new URLSearchParams(searchParams.toString());
       params.delete("type");
       router.replace(`/search?${params.toString()}`);
     }
@@ -251,7 +250,6 @@ export default function SearchContainer() {
                   onSelect={(option) => {
                     if (sortOption === option.value) return;
                     setSortOption(option.value as "latest" | "oldest");
-                    setCurrentPage(1);
                   }}
                 />
               </div>
