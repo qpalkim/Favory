@@ -10,7 +10,7 @@ import { MediaItem } from "@/lib/types/media";
 import {
   EditFavoryRequest,
   editFavoryRequestSchema,
-  MediaType,
+  MediaTypeCategory,
 } from "@/lib/types/favories";
 import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useMyData } from "@/lib/hooks/useUsers";
@@ -25,7 +25,7 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import MediaSelector from "../ui/MediaSelector";
 import RetryError from "../ui/RetryError";
 
-export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) {
+export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCategory }) {
   const { data: me } = useMyData();
   const router = useRouter();
   const params = useParams();

@@ -1,5 +1,5 @@
 import z from "zod";
-import { mediaTypeSchema } from "./favories";
+import { mediaTypeCategorySchema } from "./favories";
 
 // 공통 미디어 API 타입
 export const mediaItemSchema = z.object({
@@ -7,7 +7,7 @@ export const mediaItemSchema = z.object({
   creator: z.string().nullable(),
   year: z.number().nullable(),
   imageUrl: z.string().nullable(),
-  mediaType: mediaTypeSchema,
+  mediaType: mediaTypeCategorySchema,
   externalId: z.string(),
 });
 
@@ -16,7 +16,7 @@ export type MediaItem = z.infer<typeof mediaItemSchema>;
 // 외부 API 미디어 검색 조회 파라미터 API 타입
 export const getMediaSearchParamsSchema = z.object({
   keyword: z.string(),
-  type: mediaTypeSchema,
+  type: mediaTypeCategorySchema,
   limit: z.number().optional(),
 });
 
@@ -39,7 +39,7 @@ export type MediaExistsResponse = z.infer<typeof mediaExistsResponseSchema>;
 // 미디어 등록 요청 API 타입
 export const addMediaRequestSchema = z.object({
   externalId: z.string(),
-  mediaType: mediaTypeSchema,
+  mediaType: mediaTypeCategorySchema,
   title: z.string(),
   creator: z.string().nullable(),
   year: z.number().nullable(),
@@ -52,7 +52,7 @@ export type AddMediaRequest = z.infer<typeof addMediaRequestSchema>;
 export const addMediaResponseSchema = z.object({
   id: z.number(),
   externalId: z.string(),
-  mediaType: mediaTypeSchema,
+  mediaType: mediaTypeCategorySchema,
   title: z.string(),
   creator: z.string().nullable(),
   year: z.number().nullable(),

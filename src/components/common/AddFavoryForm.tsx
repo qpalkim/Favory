@@ -9,7 +9,7 @@ import { MediaItem } from "@/lib/types/media";
 import {
   AddFavoryRequest,
   addFavoryRequestSchema,
-  MediaType,
+  MediaTypeCategory,
 } from "@/lib/types/favories";
 import { useMyData } from "@/lib/hooks/useUsers";
 import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
@@ -23,7 +23,7 @@ import Button from "@/components/ui/Button";
 import Badge from "../ui/Badge";
 import MediaSelector from "../ui/MediaSelector";
 
-export default function AddFavoryForm({ mediaType }: { mediaType: MediaType }) {
+export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCategory }) {
   const { data: me } = useMyData();
   const router = useRouter();
 

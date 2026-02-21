@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useProfile } from "@/lib/contexts/ProfileContext";
 import { useUserFavoryList } from "@/lib/hooks/useFavories";
-import { MediaType } from "@/lib/types/favories";
+import { MediaTypeCategory } from "@/lib/types/favories";
 import { SORT_OPTIONS } from "@/lib/utils/constants";
 import SelectOption from "@/components/ui/SelectOption";
 import Pagination from "@/components/ui/Pagination";
@@ -11,7 +11,7 @@ import Empty from "../../ui/Empty";
 import RetryError from "@/components/ui/RetryError";
 
 interface FavoryContentProps {
-  type: MediaType;
+  type: MediaTypeCategory;
   label: string;
 }
 

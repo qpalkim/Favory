@@ -6,7 +6,7 @@ import {
   Music4,
   Tv,
 } from "lucide-react";
-import { MediaType } from "../types/favories";
+import { MediaTypeCategory } from "../types/favories";
 import { SearchCategory } from "../types/search";
 
 export const CATEGORY_LABEL_MAP: Record<SearchCategory, string> = {
@@ -29,7 +29,7 @@ export const SORT_OPTIONS = [
   { label: "등록순", value: "oldest" },
 ];
 
-export const CATEGORY_BUTTON: Record<MediaType, { icon: LucideIcon, text: string }> = {
+export const CATEGORY_BUTTON: Record<MediaTypeCategory, { icon: LucideIcon, text: string }> = {
   MUSIC: { icon: Music4, text: "지금 들으러 가기" },
   MOVIE: { icon: Clapperboard, text: "지금 보러 가기" },
   DRAMA: { icon: Tv, text: "지금 보러 가기" },
@@ -63,6 +63,14 @@ export const MEDIA_TYPE_META = {
     icon: MessageCircleMore,
   },
 } as const;
+
+export const MEDIA_TYPE_CATEGORY_OPTIONS: { label: string; value: MediaTypeCategory | undefined }[] = [
+  { label: "전체", value: undefined },
+  { label: "음악", value: "MUSIC" },
+  { label: "영화", value: "MOVIE" },
+  { label: "드라마", value: "DRAMA" },
+  { label: "도서", value: "BOOK" },
+];
 
 export const SEARCH_MEDIA_CATEGORY_OPTIONS: {
   label: string;

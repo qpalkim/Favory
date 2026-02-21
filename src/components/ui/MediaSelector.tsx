@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import { MediaType } from "@/lib/types/favories";
+import { MediaTypeCategory } from "@/lib/types/favories";
 import { MediaItem } from "@/lib/types/media";
 import { useMediaSearch } from "@/lib/hooks/useMedia";
 import { useClickOutside } from "@/lib/utils/useClickOutside";
@@ -10,7 +10,7 @@ import Input from "./Input";
 import LoadingSpinner from "./LoadingSpinner";
 
 const MEDIA_CONFIG: Record<
-  MediaType,
+  MediaTypeCategory,
   {
     label: string;
     desc: string;
@@ -50,7 +50,7 @@ const MEDIA_CONFIG: Record<
 };
 
 interface MediaSelectorProps {
-  type: MediaType;
+  type: MediaTypeCategory;
   onSelect?: (item: MediaItem | null) => void;
   selected?: MediaItem | null;
   disabled?: boolean;
