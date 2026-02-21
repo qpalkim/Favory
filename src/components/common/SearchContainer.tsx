@@ -3,12 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Category } from "@/lib/types/search";
+import { SearchCategory } from "@/lib/types/search";
 import { User } from "@/lib/types/users";
 import { Favory } from "@/lib/types/favories";
 import { useSearchFavoryList } from "@/lib/hooks/useSearch";
-import { CATEGORY_LABEL_MAP, SEARCH_MEDIA_TYPES, SORT_OPTIONS } from "@/lib/utils/constants";
+import { CATEGORY_LABEL_MAP, SEARCH_MEDIA_CATEGORY_OPTIONS, SORT_OPTIONS } from "@/lib/utils/constants";
+import { getCategoryFromLabel } from "@/lib/utils/getCategoryFromLabel";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
+import SearchRecentSection from "./SearchRecentSection";
 import SearchBar from "../ui/SearchBar";
 import FavoryItem from "../ui/FavoryItem";
 import ProfileItem from "../ui/ProfileItem";
@@ -19,24 +21,18 @@ import FavoryItemSkeleton from "../skeleton/FavoryItemSkeleton";
 import ProfileItemSkeleton from "../skeleton/ProfileItemSkeleton";
 import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
-import SearchRecentSection from "./SearchRecentSection";
 
 export default function SearchContainer() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const createParams = useCallback(() => new URLSearchParams(searchParams.toString()), [searchParams]);
 
   const keyword = searchParams.get("keyword")?.trim() ?? "";
   const isTagSearch = keyword.startsWith("#");
 
-  const createParams = useCallback(() => new URLSearchParams(searchParams.toString()), [searchParams]);
-
-  const typeLabel = searchParams.get("type");
-  const category = typeLabel
-    ? (Object.entries(CATEGORY_LABEL_MAP).find(
-      ([, label]) => label === typeLabel
-    )?.[0] as Category | undefined)
-    : undefined;
+  const categoryLabel = searchParams.get("type");
+  const category = getCategoryFromLabel<SearchCategory>(categoryLabel, CATEGORY_LABEL_MAP);
   const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
 
   const sortParam = searchParams.get("sort") as "latest" | "oldest" | null;
@@ -60,12 +56,11 @@ export default function SearchContainer() {
 
   const isProfileCategory = category === "PROFILE";
 
-  const favoryList: Favory[] =
-    !isProfileCategory && data ? (data.content as Favory[]) : [];
-  const profileList: User[] =
-    isProfileCategory && data ? (data.content as User[]) : [];
+  const favoryList: Favory[] = !isProfileCategory && data ? (data.content as Favory[]) : [];
 
-  const handleSearch = (term: string) => {
+  const profileList: User[] = isProfileCategory && data ? (data.content as User[]) : [];
+
+  const handleSearchChange = (term: string) => {
     const params = createParams();
     params.set("keyword", term);
     params.delete("type");
@@ -78,7 +73,7 @@ export default function SearchContainer() {
     });
   };
 
-  const handleCategory = (type: Category | undefined) => {
+  const handleCategoryChange = (type: SearchCategory | undefined) => {
     const label = type ? CATEGORY_LABEL_MAP[type] : null;
     const params = createParams();
 
@@ -89,7 +84,7 @@ export default function SearchContainer() {
     router.push(`/search?${params.toString()}`);
   };
 
-  const handleSort = (value: "latest" | "oldest") => {
+  const handleSortChange = (value: "latest" | "oldest") => {
     if (sortOption === value) return;
 
     setSortOption(value);
@@ -136,12 +131,12 @@ export default function SearchContainer() {
               <ArrowLeft
                 className="h-6 w-6 cursor-pointer text-green-600 hover:text-green-500"
               /></button>
-            <SearchBar onSearch={handleSearch} searchTerm={keyword} />
+            <SearchBar onSearch={handleSearchChange} searchTerm={keyword} />
           </div>
         </section>
 
         <section className="lg:row-span-2">
-          <SearchRecentSection onSearch={handleSearch} />
+          <SearchRecentSection onSearch={handleSearchChange} />
         </section>
 
         {keyword && (
@@ -153,7 +148,7 @@ export default function SearchContainer() {
               <SelectOption
                 options={SORT_OPTIONS}
                 disabled={isLoading || isFetching}
-                onSelect={(option) => handleSort(option.value as "latest" | "oldest")}
+                onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
               />
             </div>
 
@@ -162,7 +157,7 @@ export default function SearchContainer() {
             </h2>
             <div className="mt-6 flex items-center justify-between">
               <div className="flex items-center gap-1">
-                {SEARCH_MEDIA_TYPES.map((item) => {
+                {SEARCH_MEDIA_CATEGORY_OPTIONS.map((item) => {
                   const isDisabled =
                     item.value === "PROFILE" && isTagSearch;
 
@@ -171,7 +166,7 @@ export default function SearchContainer() {
                       key={item.label}
                       size="sm"
                       variant={category === item.value ? "primary" : "outline"}
-                      onClick={() => handleCategory(item.value)}
+                      onClick={() => handleCategoryChange(item.value)}
                       disabled={isSearching || isDisabled}
                     >
                       {item.label}
@@ -183,7 +178,7 @@ export default function SearchContainer() {
                 <SelectOption
                   options={SORT_OPTIONS}
                   disabled={isLoading || isFetching}
-                  onSelect={(option) => handleSort(option.value as "latest" | "oldest")}
+                  onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
                 />
               </div>
             </div>

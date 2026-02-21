@@ -3,7 +3,7 @@ import { favorySchema } from "./favories";
 import { userSchema } from "./users";
 
 // 공통 카테고리 API 타입
-export const categorySchema = z.enum([
+export const searchCategorySchema = z.enum([
   "MUSIC",
   "MOVIE",
   "DRAMA",
@@ -11,7 +11,7 @@ export const categorySchema = z.enum([
   "PROFILE",
 ]);
 
-export type Category = z.infer<typeof categorySchema>;
+export type SearchCategory = z.infer<typeof searchCategorySchema>;
 
 // 검색 결과 조회 파라미터 API 타입
 export const getSearchFavoryListParamsSchema = z.object({

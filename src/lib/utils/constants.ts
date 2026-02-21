@@ -7,9 +7,9 @@ import {
   Tv,
 } from "lucide-react";
 import { MediaType } from "../types/favories";
-import { Category } from "../types/search";
+import { SearchCategory } from "../types/search";
 
-export const CATEGORY_LABEL_MAP: Record<Category, string> = {
+export const CATEGORY_LABEL_MAP: Record<SearchCategory, string> = {
   MUSIC: "음악",
   MOVIE: "영화",
   DRAMA: "드라마",
@@ -64,9 +64,9 @@ export const MEDIA_TYPE_META = {
   },
 } as const;
 
-export const SEARCH_MEDIA_TYPES: {
+export const SEARCH_MEDIA_CATEGORY_OPTIONS: {
   label: string;
-  value: Category | undefined;
+  value: SearchCategory | undefined;
 }[] = [
     { label: "전체", value: undefined },
     { label: "음악", value: "MUSIC" },
