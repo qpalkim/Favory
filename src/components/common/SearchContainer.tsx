@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/lib/types/search";
 import { User } from "@/lib/types/users";
 import { Favory } from "@/lib/types/favories";
@@ -34,6 +35,7 @@ const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
 ];
 
 export default function SearchContainer() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
   const keyword = searchParams.get("keyword")?.trim() ?? "";
@@ -82,6 +84,7 @@ export default function SearchContainer() {
     isError: isRecentError,
     refetch: refetchRecent,
   } = useRecentSearchList();
+  const uniqueRecentList = [...new Set(recentSearchList ?? [])];
 
   const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
   const isRecentListLoading = isRecentLoading || isRecentFetching;
@@ -93,6 +96,10 @@ export default function SearchContainer() {
     params.delete("type");
     params.delete("page");
     router.push(`/search?${params.toString()}`);
+
+    queryClient.invalidateQueries({
+      queryKey: ["search", "recent"]
+    })
   };
 
   const handleCategory = (type: Category | undefined) => {
@@ -150,7 +157,7 @@ export default function SearchContainer() {
             <h2 className="text-black-500 md:text-2lg text-[15px] font-medium">
               최근 검색어
             </h2>
-            {recentSearchList && recentSearchList.length > 0 && (
+            {uniqueRecentList.length > 0 && (
               <button
                 type="button"
                 aria-label="최근 검색어 전체 삭제"
@@ -179,8 +186,8 @@ export default function SearchContainer() {
                   로그인 후, 이용 가능합니다
                 </p>
               </div>
-            ) : recentSearchList && recentSearchList.length > 0 ? (
-              recentSearchList.map((term, idx) => (
+            ) : uniqueRecentList.length > 0 ? (
+              uniqueRecentList.map((term, idx) => (
                 <Badge
                   key={`${term}-${idx}`}
                   onClick={() => handleSearch(term)}
