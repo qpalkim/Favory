@@ -1,46 +1,35 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/lib/types/search";
 import { User } from "@/lib/types/users";
 import { Favory } from "@/lib/types/favories";
-import {
-  useDeleteRecentSearchList,
-  useRecentSearchList,
-  useSearchFavoryList,
-} from "@/lib/hooks/useSearch";
-import { CATEGORY_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
+import { useSearchFavoryList } from "@/lib/hooks/useSearch";
+import { CATEGORY_LABEL_MAP, SEARCH_MEDIA_TYPES, SORT_OPTIONS } from "@/lib/utils/constants";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import SearchBar from "../ui/SearchBar";
 import FavoryItem from "../ui/FavoryItem";
 import ProfileItem from "../ui/ProfileItem";
 import Button from "../ui/Button";
-import Badge from "../ui/Badge";
 import SelectOption from "../ui/SelectOption";
 import Pagination from "../ui/Pagination";
 import FavoryItemSkeleton from "../skeleton/FavoryItemSkeleton";
 import ProfileItemSkeleton from "../skeleton/ProfileItemSkeleton";
 import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
-
-const MEDIA_TYPES: { label: string; value: Category | undefined }[] = [
-  { label: "전체", value: undefined },
-  { label: "음악", value: "MUSIC" },
-  { label: "영화", value: "MOVIE" },
-  { label: "드라마", value: "DRAMA" },
-  { label: "도서", value: "BOOK" },
-  { label: "프로필", value: "PROFILE" },
-];
+import SearchRecentSection from "./SearchRecentSection";
 
 export default function SearchContainer() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const keyword = searchParams.get("keyword")?.trim() ?? "";
   const isTagSearch = keyword.startsWith("#");
-  const createParams = () => new URLSearchParams(searchParams.toString());
+
+  const createParams = useCallback(() => new URLSearchParams(searchParams.toString()), [searchParams]);
 
   const typeLabel = searchParams.get("type");
   const category = typeLabel
@@ -50,7 +39,8 @@ export default function SearchContainer() {
     : undefined;
   const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
 
-  const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
+  const sortParam = searchParams.get("sort") as "latest" | "oldest" | null;
+  const [sortOption, setSortOption] = useState<"latest" | "oldest">(sortParam ?? "latest");
   const currentPage = pageParam;
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -69,22 +59,11 @@ export default function SearchContainer() {
   const totalPages = data?.totalPages ?? 0;
 
   const isProfileCategory = category === "PROFILE";
+
   const favoryList: Favory[] =
     !isProfileCategory && data ? (data.content as Favory[]) : [];
   const profileList: User[] =
     isProfileCategory && data ? (data.content as User[]) : [];
-
-  const {
-    data: recentSearchList,
-    isLoading: isRecentLoading,
-    isFetching: isRecentFetching,
-    isError: isRecentError,
-    refetch: refetchRecent,
-  } = useRecentSearchList();
-  const uniqueRecentList = useMemo(() => [...new Set(recentSearchList ?? [])], [recentSearchList]);
-
-  const { mutate: deleteRecentSearchList } = useDeleteRecentSearchList();
-  const isRecentListLoading = isRecentLoading || isRecentFetching;
 
   const handleSearch = (term: string) => {
     const params = createParams();
@@ -110,6 +89,17 @@ export default function SearchContainer() {
     router.push(`/search?${params.toString()}`);
   };
 
+  const handleSort = (value: "latest" | "oldest") => {
+    if (sortOption === value) return;
+
+    setSortOption(value);
+
+    const params = createParams();
+    params.set("sort", value);
+    params.set("page", "1");
+    router.push(`/search?${params.toString()}`);
+  }
+
   const handlePageChange = (page: number) => {
     const params = createParams();
 
@@ -124,7 +114,7 @@ export default function SearchContainer() {
       params.delete("type");
       router.replace(`/search?${params.toString()}`);
     }
-  }, [isTagSearch, category, router, searchParams]);
+  }, [isTagSearch, category, router, createParams]);
 
   if (isError)
     return (
@@ -132,7 +122,6 @@ export default function SearchContainer() {
         <RetryError
           onRetry={() => {
             refetch();
-            refetchRecent();
           }}
         />
       </div>
@@ -152,54 +141,7 @@ export default function SearchContainer() {
         </section>
 
         <section className="lg:row-span-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-black-500 md:text-2lg text-[15px] font-medium">
-              최근 검색어
-            </h2>
-            {uniqueRecentList.length > 0 && (
-              <button
-                type="button"
-                aria-label="최근 검색어 전체 삭제"
-                disabled={isRecentListLoading}
-                className="text-error-100 cursor-pointer text-xs font-medium disabled:cursor-not-allowed disabled:opacity-40 md:text-sm"
-                onClick={() => deleteRecentSearchList()}
-              >
-                모두 지우기
-              </button>
-            )}
-          </div>
-
-          <div className="mt-3 flex flex-wrap gap-2 md:mt-4">
-            {isRecentListLoading ? (
-              <>
-                {Array.from({ length: 5 }).map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-black-100/40 h-8 w-12 animate-pulse rounded-md"
-                  />
-                ))}
-              </>
-            ) : isRecentError ? (
-              <div className="my-6 flex w-full justify-center">
-                <p className="text-black-200 md:text-md mt-2 text-center text-sm whitespace-pre-line">
-                  로그인 후, 이용 가능합니다
-                </p>
-              </div>
-            ) : uniqueRecentList.length > 0 ? (
-              uniqueRecentList.map((term, idx) => (
-                <Badge
-                  key={`${term}-${idx}`}
-                  onClick={() => handleSearch(term)}
-                >
-                  {term}
-                </Badge>
-              ))
-            ) : (
-              <div className="my-6 flex w-full justify-center">
-                <Empty type="recentSearch" />
-              </div>
-            )}
-          </div>
+          <SearchRecentSection onSearch={handleSearch} />
         </section>
 
         {keyword && (
@@ -211,13 +153,7 @@ export default function SearchContainer() {
               <SelectOption
                 options={SORT_OPTIONS}
                 disabled={isLoading || isFetching}
-                onSelect={(option) => {
-                  if (sortOption === option.value) return;
-                  setSortOption(option.value as "latest" | "oldest");
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set("page", "1");
-                  router.push(`/search?${params.toString()}`);
-                }}
+                onSelect={(option) => handleSort(option.value as "latest" | "oldest")}
               />
             </div>
 
@@ -226,7 +162,7 @@ export default function SearchContainer() {
             </h2>
             <div className="mt-6 flex items-center justify-between">
               <div className="flex items-center gap-1">
-                {MEDIA_TYPES.map((item) => {
+                {SEARCH_MEDIA_TYPES.map((item) => {
                   const isDisabled =
                     item.value === "PROFILE" && isTagSearch;
 
@@ -247,10 +183,7 @@ export default function SearchContainer() {
                 <SelectOption
                   options={SORT_OPTIONS}
                   disabled={isLoading || isFetching}
-                  onSelect={(option) => {
-                    if (sortOption === option.value) return;
-                    setSortOption(option.value as "latest" | "oldest");
-                  }}
+                  onSelect={(option) => handleSort(option.value as "latest" | "oldest")}
                 />
               </div>
             </div>
