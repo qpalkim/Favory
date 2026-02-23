@@ -10,11 +10,11 @@ import { MediaItem } from "@/lib/types/media";
 import {
   EditFavoryRequest,
   editFavoryRequestSchema,
-  MediaType,
+  MediaTypeCategory,
 } from "@/lib/types/favories";
 import { useEditFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useMyData } from "@/lib/hooks/useUsers";
-import { MEDIA_TYPE_LABEL_MAP } from "@/lib/utils/constants";
+import { CATEGORY_LABEL_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
 import Input from "@/components/ui/Input";
@@ -25,7 +25,7 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import MediaSelector from "../ui/MediaSelector";
 import RetryError from "../ui/RetryError";
 
-export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) {
+export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCategory }) {
   const { data: me } = useMyData();
   const router = useRouter();
   const params = useParams();
@@ -47,7 +47,7 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) 
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
   const mediaTypeLabel =
-    MEDIA_TYPE_LABEL_MAP[mediaType] || mediaType;
+    CATEGORY_LABEL_MAP[mediaType] || mediaType;
 
   const {
     data: favoryData,
@@ -118,8 +118,8 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) 
     if (tags.includes(value)) return setTagInputError("중복된 태그입니다");
     if (value.length > 10)
       return setTagInputError("10자 이내로 입력해 주세요");
-    if (tags.length >= 3)
-      return setTagInputError("최대 3개까지 입력할 수 있습니다");
+    if (tags.length >= 6)
+      return setTagInputError("최대 6개까지 입력할 수 있습니다");
 
     updateTags([...tags, value]);
     setTagInput("");
@@ -191,7 +191,8 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaType }) 
           <div className="mb-10">
             <Input
               label="태그"
-              placeholder="태그를 입력한 후, Enter를 눌러 주세요"
+              desc="태그를 입력한 후, Enter를 눌러 주세요"
+              placeholder="각 10자 이하로 최대 6개까지 입력할 수 있어요"
               value={tagInput}
               onChange={(e) => {
                 setTagInput(e.target.value);

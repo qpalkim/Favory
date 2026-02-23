@@ -1,11 +1,9 @@
-import { createContext, useContext, useState } from "react";
-import { ProfileCategory, User } from "../types/users";
+import { createContext, useContext } from "react";
+import { User } from "../types/users";
 
 type ProfileContextValue = {
   user: User;
   isMyProfile: boolean;
-  tab: ProfileCategory;
-  setTab: (tab: ProfileCategory) => void;
 };
 
 const ProfileContext = createContext<ProfileContextValue | null>(null);
@@ -19,15 +17,11 @@ export const ProfileProvider = ({
   isMyProfile: boolean;
   children: React.ReactNode;
 }) => {
-  const [tab, setTab] = useState<ProfileCategory>("MUSIC");
-
   return (
     <ProfileContext.Provider
       value={{
         user,
         isMyProfile,
-        tab,
-        setTab,
       }}
     >
       {children}

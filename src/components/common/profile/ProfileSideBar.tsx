@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Pencil } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useProfile } from "@/lib/contexts/ProfileContext";
+import { ProfileCategory } from "@/lib/types/users";
 import { MEDIA_TYPE_META } from "@/lib/utils/constants";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
@@ -9,11 +11,34 @@ import Modal from "@/components/ui/Modal";
 import EditProfileModal from "../modal/EditProfileModal";
 
 export default function ProfileSideBar() {
-  const { tab, setTab, user, isMyProfile } = useProfile();
+  const { user, isMyProfile } = useProfile();
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const typeLabel = searchParams.get("type");
 
   const tabItems = Object.values(MEDIA_TYPE_META)
     .filter(({ id }) => isMyProfile || id !== "COMMENT");
+
+  const activeId = tabItems.find((t) => t.label === typeLabel)?.id ?? tabItems[0].id;
+
+  const handleTabChange = (id: ProfileCategory) => {
+    const tabMeta = tabItems.find((t) => t.id === id);
+    if (!tabMeta) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("type", tabMeta.label);
+    params.delete("page");
+    params.delete("sort");
+
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
+  };
 
   return (
     <>
@@ -45,12 +70,12 @@ export default function ProfileSideBar() {
           )}
           <nav aria-label="프로필 탭" className="flex w-full flex-col gap-2">
             {tabItems.map(({ id, label, icon: Icon }) => {
-              const isActive = tab === id;
+              const isActive = activeId === id;
 
               return (
                 <button
                   key={id}
-                  onClick={() => setTab(id)}
+                  onClick={() => handleTabChange(id)}
                   role="tab"
                   aria-selected={isActive}
                   className={cn(

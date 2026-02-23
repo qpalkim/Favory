@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import {
   keepPreviousData,
   useMutation,
@@ -32,20 +33,21 @@ export const useRecentSearchList = () => {
   return useQuery<RecentSearchListResponse>({
     queryKey: ["search", "recent"],
     queryFn: getRecentSearchList,
-    staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 30,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
   });
 };
 
 // 최근 검색어 목록 전체 삭제 훅
 export const useDeleteRecentSearchList = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: deleteSearchRecent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["search", "recent"] });
+      toast.success("최근 검색어 목록이 삭제되었습니다");
     },
+    onError: () => {
+      toast.error("최근 검색어 목록 삭제에 실패했습니다");
+    }
   });
 };

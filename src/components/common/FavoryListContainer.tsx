@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFavoryList } from "@/lib/hooks/useFavories";
-import { MediaType } from "@/lib/types/favories";
-import { MEDIA_TYPE_LABEL_MAP, SORT_OPTIONS } from "@/lib/utils/constants";
+import { MediaTypeCategory } from "@/lib/types/favories";
+import { CATEGORY_LABEL_MAP, MEDIA_TYPE_CATEGORY_OPTIONS, SORT_OPTIONS } from "@/lib/utils/constants";
+import { getCategoryFromLabel } from "@/lib/utils/getCategoryFromLabel";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
 import FeedCard from "../ui/FeedCard";
 import Button from "../ui/Button";
@@ -13,69 +14,74 @@ import FeedCardSkeleton from "../skeleton/FeedCardSkeleton";
 import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
 
-const MEDIA_TYPES: { label: string; value: MediaType | undefined }[] = [
-  { label: "전체", value: undefined },
-  { label: "음악", value: "MUSIC" },
-  { label: "영화", value: "MOVIE" },
-  { label: "드라마", value: "DRAMA" },
-  { label: "도서", value: "BOOK" },
-];
-
 export default function FavoryListContainer() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [sortOption, setSortOption] = useState<"latest" | "oldest">("latest");
-  const [mediaType, setMediaType] = useState<MediaType | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const categoryLabel = searchParams.get("type");
+  const category = getCategoryFromLabel<MediaTypeCategory>(categoryLabel, CATEGORY_LABEL_MAP);
+
+  const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
+  const currentPage = pageParam;
+
+  const sortOption = (searchParams.get("sort") as "latest" | "oldest") ?? "latest";
 
   const isPC = useMediaQuery("(min-width: 1024px)");
-  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isTablet = useMediaQuery("(min-width: 768px)");
   const itemsPerPage = isPC ? 16 : isTablet ? 12 : 8;
 
   const { data, isLoading, isFetching, isError, refetch } = useFavoryList({
     page: currentPage - 1,
     size: itemsPerPage,
     sort: sortOption,
-    type: mediaType,
+    type: category,
   });
-
-  const favories = data?.content ?? [];
+  const favoryList = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
 
-  const handleMediaClick = (type: MediaType | undefined) => {
-    const label = type ? MEDIA_TYPE_LABEL_MAP[type] : null;
+  useEffect(() => {
+    if (!data) return;
+    if (data.totalPages === 0) return;
+
+    if (currentPage > data.totalPages) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", String(data.totalPages));
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, [data, currentPage, router, pathname, searchParams]);
+
+  const handleCategoryChange = (type: MediaTypeCategory | undefined) => {
+    const label = type ? CATEGORY_LABEL_MAP[type] : null;
     const params = new URLSearchParams(searchParams.toString());
 
-    if (label) {
-      params.set("type", label);
-    } else {
-      params.delete("type");
-    }
+    if (label) params.set("type", label);
+    else params.delete("type");
 
     const query = params.toString();
-    router.push(query ? `/favories?${query}` : "/favories")
+    router.push(query ? `${pathname}?${query}` : pathname);
   };
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [itemsPerPage]);
+  const handleSortChange = (value: "latest" | "oldest") => {
+    if (sortOption === value) return;
 
-  useEffect(() => {
-    const typeLabel = searchParams.get("type");
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", value);
+    params.delete("page");
 
-    if (!typeLabel) {
-      setMediaType(undefined)
-      return;
-    }
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
+  }
 
-    const found = Object.entries(MEDIA_TYPE_LABEL_MAP).find(([, label]) => label === typeLabel);
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
 
-    if (found) {
-      setMediaType(found[0] as MediaType);
-    } else {
-      setMediaType(undefined);
-    }
-  }, [searchParams]);
+    if (page <= 1) params.delete("page");
+    else params.set("page", String(page));
+
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
+  };
 
   if (isError) return <RetryError onRetry={refetch} />;
 
@@ -83,12 +89,12 @@ export default function FavoryListContainer() {
     <section aria-label="감상평 목록" className="mx-auto max-w-[1200px] px-4">
       <div className="my-6 flex items-center justify-between md:my-8 lg:my-12">
         <div role="group" aria-label="카테고리 필터" className="flex gap-1">
-          {MEDIA_TYPES.map((item) => (
+          {MEDIA_TYPE_CATEGORY_OPTIONS.map((item) => (
             <Button
               key={item.label}
               size="sm"
-              variant={mediaType === item.value ? "primary" : "outline"}
-              onClick={() => handleMediaClick(item.value)}
+              variant={category === item.value ? "primary" : "outline"}
+              onClick={() => handleCategoryChange(item.value)}
               disabled={isLoading || isFetching}
             >
               {item.label}
@@ -98,11 +104,7 @@ export default function FavoryListContainer() {
         <SelectOption
           options={SORT_OPTIONS}
           disabled={isLoading || isFetching}
-          onSelect={(option) => {
-            if (sortOption == option.value) return;
-            setSortOption(option.value as "latest" | "oldest");
-            setCurrentPage(1);
-          }}
+          onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
         />
       </div>
 
@@ -112,14 +114,14 @@ export default function FavoryListContainer() {
             <FeedCardSkeleton key={idx} />
           ))}
         </div>
-      ) : favories.length === 0 ? (
+      ) : favoryList.length === 0 ? (
         <div className="my-12">
           <Empty type="favory" />
         </div>
       ) : (
         <>
           <div className="mb-16 grid grid-cols-2 gap-x-2 gap-y-3 md:grid-cols-3 md:gap-x-3 md:gap-y-4 lg:grid-cols-4">
-            {favories.map((favory) => (
+            {favoryList.map((favory) => (
               <FeedCard key={favory.id} favory={favory} />
             ))}
           </div>
@@ -129,7 +131,7 @@ export default function FavoryListContainer() {
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                onChange={setCurrentPage}
+                onChange={handlePageChange}
                 disabled={isLoading || isFetching}
               />
             </nav>

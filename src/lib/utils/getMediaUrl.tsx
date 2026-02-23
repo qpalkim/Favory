@@ -1,7 +1,7 @@
-import { MediaType } from "../types/favories";
+import { MediaTypeCategory } from "../types/favories";
 
 export const getMediaSearchUrl = (
-  type: MediaType,
+  type: MediaTypeCategory,
   title: string,
 ) => {
 

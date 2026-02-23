@@ -1,5 +1,5 @@
 import z from "zod";
-import { mediaTypeSchema } from "./favories";
+import { mediaTypeCategorySchema } from "./favories";
 
 // 공통 댓글 API 타입
 export const commentSchema = z.object({
@@ -9,7 +9,7 @@ export const commentSchema = z.object({
   userNickname: z.string(),
   userImageUrl: z.string().nullable(),
   content: z.string().min(1),
-  mediaType: mediaTypeSchema,
+  mediaType: mediaTypeCategorySchema,
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),

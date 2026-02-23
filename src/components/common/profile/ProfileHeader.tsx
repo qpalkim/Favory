@@ -1,21 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Pencil } from "lucide-react";
 import { useProfile } from "@/lib/contexts/ProfileContext";
 import { ProfileCategory } from "@/lib/types/users";
-import Tab, { TabItem } from "@/components/ui/Tab";
 import { MEDIA_TYPE_META } from "@/lib/utils/constants";
+import Tab, { TabItem } from "@/components/ui/Tab";
 import ProfileImage from "@/components/ui/ProfileImage";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import EditProfileModal from "../modal/EditProfileModal";
 
 export default function ProfileHeader() {
-  const { tab, setTab, user, isMyProfile } = useProfile();
+  const { user, isMyProfile } = useProfile();
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const typeLabel = searchParams.get("type");
 
   const tabItems: TabItem[] = Object.values(MEDIA_TYPE_META)
     .filter(({ id }) => isMyProfile || id !== "COMMENT")
     .map(({ id, label }) => ({ id, label }));
+
+  const activeTab = tabItems.find((t) => t.label === typeLabel) ?? tabItems[0];
+
+  useEffect(() => {
+    if (!typeLabel && activeTab) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("type", activeTab.label);
+
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, [typeLabel, activeTab, router, pathname, searchParams]);
+
+  const handleTabChange = (id: string) => {
+    const tabMeta = Object.values(MEDIA_TYPE_META).find((t) => t.id === id);
+    if (!tabMeta) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("type", tabMeta.label);
+    params.delete("page");
+    params.delete("sort");
+
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
+  };
 
   return (
     <>
@@ -47,8 +80,8 @@ export default function ProfileHeader() {
         <nav aria-label="프로필 탭" className="w-full">
           <Tab
             items={tabItems}
-            value={tab}
-            onChange={(id) => setTab(id as ProfileCategory)}
+            value={activeTab.id}
+            onChange={(id) => handleTabChange(id as ProfileCategory)}
           />
         </nav>
       </section>
