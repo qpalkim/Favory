@@ -1,6 +1,6 @@
 "use client";
-import { useCallback, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFavoryList } from "@/lib/hooks/useFavories";
 import { MediaTypeCategory } from "@/lib/types/favories";
 import { CATEGORY_LABEL_MAP, MEDIA_TYPE_CATEGORY_OPTIONS, SORT_OPTIONS } from "@/lib/utils/constants";
@@ -16,19 +16,19 @@ import RetryError from "../ui/RetryError";
 
 export default function FavoryListContainer() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const createParams = useCallback(() => new URLSearchParams(searchParams.toString()), [searchParams]);
 
   const categoryLabel = searchParams.get("type");
   const category = getCategoryFromLabel<MediaTypeCategory>(categoryLabel, CATEGORY_LABEL_MAP);
-  const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
 
-  const sortParam = searchParams.get("sort") as "latest" | "oldest" | null;
-  const [sortOption, setSortOption] = useState<"latest" | "oldest">(sortParam ?? "latest");
+  const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
   const currentPage = pageParam;
 
+  const sortOption = (searchParams.get("sort") as "latest" | "oldest") ?? "latest";
+
   const isPC = useMediaQuery("(min-width: 1024px)");
-  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isTablet = useMediaQuery("(min-width: 768px)");
   const itemsPerPage = isPC ? 16 : isTablet ? 12 : 8;
 
   const { data, isLoading, isFetching, isError, refetch } = useFavoryList({
@@ -40,34 +40,47 @@ export default function FavoryListContainer() {
   const favoryList = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
 
+  useEffect(() => {
+    if (!data) return;
+    if (data.totalPages === 0) return;
+
+    if (currentPage > data.totalPages) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", String(data.totalPages));
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, [data, currentPage, router, pathname, searchParams]);
+
   const handleCategoryChange = (type: MediaTypeCategory | undefined) => {
     const label = type ? CATEGORY_LABEL_MAP[type] : null;
-    const params = createParams();
+    const params = new URLSearchParams(searchParams.toString());
 
     if (label) params.set("type", label);
     else params.delete("type");
 
-    params.delete("page");
     const query = params.toString();
-    router.push(query ? `/favories?${query}` : "/favories");
+    router.push(query ? `${pathname}?${query}` : pathname);
   };
 
   const handleSortChange = (value: "latest" | "oldest") => {
     if (sortOption === value) return;
 
-    setSortOption(value);
-
-    const params = createParams();
+    const params = new URLSearchParams(searchParams.toString());
     params.set("sort", value);
-    params.set("page", "1");
-    router.push(`/favories?${params.toString()}`);
+    params.delete("page");
+
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
   }
 
   const handlePageChange = (page: number) => {
-    const params = createParams();
+    const params = new URLSearchParams(searchParams.toString());
 
-    params.set("page", String(page));
-    router.push(`/favories?${params.toString()}`);
+    if (page <= 1) params.delete("page");
+    else params.set("page", String(page));
+
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname);
   };
 
   if (isError) return <RetryError onRetry={refetch} />;
