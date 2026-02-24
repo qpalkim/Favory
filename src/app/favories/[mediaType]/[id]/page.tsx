@@ -27,7 +27,7 @@ export async function generateMetadata({
         type: "article",
         title: `${favoryDetail.mediaTitle} 감상평 | Favory`,
         description: `${favoryDetail.mediaTitle}에 대한 감상평, ${favoryDetail.content.slice(0, 120)}...`,
-        url: `https://favory.vercel.app/favories/${favoryDetail.mediaType.toLowerCase()}/${parsedId}`,
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/favories/${favoryDetail.mediaType.toLowerCase()}/${parsedId}`,
         images: [
           {
             url: favoryDetail.mediaImageUrl ?? "/thumbnail.jpg",
