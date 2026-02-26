@@ -19,24 +19,25 @@ import ProfileImage from "../ui/ProfileImage";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Dropdown from "../ui/Dropdown";
+import CommentSection from "./CommentSection";
 import Modal from "../ui/Modal";
 import DeleteItemModal from "./modal/DeleteItemModal";
 import UserProfileModal from "./modal/UserProfileModal";
-import FavoryCommentList from "./FavoryCommentList";
 import FavoryDetailContainerSkeleton from "../skeleton/FavoryDetailContainerSkeleton";
-import Pagination from "../ui/Pagination";
-import Empty from "../ui/Empty";
 import RetryError from "../ui/RetryError";
+
+const PAGE_SIZE = 5;
 
 export default function FavoryDetailContainer({ id }: { id: number }) {
   const router = useRouter();
-  const { data: me } = useMyData();
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(0);
-  const PAGE_SIZE = 5;
+
+  const { data: me } = useMyData();
   const deleteFavory = useDeleteFavory(id);
 
   const {
@@ -86,6 +87,10 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     return;
   };
 
+  const handleTagClick = (tagName: string) => {
+    router.push(`/search?keyword=${encodeURIComponent(`#${tagName}`)}`)
+  }
+
   if (favoryDetailLoading || commentListLoading)
     return <FavoryDetailContainerSkeleton />;
 
@@ -104,30 +109,10 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   if (!favoryDetail || !commentList) return null;
 
   const isMine = me?.id === favoryDetail.userId;
-  const mediaTypeLabel =
-    CATEGORY_LABEL_MAP[favoryDetail?.mediaType] || favoryDetail?.mediaType;
-  const { icon: Icon, text } = CATEGORY_BUTTON[favoryDetail?.mediaType];
 
-  const CommentSection = (
-    <section aria-label="댓글 영역" className="mt-6">
-      <FavoryCommentList favoryId={favoryDetail.id} commentList={commentList} />
-      {commentList.totalElements === 0 ? (
-        <div className="my-12">
-          <Empty type="comment" />
-        </div>
-      ) : (
-        commentList.totalElements > PAGE_SIZE && (
-          <nav aria-label="댓글 페이지네이션" className="my-16 flex justify-center">
-            <Pagination
-              currentPage={commentList.pageNumber + 1}
-              totalPages={commentList.totalPages}
-              onChange={(page) => setCurrentPage(page - 1)}
-            />
-          </nav>
-        )
-      )}
-    </section>
-  );
+  const mediaTypeLabel = CATEGORY_LABEL_MAP[favoryDetail?.mediaType] || favoryDetail?.mediaType;
+
+  const { icon: Icon, text } = CATEGORY_BUTTON[favoryDetail?.mediaType];
 
   return (
     <>
@@ -141,6 +126,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                   alt={`${favoryDetail.mediaTitle} 커버 이미지`}
                   fill
                   priority
+                  sizes="(max-width: 1024px) 100vw, 660px"
                   className="object-contain"
                 />
               </div>
@@ -186,8 +172,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                       onClick: () => router.push(`/favories/${favoryDetail.mediaType.toLowerCase()}/${id}/edit`,),
                     },
                     {
-                      label: "삭제하기",
-                      onClick: () => setIsDeleteOpen(true),
+                      label: "삭제하기", onClick: () => setIsDeleteOpen(true),
                     },
                   ]}
                 />
@@ -211,13 +196,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                   {favoryDetail.tags.map((tag) => (
                     <Badge
                       key={tag.id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        router.push(
-                          `/search?keyword=${encodeURIComponent(`#${tag.name}`)}`,
-                        );
-                      }}
+                      onClick={() => handleTagClick(tag.name)}
                     >
                       #{tag.name}
                     </Badge>
@@ -257,13 +236,19 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
               </Button>
             </div>
 
-            <div className="lg:hidden">{CommentSection}</div>
+            <CommentSection
+              favoryId={favoryDetail.id}
+              commentList={commentList}
+              setCurrentPage={setCurrentPage}
+              className="lg:hidden" />
           </section>
         </div >
 
-        <aside className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]" >
-          {CommentSection}
-        </aside>
+        <CommentSection
+          favoryId={favoryDetail.id}
+          commentList={commentList}
+          setCurrentPage={setCurrentPage}
+          className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]" />
       </article >
 
       {isDeleteOpen && (
@@ -274,20 +259,17 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
             onDelete={handleDelete}
           />
         </Modal>
-      )
-      }
+      )}
 
-      {
-        isProfileOpen && (
-          <Modal onClose={() => setIsProfileOpen(false)}>
-            <UserProfileModal
-              onClose={() => setIsProfileOpen(false)}
-              nickname={favoryDetail.userNickname}
-              imageUrl={favoryDetail.userImageUrl}
-            />
-          </Modal>
-        )
-      }
+      {isProfileOpen && (
+        <Modal onClose={() => setIsProfileOpen(false)}>
+          <UserProfileModal
+            onClose={() => setIsProfileOpen(false)}
+            nickname={favoryDetail.userNickname}
+            imageUrl={favoryDetail.userImageUrl}
+          />
+        </Modal>
+      )}
     </>
   );
 }

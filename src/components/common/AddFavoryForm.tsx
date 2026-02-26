@@ -37,25 +37,25 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
     resolver: zodResolver(addFavoryRequestSchema),
     mode: "onChange",
     defaultValues: {
-      mediaId: undefined,
       title: "",
       content: "",
       tagNames: [],
     },
   });
+
+  const [mediaId, setMediaId] = useState<number | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+  const [isRegisteringMedia, setIsRegisteringMedia] = useState(false);
+  const [registrationDone, setRegistrationDone] = useState(false);
+
+  const mediaTypeLabel = CATEGORY_LABEL_MAP[mediaType] || mediaType;
+
   const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
-  const [mediaId, setMediaId] = useState<number | null>(null);
-  const [isRegisteringMedia, setIsRegisteringMedia] = useState(false);
-  const mediaTypeLabel =
-    CATEGORY_LABEL_MAP[mediaType] || mediaType;
 
   const addMedia = useAddMedia();
   const addFavory = useAddFavory();
-
-  const [registrationDone, setRegistrationDone] = useState(false);
   const { data: existingMedia, refetch: checkMedia } = useMediaExists(
     selectedMedia?.externalId || "",
   );
@@ -63,6 +63,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
   const handleSelectMedia = (item: MediaItem | null) => {
     setSelectedMedia(item);
     setMediaId(null)
+    setRegistrationDone(false);
   };
 
   // 선택된 미디어 존재 여부 확인
@@ -109,12 +110,12 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
     registerMedia();
   }, [existingMedia, selectedMedia, addMedia, isRegisteringMedia, registrationDone]);
 
-  useEffect(() => {
-    if (mediaId) setValue("mediaId", mediaId, { shouldValidate: true });
-  }, [mediaId, setValue]);
-
   const updateTags = (newTags: string[]) => {
     setValue("tagNames", newTags, { shouldValidate: true });
+  };
+
+  const removeTags = (idx: number) => {
+    updateTags(tags.filter((_, i) => i !== idx));
   };
 
   const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -122,13 +123,11 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
     e.preventDefault();
 
     const value = e.currentTarget.value.replace(/\s+/g, "").trim();
-
     if (!value) return;
+
     if (tags.includes(value)) return setTagInputError("중복된 태그입니다");
-    if (value.length > 10)
-      return setTagInputError("10자 이내로 입력해 주세요");
-    if (tags.length >= 6)
-      return setTagInputError("최대 6개까지 입력할 수 있습니다");
+    if (value.length > 10) return setTagInputError("10자 이내로 입력해 주세요");
+    if (tags.length >= 6) return setTagInputError("최대 6개까지 입력할 수 있습니다");
 
     updateTags([...tags, value]);
     setTagInput("");
@@ -136,7 +135,12 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
   };
 
   const onSubmit = async (data: AddFavoryRequest) => {
-    if (!me || !mediaId) return;
+    if (!me) return;
+
+    if (!mediaId) {
+      toast.error("미디어 등록 중입니다, 잠시만 기다려 주세요");
+      return;
+    }
 
     try {
       const res = await addFavory.mutateAsync({
@@ -199,7 +203,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
               error={tagInputError || errors.tagNames?.message}
             />
             <div className="mt-2 flex flex-wrap gap-2">
-              {tags.map((tag, index) => (
+              {tags.map((tag, idx) => (
                 <Badge
                   key={tag}
                   clickable={false}
@@ -209,20 +213,17 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
                   <X
                     className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
                     strokeWidth={2}
-                    onClick={() =>
-                      updateTags(tags.filter((_, i) => i !== index))
-                    }
+                    onClick={() => removeTags(idx)}
                   />
                 </Badge>
               ))}
             </div>
-            <input type="hidden" {...register("mediaId")} />
           </div>
           <Button
             size="lg"
             type="submit"
             isLoading={isSubmitting}
-            disabled={!isValid || !mediaId}
+            disabled={!isValid || !selectedMedia || isRegisteringMedia}
           >
             등록하기
           </Button>

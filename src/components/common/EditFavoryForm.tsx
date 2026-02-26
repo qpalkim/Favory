@@ -43,11 +43,11 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCate
     mode: "onChange",
   });
 
+  const mediaTypeLabel = CATEGORY_LABEL_MAP[mediaType] || mediaType;
+
   const tags = watch("tagNames") || [];
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
-  const mediaTypeLabel =
-    CATEGORY_LABEL_MAP[mediaType] || mediaType;
 
   const {
     data: favoryData,
@@ -108,18 +108,20 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCate
     setValue("tagNames", newTags, { shouldValidate: true });
   };
 
+  const removeTags = (idx: number) => {
+    updateTags(tags.filter((_, i) => i !== idx));
+  };
+
   const onKeyDownTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.nativeEvent.isComposing || e.key !== "Enter") return;
     e.preventDefault();
 
     const value = e.currentTarget.value.replace(/\s+/g, "").trim();
-
     if (!value) return;
+
     if (tags.includes(value)) return setTagInputError("중복된 태그입니다");
-    if (value.length > 10)
-      return setTagInputError("10자 이내로 입력해 주세요");
-    if (tags.length >= 6)
-      return setTagInputError("최대 6개까지 입력할 수 있습니다");
+    if (value.length > 10) return setTagInputError("10자 이내로 입력해 주세요");
+    if (tags.length >= 6) return setTagInputError("최대 6개까지 입력할 수 있습니다");
 
     updateTags([...tags, value]);
     setTagInput("");
@@ -202,7 +204,7 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCate
               error={tagInputError || errors.tagNames?.message}
             />
             <div className="mt-2 flex flex-wrap gap-2">
-              {tags.map((tag, index) => (
+              {tags.map((tag, idx) => (
                 <Badge
                   key={tag}
                   clickable={false}
@@ -212,9 +214,7 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCate
                   <X
                     className="text-black-200 hover:text-black-300 h-[10px] w-[10px] cursor-pointer md:h-3 md:w-3"
                     strokeWidth={2}
-                    onClick={() =>
-                      updateTags(tags.filter((_, i) => i !== index))
-                    }
+                    onClick={() => removeTags(idx)}
                   />
                 </Badge>
               ))}

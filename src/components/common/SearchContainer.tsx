@@ -42,6 +42,10 @@ export default function SearchContainer() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const itemsPerPage = isDesktop ? 8 : 6;
 
+  const isProfileQuery = /^[a-zA-Z0-9]+$/.test(keyword);
+
+  const canShowProfile = !isTagSearch && isProfileQuery;
+
   const { data, isLoading, isFetching, isError, refetch } = useSearchFavoryList({
     keyword,
     category,
@@ -61,11 +65,11 @@ export default function SearchContainer() {
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (isTagSearch && category === "PROFILE") {
+    if (!canShowProfile && category === "PROFILE") {
       params.delete("type");
       router.replace(`/search?${params.toString()}`);
     }
-  }, [isTagSearch, category, router, searchParams]);
+  }, [canShowProfile, category, router, searchParams]);
 
   useEffect(() => {
     if (!data) return;
@@ -169,22 +173,21 @@ export default function SearchContainer() {
             </h2>
             <div className="mt-6 flex items-center justify-between">
               <div className="flex items-center gap-1">
-                {SEARCH_MEDIA_CATEGORY_OPTIONS.map((item) => {
-                  const isDisabled =
-                    item.value === "PROFILE" && isTagSearch;
-
-                  return (
+                {SEARCH_MEDIA_CATEGORY_OPTIONS.filter((item) =>
+                  item.value === "PROFILE" ? canShowProfile : true
+                )
+                  .map((item) => (
                     <Button
                       key={item.label}
                       size="sm"
                       variant={category === item.value ? "primary" : "outline"}
                       onClick={() => handleCategoryChange(item.value)}
-                      disabled={isSearching || isDisabled}
+                      disabled={isSearching}
                     >
                       {item.label}
                     </Button>
-                  );
-                })}
+
+                  ))}
               </div>
               <div className="hidden md:block">
                 <SelectOption

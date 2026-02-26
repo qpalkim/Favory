@@ -56,7 +56,6 @@ export type FavoryListResponse = z.infer<typeof favoryListResponseSchema>;
 
 // Favory 등록 요청 API 타입
 export const addFavoryRequestSchema = z.object({
-  mediaId: z.number(),
   title: z
     .string()
     .min(1, { message: "제목은 필수 입력입니다" })
