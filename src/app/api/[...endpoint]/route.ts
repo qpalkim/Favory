@@ -14,8 +14,8 @@ export const GET = async (request: NextRequest) => {
       endPoint,
       !isEmpty(searchParams)
         ? {
-            params: searchParams,
-          }
+          params: searchParams,
+        }
         : {},
     );
     return NextResponse.json(apiResponse.data, { status: apiResponse.status });
@@ -42,11 +42,15 @@ export const POST = async (request: NextRequest) => {
       },
     );
 
+    const { data, status } = apiResponse;
+
+    if (!data || isEmpty(data)) {
+      return new NextResponse(null, { status });
+    }
+
     const response = NextResponse.json(
-      omit(apiResponse.data, ["accessToken", "refreshToken"]),
-      {
-        status: apiResponse.status,
-      },
+      omit(data, ["accessToken", "refreshToken"]),
+      { status },
     );
     const accessToken = apiResponse.data.accessToken;
     const refreshToken = apiResponse.data.refreshToken;
