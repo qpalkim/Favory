@@ -17,11 +17,12 @@ import GoogleOauthButton from "./GoogleOauthButton";
 
 export default function LoginForm() {
   const queryClient = useQueryClient();
-  const { mutateAsync: login } = useLogin();
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasShownToast = useRef(false);
-  const [showPw, setShowPw] = useState(false);
+
+  const { mutateAsync: login } = useLogin();
+
   const {
     register,
     handleSubmit,
@@ -33,8 +34,11 @@ export default function LoginForm() {
     mode: "onChange",
   });
 
+  const [showPw, setShowPw] = useState(false);
+
   useEffect(() => {
     const reason = searchParams.get("reason");
+
     if (reason === "auth" && !hasShownToast.current) {
       toast.info("로그인 후, 이용 가능합니다.");
       hasShownToast.current = true;

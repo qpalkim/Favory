@@ -102,12 +102,7 @@ export default function SignUpForm() {
       const field = error.response?.data?.field;
 
       if (status === 400) {
-        if (field === "email") {
-          setError("email", {
-            type: "manual",
-            message: "이미 존재하는 이메일입니다",
-          });
-        } else if (field === "nickname") {
+        if (field === "nickname") {
           setError("nickname", {
             type: "manual",
             message: "이미 존재하는 닉네임입니다",
