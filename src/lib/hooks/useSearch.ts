@@ -44,10 +44,10 @@ export const useDeleteRecentSearchList = () => {
     mutationFn: deleteSearchRecent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["search", "recent"] });
-      toast.success("최근 검색어 목록이 삭제되었습니다");
+      toast.success("최근 검색어 목록이 삭제되었습니다.");
     },
     onError: () => {
-      toast.error("최근 검색어 목록 삭제에 실패했습니다");
+      toast.error("최근 검색어 목록 삭제에 실패했습니다.");
     }
   });
 };

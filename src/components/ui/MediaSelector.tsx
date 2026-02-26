@@ -204,7 +204,7 @@ export default function MediaSelector({
                 ))
               ) : (
                 <li className="md:text-md text-black-200 flex items-center justify-center px-3 py-4 text-sm lg:text-lg">
-                  &quot;{query}&quot;에 대한 검색 결과가 없습니다
+                  &quot;{query}&quot;에 대한 검색 결과가 없습니다.
                 </li>
               )}
             </ul>

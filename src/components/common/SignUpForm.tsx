@@ -55,11 +55,11 @@ export default function SignUpForm() {
 
     try {
       await sendEmail({ email: getValues("email") });
-      toast.success("인증 번호가 발송되었습니다")
+      toast.success("인증 번호가 발송되었습니다.")
       setIsOpen(true);
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
-      const errorMessage = error.response?.data?.message || "인증 번호 발송에 실패하였습니다";
+      const errorMessage = error.response?.data?.message || "인증 번호 발송에 실패하였습니다.";
       toast.error(errorMessage);
     }
   }
@@ -74,10 +74,10 @@ export default function SignUpForm() {
       setValue("verifyToken", res.verifyToken, { shouldValidate: true });
       setIsEmailVerified(true);
       setVerifyToken(res.verifyToken);
-      toast.success("이메일 인증이 완료되었습니다");
+      toast.success("이메일 인증이 완료되었습니다.");
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
-      const errorMessage = error.response?.data?.message || "인증 번호가 올바르지 않습니다";
+      const errorMessage = error.response?.data?.message || "인증 번호가 올바르지 않습니다.";
       toast.error(errorMessage);
       throw err;
     }
@@ -85,7 +85,7 @@ export default function SignUpForm() {
 
   const onSubmit = async (data: SignUpRequest) => {
     if (!verifyToken) {
-      toast.error("이메일 인증을 완료해 주세요");
+      toast.error("이메일 인증을 완료해 주세요.");
       return;
     }
 
@@ -94,7 +94,7 @@ export default function SignUpForm() {
       const { email, password } = data;
       await login({ email, password });
       await queryClient.invalidateQueries({ queryKey: ["me"] });
-      toast.success("회원가입에 성공했습니다");
+      toast.success("회원가입에 성공했습니다.");
       router.push("/favories");
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
@@ -115,7 +115,7 @@ export default function SignUpForm() {
         }
         return;
       }
-      toast.error("회원가입에 실패했습니다");
+      toast.error("회원가입에 실패했습니다.");
     }
   };
 

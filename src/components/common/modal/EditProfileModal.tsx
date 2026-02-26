@@ -98,7 +98,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
 
       queryClient.invalidateQueries({ queryKey: ["me"] });
 
-      toast.success("프로필 수정에 성공했습니다");
+      toast.success("프로필 수정에 성공했습니다.");
       onClose();
 
       if (prevNickname !== nextNickname)
@@ -117,7 +117,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
         }
         return;
       }
-      toast.error("프로필 수정에 실패했습니다");
+      toast.error("프로필 수정에 실패했습니다.");
     }
   };
 

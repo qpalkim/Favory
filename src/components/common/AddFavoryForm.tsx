@@ -138,7 +138,7 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
     if (!me) return;
 
     if (!mediaId) {
-      toast.error("미디어 등록 중입니다, 잠시만 기다려 주세요");
+      toast.error("미디어 등록 중입니다, 잠시만 기다려 주세요.");
       return;
     }
 
@@ -149,10 +149,10 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
         userId: me.id,
       } as AddFavoryRequest & { userId: number });
       setSelectedMedia(null);
-      toast.success("감상평이 등록되었습니다");
+      toast.success("감상평이 등록되었습니다.");
       router.push(`/favories/${res.mediaType.toLowerCase()}/${res.id}`);
     } catch {
-      toast.error("감상평 등록에 실패했습니다");
+      toast.error("감상평 등록에 실패했습니다.");
     }
   };
 

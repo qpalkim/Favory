@@ -16,13 +16,13 @@ type GoogleOauthButtonProps = {
 const TEXT = {
   signup: {
     button: "Google로 가입하기",
-    success: "Google 간편 가입에 성공했습니다",
-    fail: "Google 간편 가입에 실패했습니다",
+    success: "Google 간편 가입에 성공했습니다.",
+    fail: "Google 간편 가입에 실패했습니다.",
   },
   login: {
     button: "Google로 로그인하기",
-    success: "Google 간편 로그인에 성공했습니다",
-    fail: "Google 간편 로그인에 실패했습니다",
+    success: "Google 간편 로그인에 성공했습니다.",
+    fail: "Google 간편 로그인에 실패했습니다.",
   },
 };
 
@@ -39,7 +39,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
 
   const handleGooglePrompt = () => {
     if (isUnsupportedBrowser() || !window.google || !ready) {
-      toast.info("현재 브라우저에서는 지원하지 않습니다");
+      toast.info("현재 브라우저에서는 지원하지 않습니다.");
       return;
     }
 
@@ -51,7 +51,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
       });
     } catch (err) {
       if ((err as DOMException).name !== "AbortError") {
-        toast.error("Google 인증 중, 문제가 발생했습니다");
+        toast.error("Google 인증 중, 문제가 발생했습니다.");
       }
     }
   };
@@ -68,7 +68,7 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
             callback: async (res: google.accounts.id.CredentialResponse) => {
               if (!res.credential)
-                return toast.error("Google 인증 중, 문제가 발생했습니다");
+                return toast.error("Google 인증 중, 문제가 발생했습니다.");
               try {
                 await googleOauth({ token: res.credential });
                 await queryClient.invalidateQueries({ queryKey: ["me"] });

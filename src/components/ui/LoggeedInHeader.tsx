@@ -35,9 +35,9 @@ export default function LoggedInHeader({
           await logout();
           queryClient.removeQueries({ queryKey: ["me"] });
           window.google?.accounts.id.disableAutoSelect();
-          toast.success("로그아웃에 성공했습니다");
+          toast.success("로그아웃에 성공했습니다.");
         } catch {
-          toast.error("로그아웃에 실패했습니다");
+          toast.error("로그아웃에 실패했습니다.");
         }
       },
     },

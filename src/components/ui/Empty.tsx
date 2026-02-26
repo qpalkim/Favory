@@ -7,45 +7,45 @@ import {
 
 interface EmptyProps {
   type:
-    | "comment"
-    | "myComment"
-    | "favory"
-    | "myFavory"
-    | "search"
-    | "recentSearch";
+  | "comment"
+  | "myComment"
+  | "favory"
+  | "myFavory"
+  | "search"
+  | "recentSearch";
   category?: string;
 }
 
 const EMPTY_MESSAGES = {
   comment: {
-    title: "아직 댓글이 없어요",
-    description: "가장 먼저 댓글을 남겨 보세요",
+    title: "아직 댓글이 없어요.",
+    description: "가장 먼저 댓글을 남겨 보세요.",
     Icon: MessageCircleMore,
   },
   myComment: {
-    title: "아직 작성한 댓글이 없어요",
-    description: "댓글을 작성하고, 다른 사람들과 소통해 보세요",
+    title: "아직 작성한 댓글이 없어요.",
+    description: "댓글을 작성하고, 다른 사람들과 소통해 보세요.",
     Icon: MessageCircleMore,
   },
   favory: {
-    title: "해당 카테고리의 감상평이 없어요",
-    description: "가장 먼저 감상평을 작성해 보세요",
+    title: "해당 카테고리의 감상평이 없어요.",
+    description: "가장 먼저 감상평을 작성해 보세요.",
     Icon: FolderOpen,
   },
   myFavory: {
-    title: (category: string) => `아직 작성한 ${category} 감상평이 없어요`,
-    description: "작성한 감상평이 다른 사람들에게 영감을 줄 수 있어요",
+    title: (category: string) => `아직 작성한 ${category} 감상평이 없어요.`,
+    description: "작성한 감상평이 다른 사람들에게 영감을 줄 수 있어요.",
     Icon: FolderOpen,
   },
   search: {
-    title: "검색 결과가 없습니다",
+    title: "검색 결과가 없습니다.",
     description:
-      "다른 검색어로 다시 검색해 보세요\n띄어쓰기나 철자가 맞는지 확인해 보세요",
+      "다른 검색어로 다시 검색해 보세요.\n띄어쓰기나 철자가 맞는지 확인해 보세요.",
     Icon: Search,
   },
   recentSearch: {
     title: null,
-    description: "최근 검색어가 없습니다",
+    description: "최근 검색어가 없습니다.",
     Icon: TextSearch,
   },
 };

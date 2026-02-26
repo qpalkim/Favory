@@ -77,7 +77,7 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCate
 
     if (error instanceof AxiosError) {
       if (error.response?.status === 404) {
-        toast.error("존재하지 않는 감상평입니다");
+        toast.error("존재하지 않는 감상평입니다.");
         router.replace("/favories");
       }
     }
@@ -87,7 +87,7 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCate
     if (!favoryData || !me) return;
 
     if (favoryData.userId !== me.id) {
-      toast.error("편집 권한이 없습니다");
+      toast.error("편집 권한이 없습니다.");
       router.replace("/favories");
     }
   }, [favoryData, me, router]);
@@ -131,11 +131,11 @@ export default function EditFavoryForm({ mediaType }: { mediaType: MediaTypeCate
   const onSubmit = (data: EditFavoryRequest) => {
     mutate(data, {
       onSuccess: () => {
-        toast.success("감상평이 수정되었습니다");
+        toast.success("감상평이 수정되었습니다.");
         router.push(`/favories/${mediaType}/${id}`);
       },
       onError: () => {
-        toast.error("감상평 수정에 실패했습니다");
+        toast.error("감상평 수정에 실패했습니다.");
       },
     })
   };
