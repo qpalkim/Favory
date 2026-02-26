@@ -57,8 +57,10 @@ export default function SignUpForm() {
       await sendEmail({ email: getValues("email") });
       toast.success("인증 번호가 발송되었습니다")
       setIsOpen(true);
-    } catch {
-      toast.error("인증 번호 발송에 실패하였습니다")
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const errorMessage = error.response?.data?.message || "인증 번호 발송에 실패하였습니다";
+      toast.error(errorMessage);
     }
   }
 
@@ -70,12 +72,14 @@ export default function SignUpForm() {
       });
 
       setValue("verifyToken", res.verifyToken, { shouldValidate: true });
-
       setIsEmailVerified(true);
       setVerifyToken(res.verifyToken);
       toast.success("이메일 인증이 완료되었습니다");
-    } catch {
-      toast.error("인증 번호가 올바르지 않습니다");
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const errorMessage = error.response?.data?.message || "인증 번호가 올바르지 않습니다";
+      toast.error(errorMessage);
+      throw err;
     }
   };
 

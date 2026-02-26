@@ -21,6 +21,7 @@ export default function EmailVerificationMdoal({
       setIsLoading(true);
       await onVerify(code);
       onClose();
+    } catch {
     } finally {
       setIsLoading(false);
     }
