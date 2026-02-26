@@ -34,7 +34,7 @@ export default function EmailVerificationMdoal({
           이메일 인증하기
         </h2>
         <p className="text-black-200 text-md md:mt-1 md:text-lg">
-          {email}로 발송된 6자리 인증 번호를 입력해 주세요
+          {email}로 발송된 6자리 인증 번호를 5분 이내로 입력해 주세요.
         </p>
       </div>
 
