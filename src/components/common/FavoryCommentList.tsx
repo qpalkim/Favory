@@ -74,8 +74,8 @@ export default function FavoryCommentList({
       </div>
       <hr className="border-black-100 mt-6" />
 
-      {commentList?.content.map((comment, index) => {
-        const isLast = index === commentList.content.length - 1;
+      {commentList?.content.map((comment, idx) => {
+        const isLast = idx === commentList.content.length - 1;
 
         return (
           <div
