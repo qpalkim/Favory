@@ -22,7 +22,7 @@ export default function FavoryCommentList({
 
   const handleAddComment = () => {
     if (!me) {
-      toast.info("로그인 후, 이용 가능합니다");
+      toast.info("로그인 후, 이용 가능합니다.");
       return;
     }
 
@@ -34,11 +34,11 @@ export default function FavoryCommentList({
       },
       {
         onSuccess: () => {
-          toast.success("댓글이 등록되었습니다");
+          toast.success("댓글이 등록되었습니다.");
           setAddContent("");
         },
         onError: () => {
-          toast.error("댓글 등록에 실패했습니다");
+          toast.error("댓글 등록에 실패했습니다.");
         },
       },
     );

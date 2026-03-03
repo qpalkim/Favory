@@ -17,11 +17,12 @@ import GoogleOauthButton from "./GoogleOauthButton";
 
 export default function LoginForm() {
   const queryClient = useQueryClient();
-  const { mutateAsync: login } = useLogin();
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasShownToast = useRef(false);
-  const [showPw, setShowPw] = useState(false);
+
+  const { mutateAsync: login } = useLogin();
+
   const {
     register,
     handleSubmit,
@@ -33,10 +34,13 @@ export default function LoginForm() {
     mode: "onChange",
   });
 
+  const [showPw, setShowPw] = useState(false);
+
   useEffect(() => {
     const reason = searchParams.get("reason");
+
     if (reason === "auth" && !hasShownToast.current) {
-      toast.info("로그인 후, 이용 가능합니다");
+      toast.info("로그인 후, 이용 가능합니다.");
       hasShownToast.current = true;
       window.history.replaceState(null, "", "/login");
     }
@@ -46,14 +50,14 @@ export default function LoginForm() {
     try {
       await login(data);
       await queryClient.invalidateQueries({ queryKey: ["me"] });
-      toast.success("로그인에 성공했습니다");
+      toast.success("로그인에 성공했습니다.");
       router.push("/favories");
     } catch {
       setError("email", {
         type: "manual",
         message: "이메일 혹은 비밀번호를 확인해 주세요",
       });
-      toast.error("로그인에 실패했습니다");
+      toast.error("로그인에 실패했습니다.");
     }
   };
 

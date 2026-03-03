@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --text-3xl: 32px;
@@ -35,12 +35,12 @@
 
   /* Green */
   --color-green-10: #edf4f3;
-  --color-green-100: #e3ea8f;
-  --color-green-200: #c3e956;
-  --color-green-300: #62aa1b;
-  --color-green-400: #4d7111;
-  --color-green-500: #076653;
-  --color-green-600: #1f4b2c;
+  --color-green-100: #e4f59a;
+  --color-green-200: #c4f36a;
+  --color-green-300: #5fbe3b;
+  --color-green-400: #2d8f3c;
+  --color-green-500: #0c7c68;
+  --color-green-600: #124334;
 
   /* Error */
   --color-error-100: #ff6577;
@@ -90,4 +90,8 @@
 body {
   font-family: var(--font-pretendard);
   min-width: 375px;
+}
+
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }

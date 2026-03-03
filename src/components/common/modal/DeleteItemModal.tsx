@@ -28,7 +28,7 @@ export default function DeleteItemModal({
             : "Favory 감상평을 삭제하시겠습니까?"}
         </h2>
         <p className="text-black-200 md:text-md text-sm">
-          삭제 후, 복구할 수 없습니다
+          삭제 후, 복구할 수 없습니다.
         </p>
       </div>
       <div className="flex gap-2">

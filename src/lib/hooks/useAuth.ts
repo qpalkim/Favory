@@ -3,9 +3,11 @@ import {
   LoginRequest,
   LoginResponse,
   RefreshTokenResponse,
+  SendEmailVerificationRequest,
   SignUpRequest,
+  VerifyEmailCodeRequest,
 } from "../types/auth";
-import { login, refreshToken, signUp } from "../apis/auth";
+import { login, refreshToken, sendEmailVerification, signUp, verifyEmailCode } from "../apis/auth";
 
 // 회원가입 훅
 export const useSignUp = () => {
@@ -27,3 +29,17 @@ export const useRefreshToken = () => {
     mutationFn: refreshToken,
   });
 };
+
+// 이메일 인증 번호 발송 훅
+export const useSendEmailVerification = () => {
+  return useMutation({
+    mutationFn: (data: SendEmailVerificationRequest) => sendEmailVerification(data),
+  })
+}
+
+// 이메일 인증 번호 확인 훅
+export const useVerifyEmailCode = () => {
+  return useMutation({
+    mutationFn: (data: VerifyEmailCodeRequest) => verifyEmailCode(data),
+  })
+}

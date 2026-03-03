@@ -6,9 +6,13 @@ import {
   loginResponseSchema,
   RefreshTokenResponse,
   refreshTokenResponseSchema,
+  SendEmailVerificationRequest,
   SignUpRequest,
   SignUpResponse,
   signUpResponseSchema,
+  VerifyEmailCodeRequest,
+  VerifyEmailCodeResponse,
+  verifyEmailCodeResponseSchema,
 } from "../types/auth";
 
 // 회원가입 요청 API
@@ -35,3 +39,15 @@ export const refreshToken = async () => {
   );
   return safeResponse(response.data, refreshTokenResponseSchema);
 };
+
+// 이메일 인증 번호 발송 요청 API
+export const sendEmailVerification = async (data: SendEmailVerificationRequest) => {
+  const response = await axiosClientHelper.post<void>("/auth/email/send", data);
+  return response.data;
+}
+
+// 이메일 인증 번호 확인 요청 API
+export const verifyEmailCode = async (data: VerifyEmailCodeRequest) => {
+  const response = await axiosClientHelper.post<VerifyEmailCodeResponse>("/auth/email/verify", data);
+  return safeResponse(response.data, verifyEmailCodeResponseSchema);
+} 

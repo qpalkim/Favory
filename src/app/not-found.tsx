@@ -10,7 +10,7 @@ export default function NotFound() {
           404
         </h2>
         <p className="text-black-200 md:text-md mt-2 text-sm lg:text-lg">
-          잘못된 주소 또는 없는 페이지입니다
+          잘못된 주소 또는 없는 페이지입니다.
         </p>
         <div className="mt-6 flex w-full gap-2 md:mt-8">
           <Button variant="outline" href="/">

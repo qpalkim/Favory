@@ -39,10 +39,10 @@ export default function CommentItem({
       {
         onSuccess: () => {
           setIsEditing(false);
-          toast.success("댓글이 수정되었습니다");
+          toast.success("댓글이 수정되었습니다.");
         },
         onError: () => {
-          toast.error("댓글 수정에 실패했습니다");
+          toast.error("댓글 수정에 실패했습니다.");
         },
       },
     );
@@ -51,10 +51,10 @@ export default function CommentItem({
   const handleDelete = () => {
     deleteComment.mutate(comment.id, {
       onSuccess: () => {
-        toast.success("댓글이 삭제되었습니다");
+        toast.success("댓글이 삭제되었습니다.");
       },
       onError: () => {
-        toast.error("댓글 삭제에 실패했습니다");
+        toast.error("댓글 삭제에 실패했습니다.");
       },
     });
   };

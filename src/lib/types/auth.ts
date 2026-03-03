@@ -6,9 +6,8 @@ export const signUpRequestSchema = z
     email: z
       .string()
       .min(1, { message: "이메일은 필수 입력입니다" })
-      .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-        message: "유효한 이메일 형식이 아닙니다",
-      }),
+      .email({ message: "유효한 이메일 형식이 아닙니다" }),
+    verifyToken: z.string(),
     password: z
       .string()
       .min(1, { message: "비밀번호는 필수 입력입니다" })
@@ -51,9 +50,7 @@ export const loginRequestSchema = z.object({
   email: z
     .string()
     .min(1, { message: "이메일은 필수 입력입니다" })
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "유효한 이메일 형식이 아닙니다",
-    }),
+    .email({ message: "유효한 이메일 형식이 아닙니다" }),
   password: z
     .string()
     .min(1, { message: "비밀번호는 필수 입력입니다" })
@@ -96,3 +93,30 @@ export const refreshTokenResponseSchema = z.object({
 });
 
 export type RefreshTokenResponse = z.infer<typeof refreshTokenResponseSchema>;
+
+// 이메일 인증 번호 발송 요청 API 타입
+export const sendEmailVerificationRequestSchema = z.object({
+  email: z.string()
+    .min(1, { message: "이메일은 필수 입력입니다" })
+    .email({ message: "유효한 이메일 형식이 아닙니다" }),
+})
+
+export type SendEmailVerificationRequest = z.infer<typeof sendEmailVerificationRequestSchema>;
+
+// 이메일 인증 번호 확인 요청 API 타입
+export const verifyEmailCodeRequestSchema = z.object({
+  email: z.string()
+    .min(1, { message: "이메일은 필수 입력입니다" })
+    .email({ message: "유효한 이메일 형식이 아닙니다" }),
+  code: z.string().min(1, { message: "인증 번호를 입력해 주세요" })
+    .length(6, { message: "6자리를 입력해 주세요" }),
+})
+
+export type VerifyEmailCodeRequest = z.infer<typeof verifyEmailCodeRequestSchema>;
+
+// 이메일 인증 번호 확인 응답 API 타입
+export const verifyEmailCodeResponseSchema = z.object({
+  verifyToken: z.string(),
+})
+
+export type VerifyEmailCodeResponse = z.infer<typeof verifyEmailCodeResponseSchema>;
