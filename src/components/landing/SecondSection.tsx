@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import logo from "@/assets/logo/logo.svg";
 
-const cards = [
+const PREVIEW_CARDS = [
   {
     position:
       "top-[10%] left-20 w-[172px] p-2 md:top-[15%] md:left-44 md:w-[272px]",
@@ -35,10 +35,9 @@ export default function SecondSection() {
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         <motion.div
+          aria-hidden
           className="absolute inset-0 bg-gradient-to-br from-green-300/40 via-green-400/20 to-green-600/40"
-          animate={{
-            opacity: [0.4, 0.7, 0.4],
-          }}
+          animate={{ opacity: [0.4, 0.7, 0.4] }}
           transition={{
             duration: 4,
             repeat: Infinity,
@@ -46,10 +45,9 @@ export default function SecondSection() {
           }}
         />
         <motion.div
+          aria-hidden
           className="absolute inset-0 bg-gradient-to-tl from-green-400/30 via-transparent to-green-500/30"
-          animate={{
-            opacity: [0.3, 0.6, 0.3],
-          }}
+          animate={{ opacity: [0.3, 0.6, 0.3] }}
           transition={{
             duration: 5,
             repeat: Infinity,
@@ -67,24 +65,26 @@ export default function SecondSection() {
           />
         </div>
 
-        {cards.map((card, i) => (
-          <motion.div
-            key={i}
-            className={`absolute ${card.position}`}
-            initial={{ x: -50, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.2 }}
-          >
-            <div className="absolute inset-0 rounded-md bg-white/36 shadow-md" />
-            <div className="relative z-50">
-              <p className="text-black-500 mb-1 text-[10px] font-medium lg:text-sm">
-                {card.text}
-              </p>
-              <div className="h-[4px] w-[132px] animate-pulse rounded-md bg-gray-300 md:h-[5px] md:w-[215px]"></div>
-            </div>
-          </motion.div>
-        ))}
+        <ul className="list-none">
+          {PREVIEW_CARDS.map((card, idx) => (
+            <motion.li
+              key={idx}
+              className={`absolute ${card.position}`}
+              initial={{ x: -50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: idx * 0.2 }}
+            >
+              <div aria-hidden className="absolute inset-0 rounded-md bg-white/36 shadow-md" />
+              <div className="relative z-50">
+                <p className="text-black-500 mb-1 text-[10px] font-medium lg:text-sm">
+                  {card.text}
+                </p>
+                <div className="h-[4px] w-[132px] animate-pulse rounded-md bg-gray-300 md:h-[5px] md:w-[215px]"></div>
+              </div>
+            </motion.li>
+          ))}
+        </ul>
       </motion.div>
 
       <h1 className="mt-6 text-right text-lg font-semibold text-white md:mt-[52px] md:text-xl lg:mt-0 lg:text-2xl">
