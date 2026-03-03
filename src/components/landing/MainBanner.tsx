@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { motion, Transition } from "framer-motion";
 import Image from "next/image";
 import star from "@/assets/vector/star.svg";
@@ -41,7 +42,6 @@ function FloatingStar({ className, animation }: FloatingStarProps) {
         src={star}
         alt=""
         fill
-        loading="lazy"
         draggable={false}
         className="select-none pointer-events-none" />
     </motion.div>
@@ -49,6 +49,12 @@ function FloatingStar({ className, animation }: FloatingStarProps) {
 }
 
 export default function MainBanner() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <section
       aria-label="Favory 메인 배너"
@@ -56,7 +62,7 @@ export default function MainBanner() {
     >
       <div className="relative mx-auto h-full w-full max-w-[1448px] px-6">
         <FloatingStar
-          className="absolute top-[22%] left-[16%] h-8 w-8 -translate-y-1/2 blur-[2.5px] md:h-12 md:w-12 lg:w-16 lg:h-16"
+          className="absolute top-[22%] left-[16%] h-8 w-8 -translate-y-1/2 md:h-12 md:w-12 lg:w-16 lg:h-16"
           animation={{
             scale: [0.5, 0.8, 0, 0.5],
             opacity: [1, 1, 0.5, 1],
@@ -64,7 +70,7 @@ export default function MainBanner() {
           }}
         />
         <FloatingStar
-          className="absolute top-1/2 left-1/2 h-8 w-8 -translate-y-1/2 blur-[2.5px] md:h-12 md:w-12 md:-translate-y-1/4 lg:-translate-y-1/6 lg:w-16 lg:h-16"
+          className="absolute top-1/2 left-1/2 h-8 w-8 -translate-y-1/2 md:h-12 md:w-12 md:-translate-y-1/4 lg:-translate-y-1/6 lg:w-16 lg:h-16"
           animation={{
             scale: [1, 0, 1.2, 1],
             opacity: [1, 0.5, 1, 1],
@@ -74,21 +80,16 @@ export default function MainBanner() {
         <motion.div
           className="absolute top-1/4 right-8 h-18 w-18 -translate-y-1/2 md:h-36 md:w-36 lg:top-[30%] lg:right-16 lg:h-40 lg:w-40"
           aria-hidden
-          animate={{
+          animate={mounted ? {
             opacity: [1, 0.8, 1],
-            filter: [
-              "blur(1.5px) brightness(1)",
-              "blur(1.5px) brightness(1.5)",
-              "blur(1.5px) brightness(1)",
-            ],
-          }}
+          } : undefined}
           transition={LOGO_TRANSITION}
         >
           <Image
             src={logo}
             alt="Favory 로고"
             fill
-            priority
+            fetchPriority="high"
             draggable={false}
             className="select-none pointer-events-none"
           />
