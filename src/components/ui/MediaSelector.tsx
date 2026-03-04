@@ -104,9 +104,9 @@ export default function MediaSelector({
 
   return (
     <div className="w-full lg:max-w-[660px]">
-      <label className="text-md lg:text-lg text-black-500  flex items-center gap-1 font-medium  md:text-lg">
+      <label className="text-md md:text-lg text-black-500  flex items-center gap-1 font-medium">
         {config.label}
-        <span className="text-md lg:text-lg text-error-100 md:text-lg">*</span>
+        <span className="text-md md:text-lg text-error-100">*</span>
       </label>
       <p className="text-sm md:text-md text-black-200 mb-2 md:mb-[10px]">{config.desc}</p>
 
@@ -144,10 +144,10 @@ export default function MediaSelector({
                 />
               )}
               <div className="overflow-hidden">
-                <p className="text-md text-black-500 truncate font-medium lg:text-lg">
+                <p className="text-sm text-black-500 truncate font-medium md:text-md">
                   {selected.title}
                 </p>
-                <p className="text-black-200 lg:text-md truncate text-xs">
+                <p className="text-black-200 md:text-sm truncate text-xs">
                   {selected.creator || config.creatorFallback} •{" "}
                   {selected.year || "연도 정보 없음"}
                 </p>
@@ -192,10 +192,10 @@ export default function MediaSelector({
                       />
                     )}
                     <div className="overflow-hidden">
-                      <p className="text-md text-black-500 truncate font-medium lg:text-lg">
+                      <p className="text-sm text-black-500 truncate font-medium md:text-md">
                         {item.title}
                       </p>
-                      <p className="text-black-200 lg:text-md truncate text-xs">
+                      <p className="text-black-200 md:text-sm truncate text-xs">
                         {item.creator || config.creatorFallback} •{" "}
                         {item.year || "연도 정보 없음"}
                       </p>
@@ -203,7 +203,7 @@ export default function MediaSelector({
                   </li>
                 ))
               ) : (
-                <li className="md:text-md text-black-200 flex items-center justify-center px-3 py-4 text-sm lg:text-lg">
+                <li className="md:text-md text-black-200 flex items-center justify-center px-3 py-4 text-sm">
                   &quot;{query}&quot;에 대한 검색 결과가 없습니다.
                 </li>
               )}

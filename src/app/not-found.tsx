@@ -6,10 +6,10 @@ export default function NotFound() {
     <div className="flex min-h-[80vh] items-center justify-center">
       <div className="flex flex-col items-center">
         <CircleAlert className="text-black-100 h-[52px] w-[52px] stroke-1 md:h-[96px] md:w-[96px]" />
-        <h2 className="text-black-500 md:text-2lg mt-4 text-lg font-semibold md:mt-6 lg:text-xl">
+        <h2 className="text-black-500 md:text-2lg mt-4 text-lg font-semibold md:mt-6">
           404
         </h2>
-        <p className="text-black-200 md:text-md mt-2 text-sm lg:text-lg">
+        <p className="text-black-200 md:text-md mt-2 text-sm">
           잘못된 주소 또는 없는 페이지입니다.
         </p>
         <div className="mt-6 flex w-full gap-2 md:mt-8">
