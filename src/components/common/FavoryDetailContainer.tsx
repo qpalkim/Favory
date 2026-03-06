@@ -69,6 +69,11 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
   };
 
   const handleToggleLike = async () => {
+    if (!me) {
+      toast.info("로그인 후, 이용 가능합니다.");
+      return;
+    }
+
     try {
       const result = await toggleLikeFavory.mutateAsync();
 
