@@ -28,7 +28,6 @@ export const useFavoryList = (params: GetFavoryListParams) => {
     queryKey: ["favories", params],
     queryFn: () => getFavoryList(params),
     placeholderData: keepPreviousData,
-    staleTime: 1000 * 30,
     retry: 1,
   });
 };
@@ -92,7 +91,7 @@ export const useToggleLikeFavory = (id: number) => {
   return useMutation({
     mutationFn: () => toggleLikeFavory(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favories", id] });
+      queryClient.invalidateQueries({ queryKey: ["favories"] });
     }
   })
 }
