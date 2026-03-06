@@ -1,9 +1,25 @@
 "use client";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, Transition } from "framer-motion";
 import Image from "next/image";
 import star from "@/assets/vector/star.svg";
 import logo from "@/assets/logo/logo.svg";
 import Button from "@/components/ui/Button";
+
+const STAR_TRANSITION: Transition = {
+  duration: 1.5,
+  repeat: Infinity,
+  repeatType: "loop",
+  ease: "easeInOut",
+};
+
+const LOGO_TRANSITION: Transition = {
+  duration: 1,
+  repeat: Infinity,
+  repeatType: "loop",
+  repeatDelay: 2,
+  ease: "easeInOut",
+};
 
 type FloatingStarProps = {
   className: string;
@@ -18,27 +34,35 @@ function FloatingStar({ className, animation }: FloatingStarProps) {
   return (
     <motion.div
       className={className}
+      aria-hidden
       animate={animation}
-      transition={{
-        duration: 1.5,
-        repeat: Infinity,
-        repeatType: "loop",
-        ease: "easeInOut",
-      }}
+      transition={STAR_TRANSITION}
     >
-      <Image src={star} alt="" aria-hidden fill loading="lazy" draggable={false} className="select-none pointer-events-none" />
+      <Image
+        src={star}
+        alt=""
+        fill
+        draggable={false}
+        className="select-none pointer-events-none" />
     </motion.div>
   )
 }
 
 export default function MainBanner() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <section
+      aria-label="Favory 메인 배너"
       className="relative h-[222px] w-full md:h-[416px] lg:h-[456px] bg-gradient-to-b from-green-600 via-green-500 to-green-100"
     >
       <div className="relative mx-auto h-full w-full max-w-[1448px] px-6">
         <FloatingStar
-          className="absolute top-[22%] left-[16%] h-8 w-8 -translate-y-1/2 blur-[2.5px] md:h-12 md:w-12 lg:w-16 lg:h-16"
+          className="absolute top-[22%] left-[16%] h-8 w-8 -translate-y-1/2 md:h-12 md:w-12 lg:w-16 lg:h-16"
           animation={{
             scale: [0.5, 0.8, 0, 0.5],
             opacity: [1, 1, 0.5, 1],
@@ -46,7 +70,7 @@ export default function MainBanner() {
           }}
         />
         <FloatingStar
-          className="absolute top-1/2 left-1/2 h-8 w-8 -translate-y-1/2 blur-[2.5px] md:h-12 md:w-12 md:-translate-y-1/4 lg:-translate-y-1/6 lg:w-16 lg:h-16"
+          className="absolute top-1/2 left-1/2 h-8 w-8 -translate-y-1/2 md:h-12 md:w-12 md:-translate-y-1/4 lg:-translate-y-1/6 lg:w-16 lg:h-16"
           animation={{
             scale: [1, 0, 1.2, 1],
             opacity: [1, 0.5, 1, 1],
@@ -55,24 +79,22 @@ export default function MainBanner() {
         />
         <motion.div
           className="absolute top-1/4 right-8 h-18 w-18 -translate-y-1/2 md:h-36 md:w-36 lg:top-[30%] lg:right-16 lg:h-40 lg:w-40"
-          animate={{
+          aria-hidden
+          animate={mounted ? {
             opacity: [1, 0.8, 1],
-            filter: [
-              "blur(1.5px) brightness(1)",
-              "blur(1.5px) brightness(1.5)",
-              "blur(1.5px) brightness(1)",
-            ],
-          }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-            repeatType: "loop",
-            repeatDelay: 2,
-            ease: "easeInOut",
-          }}
+          } : undefined}
+          transition={LOGO_TRANSITION}
         >
-          <Image src={logo} alt="Favory 로고" fill priority loading="eager" draggable={false} className="select-none pointer-events-none" />
+          <Image
+            src={logo}
+            alt="Favory 로고"
+            fill
+            fetchPriority="high"
+            draggable={false}
+            className="select-none pointer-events-none"
+          />
         </motion.div>
+
         <div className="absolute bottom-8 md:bottom-10 md:left-12 lg:left-40 space-y-1.5 md:space-y-2 lg:space-y-3">
           <h1 className="font-leferiBold text-2lg leading-tight text-white md:text-3xl lg:text-3xl">
             Favory

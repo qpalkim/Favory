@@ -45,7 +45,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     handleSubmit,
     reset,
     setError,
-    formState: { errors, isValid, isSubmitting, isDirty },
+    formState: { errors, isValid, isDirty },
   } = useForm<EditProfileRequest>({
     resolver: zodResolver(editProfileRequestSchema),
     mode: "onChange",
@@ -87,14 +87,14 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     const nextNickname = data.nickname;
 
     try {
+      await editMyDataMutation.mutateAsync(data);
+
       if (selectedFile) {
         await uploadProfileImage.mutateAsync({
           id: me.id,
           file: selectedFile,
         });
       }
-
-      await editMyDataMutation.mutateAsync(data);
 
       queryClient.invalidateQueries({ queryKey: ["me"] });
 
@@ -121,6 +121,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
     }
   };
 
+  const isLoading = editMyDataMutation.isPending || uploadProfileImage.isPending;
   const isImageDirty = selectedFile !== null;
   const canSubmit = isValid && (isDirty || isImageDirty);
 
@@ -182,7 +183,7 @@ export default function EditProfileModal({ onClose }: EditProfileModalProps) {
         <Button
           className="w-full"
           type="submit"
-          isLoading={isSubmitting}
+          isLoading={isLoading}
           disabled={!canSubmit}
           ariaLabel="프로필 수정 완료"
         >
