@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ImageOff } from "lucide-react";
+import { Heart, ImageOff } from "lucide-react";
 import { Favory } from "@/lib/types/favories";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +21,8 @@ export default function FavoryItem({
 }: FavoryItemProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const router = useRouter();
+
+  const tags = favory.tags ?? [];
 
   return (
     <>
@@ -57,23 +59,34 @@ export default function FavoryItem({
             <p className="text-black-500 md:text-md mt-1 truncate text-sm leading-tight">
               {favory.content}
             </p>
-            <div className="mt-2 flex flex-wrap gap-1 overflow-hidden md:gap-2">
-              {(favory.tags ?? []).map((tag) => (
-                <Badge
-                  key={tag.id}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    router.push(
-                      `/search?keyword=${encodeURIComponent(`#${tag.name}`)}`,
-                    );
-                  }}
-                >
-                  #{tag.name}
-                </Badge>
-              ))}
+
+            {tags.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1 overflow-hidden md:gap-2">
+                {tags.map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      router.push(
+                        `/search?keyword=${encodeURIComponent(`#${tag.name}`)}`,
+                      );
+                    }}
+                  >
+                    #{tag.name}
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center gap-1 mt-2">
+              <Heart className={`h-3 w-3 md:h-4 md:w-4 text-green-500 fill-current`} />
+              <span className="text-black-500 md:text-md text-xs">
+                {favory.likeCount}
+              </span>
             </div>
           </div>
+
           {favory.mediaImageUrl ? (
             <Image
               src={favory.mediaImageUrl}

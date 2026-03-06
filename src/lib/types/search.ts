@@ -17,7 +17,7 @@ export type SearchCategory = z.infer<typeof searchCategorySchema>;
 export const getSearchFavoryListParamsSchema = z.object({
   keyword: z.string(),
   category: z.enum(["MUSIC", "MOVIE", "DRAMA", "BOOK", "PROFILE"]).optional(),
-  sort: z.enum(["latest", "oldest"]).optional(),
+  sort: z.string().optional(),
   page: z.number().optional(),
   size: z.number().optional(),
 });

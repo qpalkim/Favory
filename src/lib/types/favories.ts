@@ -26,6 +26,8 @@ export const favorySchema = z.object({
   title: z.string(),
   content: z.string(),
   tags: z.array(tagSchema).nullable(),
+  likeCount: z.number().min(0),
+  likedByMe: z.boolean().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),
@@ -104,3 +106,10 @@ export type EditFavoryRequest = z.infer<typeof editFavoryRequestSchema>;
 export const editFavoryResponseSchema = favorySchema;
 
 export type EditFavoryResponse = z.infer<typeof editFavoryResponseSchema>;
+
+// Favory 좋아요 등록/취소 API 타입
+export const toggleLikeFavoryResponseSchema = z.object({
+  liked: z.boolean(),
+});
+
+export type ToggleLikeFavoryResponse = z.infer<typeof toggleLikeFavoryResponseSchema>;

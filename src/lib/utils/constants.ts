@@ -27,6 +27,7 @@ export const CREATOR_FALLBACK = {
 export const SORT_OPTIONS = [
   { label: "최신순", value: "latest" },
   { label: "등록순", value: "oldest" },
+  { label: "인기순", value: "popular" },
 ];
 
 export const CATEGORY_BUTTON: Record<MediaTypeCategory, { icon: LucideIcon, text: string }> = {

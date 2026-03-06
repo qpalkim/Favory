@@ -11,25 +11,27 @@ export interface Option {
 
 interface SelectOptionProps {
   options: Option[];
+  value?: string | number;
   onSelect: (option: Option) => void;
   disabled?: boolean;
 }
 
 export default function SelectOption({
   options = [],
+  value,
   onSelect,
   disabled,
 }: SelectOptionProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<Option>(
-    options.find((opt) => opt.label === "최신순") || options[0],
-  );
+
+  const selected = options.find((opt) => opt.value === value) ??
+    options.find((opt) => opt.label == "최신순") ??
+    options[0];
 
   const dropdownOptions = options.map((opt) => ({
     label: opt.label,
     onClick: () => {
       if (disabled) return;
-      setSelected(opt);
       onSelect(opt);
       setIsOpen(false);
     },

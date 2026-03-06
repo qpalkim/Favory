@@ -27,7 +27,7 @@ export default function FavoryContent({ label }: { label: string }) {
   const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
   const currentPage = pageParam;
 
-  const sortOption = (searchParams.get("sort") as "latest" | "oldest") ?? "latest";
+  const sortOption = (searchParams.get("sort") as "latest" | "oldest" | "popular") ?? "latest";
 
   const { data, isLoading, isFetching, isError, refetch } = useUserFavoryList(
     user.nickname, {
@@ -48,7 +48,7 @@ export default function FavoryContent({ label }: { label: string }) {
     }
   }, [data, currentPage, router, pathname, searchParams]);
 
-  const handleSortChange = (value: "latest" | "oldest") => {
+  const handleSortChange = (value: "latest" | "oldest" | "popular") => {
     if (sortOption === value) return;
 
     const params = new URLSearchParams(searchParams.toString());
@@ -81,6 +81,7 @@ export default function FavoryContent({ label }: { label: string }) {
           </h2>
           <SelectOption
             options={SORT_OPTIONS}
+            value={sortOption}
             disabled={isFetching}
             onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
           />

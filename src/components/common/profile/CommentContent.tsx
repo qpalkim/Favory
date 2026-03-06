@@ -22,6 +22,7 @@ export default function CommentContent() {
   const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
   const currentPage = pageParam;
 
+  const sortOptions = SORT_OPTIONS.filter((opt) => opt.value !== "popular");
   const sortOption = (searchParams.get("sort") as "latest" | "oldest") ?? "latest";
 
   const { data, isLoading, isFetching, isError, refetch } = useUserCommentList(
@@ -72,7 +73,8 @@ export default function CommentContent() {
             내가 등록한 댓글 {data?.totalElements ?? 0}개
           </h2>
           <SelectOption
-            options={SORT_OPTIONS}
+            options={sortOptions}
+            value={sortOption}
             disabled={isFetching}
             onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
           />

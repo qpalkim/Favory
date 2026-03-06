@@ -19,6 +19,7 @@ import {
   getFavoryDetail,
   getFavoryList,
   getUserFavoryList,
+  toggleLikeFavory,
 } from "../apis/favories";
 
 // Favory 목록 조회 훅
@@ -27,7 +28,6 @@ export const useFavoryList = (params: GetFavoryListParams) => {
     queryKey: ["favories", params],
     queryFn: () => getFavoryList(params),
     placeholderData: keepPreviousData,
-    staleTime: 1000 * 30,
     retry: 1,
   });
 };
@@ -84,3 +84,14 @@ export const useUserFavoryList = (
     queryFn: () => getUserFavoryList(nickname, params),
   });
 };
+
+// 좋아요 등록/취소 훅
+export const useToggleLikeFavory = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => toggleLikeFavory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favories"] });
+    }
+  })
+}
