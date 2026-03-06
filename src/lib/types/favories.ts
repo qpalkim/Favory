@@ -27,7 +27,7 @@ export const favorySchema = z.object({
   content: z.string(),
   tags: z.array(tagSchema).nullable(),
   likeCount: z.number().min(0),
-  likedByMe: z.boolean(),
+  likedByMe: z.boolean().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),
