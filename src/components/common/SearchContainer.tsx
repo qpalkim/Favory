@@ -37,12 +37,17 @@ export default function SearchContainer() {
   const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
   const currentPage = pageParam;
 
-  const sortOption = (searchParams.get("sort") as "latest" | "oldest") ?? "latest";
-
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const itemsPerPage = isDesktop ? 8 : 6;
 
   const isProfileQuery = /^[a-zA-Z0-9]+$/.test(keyword);
+  const isProfileCategory = category === "PROFILE";
+
+  const profileSortOptions = SORT_OPTIONS.filter((opt) => opt.value !== "popular");
+
+  const sortOptions = isProfileCategory ? profileSortOptions : SORT_OPTIONS;
+  const sortOption =
+    (searchParams.get("sort") as "latest" | "oldest" | "popular") ?? "latest";
 
   const canShowProfile = !isTagSearch && isProfileQuery;
 
@@ -55,8 +60,6 @@ export default function SearchContainer() {
   });
   const isSearching = isLoading || isFetching;
   const totalPages = data?.totalPages ?? 0;
-
-  const isProfileCategory = category === "PROFILE";
 
   const favoryList: Favory[] = !isProfileCategory && data ? (data.content as Favory[]) : [];
 
@@ -82,6 +85,15 @@ export default function SearchContainer() {
     }
   }, [data, currentPage, router, pathname, searchParams]);
 
+  useEffect(() => {
+    if (isProfileCategory && sortOption === "popular") {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("sort", "latest");
+
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, [isProfileCategory, sortOption, pathname, router, searchParams]);
+
   const handleSearchChange = (term: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("keyword", term);
@@ -106,7 +118,7 @@ export default function SearchContainer() {
     router.push(query ? `${pathname}?${query}` : pathname);
   };
 
-  const handleSortChange = (value: "latest" | "oldest") => {
+  const handleSortChange = (value: "latest" | "oldest" | "popular") => {
     if (sortOption === value) return;
 
     const params = new URLSearchParams(searchParams.toString());
@@ -146,7 +158,8 @@ export default function SearchContainer() {
             <button type="button" aria-label="뒤로 가기" onClick={() => router.back()} className="lg:hidden">
               <ArrowLeft
                 className="h-6 w-6 cursor-pointer text-green-600 hover:text-green-500"
-              /></button>
+              />
+            </button>
             <SearchBar onSearch={handleSearchChange} searchTerm={keyword} />
           </div>
         </section>
@@ -162,9 +175,10 @@ export default function SearchContainer() {
                 검색 결과 {data?.totalElements || 0}개
               </h2>
               <SelectOption
-                options={SORT_OPTIONS}
+                options={sortOptions}
+                value={sortOption}
                 disabled={isLoading || isFetching}
-                onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
+                onSelect={(option) => handleSortChange(option.value as "latest" | "oldest" | "popular")}
               />
             </div>
 
@@ -191,9 +205,10 @@ export default function SearchContainer() {
               </div>
               <div className="hidden md:block">
                 <SelectOption
-                  options={SORT_OPTIONS}
+                  options={sortOptions}
+                  value={sortOption}
                   disabled={isLoading || isFetching}
-                  onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
+                  onSelect={(option) => handleSortChange(option.value as "latest" | "oldest" | "popular")}
                 />
               </div>
             </div>

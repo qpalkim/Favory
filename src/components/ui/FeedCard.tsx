@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Heart } from "lucide-react";
 import { Favory } from "@/lib/types/favories";
 import { CREATOR_FALLBACK } from "@/lib/utils/constants";
 import Image from "next/image";
@@ -32,14 +33,22 @@ export default function FeedCard({ favory }: { favory: Favory }) {
         <div className="absolute inset-0 flex flex-col justify-end">
           <div className="relative flex-1">
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-0 w-full p-3 md:p-4 lg:p-5">
-              <h2 className="truncate text-sm leading-tight font-semibold text-white md:text-lg">
-                {favory.mediaTitle}
-              </h2>
-              <p className="md:text-md mt-1 truncate text-xs leading-tight text-white">
-                {favory.mediaCreator || CREATOR_FALLBACK[favory.mediaType]} •{" "}
-                {favory.mediaYear || "연도 정보 없음"}
-              </p>
+            <div className="absolute flex justify-between items-center bottom-0 w-full p-3 md:p-4 lg:p-5">
+              <div className="min-w-0">
+                <h2 className="truncate text-sm leading-tight font-semibold text-white md:text-lg">
+                  {favory.mediaTitle}
+                </h2>
+                <p className="md:text-md mt-1 truncate text-xs leading-tight text-white">
+                  {favory.mediaCreator || CREATOR_FALLBACK[favory.mediaType]} •{" "}
+                  {favory.mediaYear || "연도 정보 없음"}
+                </p>
+              </div>
+              <div className="ml-2 shrink-0 flex items-center gap-1">
+                <Heart className={`h-3 w-3 md:h-4 md:w-4 text-white fill-current`} />
+                <span className="text-white md:text-md text-xs">
+                  {favory.likeCount}
+                </span>
+              </div>
             </div>
           </div>
           <div className="w-full flex-col justify-between bg-white p-3 md:p-4 lg:p-5">

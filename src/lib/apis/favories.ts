@@ -12,6 +12,8 @@ import {
   FavoryListResponse,
   favoryListResponseSchema,
   GetFavoryListParams,
+  ToggleLikeFavoryResponse,
+  toggleLikeFavoryResponseSchema,
 } from "../types/favories";
 
 // Favory 목록 조회 API
@@ -68,3 +70,12 @@ export const getUserFavoryList = async (
   );
   return safeResponse(response.data, favoryListResponseSchema);
 };
+
+// Favory 좋아요 등록/취소 API
+export const toggleLikeFavory = async (id: number) => {
+  const response = await axiosClientHelper.post<ToggleLikeFavoryResponse>(
+    `/favories/like/${id}`,
+    {}
+  );
+  return safeResponse(response.data, toggleLikeFavoryResponseSchema);
+}

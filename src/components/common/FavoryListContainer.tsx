@@ -25,7 +25,7 @@ export default function FavoryListContainer() {
   const pageParam = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
   const currentPage = pageParam;
 
-  const sortOption = (searchParams.get("sort") as "latest" | "oldest") ?? "latest";
+  const sortOption = (searchParams.get("sort") as "latest" | "oldest" | "popular") ?? "latest";
 
   const isPC = useMediaQuery("(min-width: 1024px)");
   const isTablet = useMediaQuery("(min-width: 768px)");
@@ -62,7 +62,7 @@ export default function FavoryListContainer() {
     router.push(query ? `${pathname}?${query}` : pathname);
   };
 
-  const handleSortChange = (value: "latest" | "oldest") => {
+  const handleSortChange = (value: "latest" | "oldest" | "popular") => {
     if (sortOption === value) return;
 
     const params = new URLSearchParams(searchParams.toString());
@@ -103,8 +103,9 @@ export default function FavoryListContainer() {
         </div>
         <SelectOption
           options={SORT_OPTIONS}
+          value={sortOption}
           disabled={isLoading || isFetching}
-          onSelect={(option) => handleSortChange(option.value as "latest" | "oldest")}
+          onSelect={(option) => handleSortChange(option.value as "latest" | "oldest" | "popular")}
         />
       </div>
 

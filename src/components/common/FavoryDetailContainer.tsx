@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { ImageOff, Share } from "lucide-react";
+import { Heart, ImageOff } from "lucide-react";
 import { useMyData } from "@/lib/hooks/useUsers";
-import { useDeleteFavory, useFavoryDetail } from "@/lib/hooks/useFavories";
+import { useDeleteFavory, useFavoryDetail, useToggleLikeFavory } from "@/lib/hooks/useFavories";
 import { useCommentList } from "@/lib/hooks/useComments";
 import {
   CATEGORY_BUTTON,
@@ -39,6 +39,7 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
 
   const { data: me } = useMyData();
   const deleteFavory = useDeleteFavory(id);
+  const toggleLikeFavory = useToggleLikeFavory(id);
 
   const {
     data: favoryDetail,
@@ -67,12 +68,22 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     }
   };
 
-  const handleCopyLink = async () => {
+  const handleToggleLike = async () => {
+    if (!me) {
+      toast.info("로그인 후, 이용 가능합니다.");
+      return;
+    }
+
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success("링크가 복사되었습니다.");
+      const result = await toggleLikeFavory.mutateAsync();
+
+      if (result.liked) {
+        toast.success("좋아요를 눌렀습니다.");
+      } else {
+        toast.success("좋아요를 취소했습니다.")
+      }
     } catch {
-      toast.error("링크 복사에 실패했습니다.");
+      toast.error("좋아요 처리에 실패했습니다.")
     }
   };
 
@@ -230,9 +241,9 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
                 <Icon className="h-4 w-4" />
                 {text}
               </Button>
-              <Button variant="outline" onClick={handleCopyLink}>
-                <Share className="h-4 w-4" />
-                링크 복사하기
+              <Button variant="outline" onClick={handleToggleLike}>
+                <Heart className={`h-4 w-4 text-green-600 ${favoryDetail.likedByMe ? "fill-current" : ""}`} />
+                좋아요 {favoryDetail.likeCount}
               </Button>
             </div>
 
