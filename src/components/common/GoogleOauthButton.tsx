@@ -26,11 +26,6 @@ const TEXT = {
   },
 };
 
-const isUnsupportedBrowser = () => {
-  const ua = navigator.userAgent.toLowerCase();
-  return ua.includes("edg") || ua.includes("firefox");
-}
-
 export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const [ready, setReady] = useState(false);
   const { mutateAsync: googleOauth } = useAddOauth("GOOGLE");
@@ -38,22 +33,21 @@ export default function GoogleOauthButton({ type }: GoogleOauthButtonProps) {
   const router = useRouter();
 
   const handleGooglePrompt = () => {
-    if (isUnsupportedBrowser() || !window.google || !ready) {
-      toast.info("현재 브라우저에서는 지원하지 않습니다.");
+    if (!window.google || !ready) {
+      toast.info("Google 로그인을 준비하고 있습니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
 
-    try {
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isDismissedMoment()) return;
-        if (notification.isSkippedMoment()) return;
-        if (notification.isNotDisplayed()) return;
-      });
-    } catch (err) {
-      if ((err as DOMException).name !== "AbortError") {
-        toast.error("Google 인증 중, 문제가 발생했습니다.");
+    window.google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed()) {
+        toast.error(
+          "Google 로그인 창을 표시할 수 없습니다. 브라우저의 서드파티 쿠키 차단 설정을 확인해 주세요.",
+        );
+        return;
       }
-    }
+      if (notification.isSkippedMoment() || notification.isDismissedMoment())
+        return;
+    });
   };
 
   return (

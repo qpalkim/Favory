@@ -23,11 +23,7 @@ axiosServerHelper.interceptors.response.use(
 
     const { response, config } = error;
 
-    if (
-      response?.status === 401 ||
-      response?.status === 403 ||
-      response?.status === 500
-    ) {
+    if (response?.status === 401 || response?.status === 403) {
       const baseURL = process.env.NEXT_PUBLIC_API_URL;
       const cookieStore = await cookies();
       const refreshToken = cookieStore.get("refreshToken")?.value;
@@ -47,18 +43,19 @@ axiosServerHelper.interceptors.response.use(
             refreshToken: refreshToken,
           }),
         }).then((value) => value.json());
-      } catch {
-        return null;
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
       }
 
       const newAccessToken = res.accessToken;
+      const newRefreshToken = res.refreshToken;
 
       if (!config) return Promise.reject(error);
       if (!newAccessToken) return Promise.reject(error);
 
       const accessTokenExp = getExpirationDate(newAccessToken);
-      const refreshTokenExp = refreshToken
-        ? getExpirationDate(refreshToken)
+      const refreshTokenExp = newRefreshToken
+        ? getExpirationDate(newRefreshToken)
         : undefined;
 
       cookieStore.set("accessToken", newAccessToken, {
@@ -69,8 +66,8 @@ axiosServerHelper.interceptors.response.use(
         expires: accessTokenExp || undefined,
       });
 
-      if (refreshToken) {
-        cookieStore.set("refreshToken", refreshToken, {
+      if (newRefreshToken) {
+        cookieStore.set("refreshToken", newRefreshToken, {
           httpOnly: true,
           sameSite: "lax",
           secure: process.env.NODE_ENV === "production",
