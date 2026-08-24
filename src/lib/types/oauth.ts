@@ -1,7 +1,7 @@
 import z from "zod";
 
 // 공통 프로바이더 타입
-export type OauthProvider = "LOCAL" | "GOOGLE";
+export type OauthProvider = "GOOGLE";
 
 // 간편 로그인 등록 API 타입
 export const addOauthRequestSchema = z.object({

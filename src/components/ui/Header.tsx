@@ -1,6 +1,6 @@
 "use client";
 import { useMyData } from "@/lib/hooks/useUsers";
-import LoggedInHeader from "./LoggeedInHeader";
+import LoggedInHeader from "./LoggedInHeader";
 import LoggedOutHeader from "./LoggedOutHeader";
 import LoggedInHeaderSkeleton from "../skeleton/LoggedInHeaderSkeleton";
 
