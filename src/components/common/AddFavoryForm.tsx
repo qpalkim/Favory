@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ import {
   MediaTypeCategory,
 } from "@/lib/types/favories";
 import { useMyData } from "@/lib/hooks/useUsers";
-import { useAddMedia, useMediaExists } from "@/lib/hooks/useMedia";
+import { useMediaRegistration } from "@/lib/hooks/useMediaRegistration";
 import { useAddFavory } from "@/lib/hooks/useFavories";
 import { CATEGORY_LABEL_MAP } from "@/lib/utils/constants";
 import Image from "next/image";
@@ -43,10 +43,8 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
     },
   });
 
-  const [mediaId, setMediaId] = useState<number | null>(null);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
-  const [isRegisteringMedia, setIsRegisteringMedia] = useState(false);
-  const [registrationDone, setRegistrationDone] = useState(false);
+  const { mediaId, isRegisteringMedia } = useMediaRegistration(selectedMedia);
 
   const mediaTypeLabel = CATEGORY_LABEL_MAP[mediaType] || mediaType;
 
@@ -54,61 +52,11 @@ export default function AddFavoryForm({ mediaType }: { mediaType: MediaTypeCateg
   const [tagInput, setTagInput] = useState("");
   const [tagInputError, setTagInputError] = useState("");
 
-  const addMedia = useAddMedia();
   const addFavory = useAddFavory();
-  const { data: existingMedia, refetch: checkMedia } = useMediaExists(
-    selectedMedia?.externalId || "",
-  );
 
   const handleSelectMedia = (item: MediaItem | null) => {
     setSelectedMedia(item);
-    setMediaId(null)
-    setRegistrationDone(false);
   };
-
-  // 선택된 미디어 존재 여부 확인
-  useEffect(() => {
-    if (!selectedMedia || !selectedMedia.externalId) return;
-    checkMedia();
-  }, [selectedMedia, checkMedia]);
-
-  // 존재하는 미디어일 때 mediaId 세팅
-  useEffect(() => {
-    if (existingMedia?.mediaId != null) {
-      setMediaId(existingMedia.mediaId); // 미디어가 이미 존재하는 경우 mediaId 설정
-    }
-  }, [existingMedia]);
-
-  useEffect(() => {
-    if (!selectedMedia) return; // 미디어 선택 전
-    if (existingMedia === undefined) return; // 아직 조회 안 끝남 → API 결과 기다려야 함
-    if (isRegisteringMedia) return; // 등록 중이면  중복 실행 방지
-    if (registrationDone) return; // 이미 등록 완료면 중복 방지
-    if (existingMedia?.mediaId != null) return; // 미디어 존재하면 등록 필요 없음
-
-    // 외부 API 조회 → media 없음 → 등록 필요
-    const registerMedia = async () => {
-      setIsRegisteringMedia(true);
-      try {
-        const res = await addMedia.mutateAsync({
-          externalId: selectedMedia.externalId,
-          mediaType: selectedMedia.mediaType,
-          title: selectedMedia.title,
-          creator: selectedMedia.creator ?? null,
-          year: selectedMedia.year ?? null,
-          imageUrl: selectedMedia.imageUrl ?? null,
-        });
-        setMediaId(res.id);
-        setRegistrationDone(true); // 등록 완료 표시
-      } catch {
-        toast.error("잠시후 다시 시도해 주세요");
-        setMediaId(null);
-      } finally {
-        setIsRegisteringMedia(false);
-      }
-    };
-    registerMedia();
-  }, [existingMedia, selectedMedia, addMedia, isRegisteringMedia, registrationDone]);
 
   const updateTags = (newTags: string[]) => {
     setValue("tagNames", newTags, { shouldValidate: true });

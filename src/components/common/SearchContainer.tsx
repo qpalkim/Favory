@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -7,6 +6,7 @@ import { SearchCategory } from "@/lib/types/search";
 import { User } from "@/lib/types/users";
 import { Favory } from "@/lib/types/favories";
 import { useSearchFavoryList } from "@/lib/hooks/useSearch";
+import { useSearchUrlSync } from "@/lib/hooks/useSearchUrlSync";
 import { CATEGORY_LABEL_MAP, SEARCH_MEDIA_CATEGORY_OPTIONS, SORT_OPTIONS } from "@/lib/utils/constants";
 import { getCategoryFromLabel } from "@/lib/utils/getCategoryFromLabel";
 import useMediaQuery from "@/lib/utils/useMediaQuery";
@@ -65,34 +65,14 @@ export default function SearchContainer() {
 
   const profileList: User[] = isProfileCategory && data ? (data.content as User[]) : [];
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (!canShowProfile && category === "PROFILE") {
-      params.delete("type");
-      router.replace(`/search?${params.toString()}`);
-    }
-  }, [canShowProfile, category, router, searchParams]);
-
-  useEffect(() => {
-    if (!data) return;
-    if (data.totalPages === 0) return;
-
-    if (currentPage > data.totalPages) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("page", String(data.totalPages));
-      router.replace(`${pathname}?${params.toString()}`);
-    }
-  }, [data, currentPage, router, pathname, searchParams]);
-
-  useEffect(() => {
-    if (isProfileCategory && sortOption === "popular") {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("sort", "latest");
-
-      router.replace(`${pathname}?${params.toString()}`);
-    }
-  }, [isProfileCategory, sortOption, pathname, router, searchParams]);
+  useSearchUrlSync({
+    canShowProfile,
+    category,
+    isProfileCategory,
+    sortOption,
+    currentPage,
+    data,
+  });
 
   const handleSearchChange = (term: string) => {
     const params = new URLSearchParams(searchParams.toString());

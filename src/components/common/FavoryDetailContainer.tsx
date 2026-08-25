@@ -1,17 +1,16 @@
 "use client";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Heart, ImageOff } from "lucide-react";
 import { useMyData } from "@/lib/hooks/useUsers";
-import { useDeleteFavory, useFavoryDetail, useToggleLikeFavory } from "@/lib/hooks/useFavories";
+import { useFavoryDetail } from "@/lib/hooks/useFavories";
 import { useCommentList } from "@/lib/hooks/useComments";
+import { useFavoryDetailActions } from "@/lib/hooks/useFavoryDetailActions";
 import {
   CATEGORY_BUTTON,
   CREATOR_FALLBACK,
   CATEGORY_LABEL_MAP,
 } from "@/lib/utils/constants";
-import { getMediaSearchUrl } from "@/lib/utils/getMediaUrl";
 import formatTime from "@/lib/utils/formatTime";
 import Image from "next/image";
 import logo from "@/assets/logo/logo_green.svg";
@@ -20,9 +19,7 @@ import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Dropdown from "../ui/Dropdown";
 import CommentSection from "./CommentSection";
-import Modal from "../ui/Modal";
-import DeleteItemModal from "./modal/DeleteItemModal";
-import UserProfileModal from "./modal/UserProfileModal";
+import FavoryDetailModals from "./FavoryDetailModals";
 import FavoryDetailContainerSkeleton from "../skeleton/FavoryDetailContainerSkeleton";
 import RetryError from "../ui/RetryError";
 
@@ -31,15 +28,9 @@ const PAGE_SIZE = 5;
 export default function FavoryDetailContainer({ id }: { id: number }) {
   const router = useRouter();
 
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(0);
 
   const { data: me } = useMyData();
-  const deleteFavory = useDeleteFavory(id);
-  const toggleLikeFavory = useToggleLikeFavory(id);
 
   const {
     data: favoryDetail,
@@ -55,52 +46,17 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
     refetch: commentListRefetch,
   } = useCommentList(id, { page: currentPage, size: PAGE_SIZE });
 
-  const handleDelete = async () => {
-    try {
-      setIsDeleting(true);
-      await deleteFavory.mutateAsync();
-      setIsDeleteOpen(false);
-      toast.success("감상평이 삭제되었습니다.");
-      router.replace("/favories");
-    } catch {
-      setIsDeleting(false);
-      toast.error("감상평 삭제에 실패했습니다.");
-    }
-  };
-
-  const handleToggleLike = async () => {
-    if (!me) {
-      toast.info("로그인 후, 이용 가능합니다.");
-      return;
-    }
-
-    try {
-      const result = await toggleLikeFavory.mutateAsync();
-
-      if (result.liked) {
-        toast.success("좋아요를 눌렀습니다.");
-      } else {
-        toast.success("좋아요를 취소했습니다.")
-      }
-    } catch {
-      toast.error("좋아요 처리에 실패했습니다.")
-    }
-  };
-
-  const handleMediaClick = () => {
-    if (!favoryDetail) return;
-
-    const url = getMediaSearchUrl(
-      favoryDetail.mediaType,
-      favoryDetail.mediaTitle,
-    );
-    window.open(url, "_blank", "noopener,noreferrer");
-    return;
-  };
-
-  const handleTagClick = (tagName: string) => {
-    router.push(`/search?keyword=${encodeURIComponent(`#${tagName}`)}`)
-  }
+  const {
+    isDeleteOpen,
+    setIsDeleteOpen,
+    isProfileOpen,
+    setIsProfileOpen,
+    isDeleting,
+    handleDelete,
+    handleToggleLike,
+    handleMediaClick,
+    handleTagClick,
+  } = useFavoryDetailActions(id, favoryDetail, !!me);
 
   if (favoryDetailLoading || commentListLoading)
     return <FavoryDetailContainerSkeleton />;
@@ -262,25 +218,15 @@ export default function FavoryDetailContainer({ id }: { id: number }) {
           className="mt-[52px] hidden w-full lg:block lg:max-w-[416px]" />
       </article >
 
-      {isDeleteOpen && (
-        <Modal onClose={() => setIsDeleteOpen(false)}>
-          <DeleteItemModal
-            isComment={false}
-            onClose={() => setIsDeleteOpen(false)}
-            onDelete={handleDelete}
-          />
-        </Modal>
-      )}
-
-      {isProfileOpen && (
-        <Modal onClose={() => setIsProfileOpen(false)}>
-          <UserProfileModal
-            onClose={() => setIsProfileOpen(false)}
-            nickname={favoryDetail.userNickname}
-            imageUrl={favoryDetail.userImageUrl}
-          />
-        </Modal>
-      )}
+      <FavoryDetailModals
+        isDeleteOpen={isDeleteOpen}
+        onDeleteClose={() => setIsDeleteOpen(false)}
+        onDelete={handleDelete}
+        isProfileOpen={isProfileOpen}
+        onProfileClose={() => setIsProfileOpen(false)}
+        nickname={favoryDetail.userNickname}
+        imageUrl={favoryDetail.userImageUrl}
+      />
     </>
   );
 }
