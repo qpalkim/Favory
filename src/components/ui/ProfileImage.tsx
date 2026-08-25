@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { cva, VariantProps } from "class-variance-authority";
 import Image from "next/image";
@@ -37,6 +38,13 @@ export default function ProfileImage({
   clickable,
   className,
 }: ProfileImageProps) {
+  // 이미지 로드 실패(AWS 연결 해제 등) 시 기본 프로필로 대체하기 위한 상태
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
+
   return (
     <div
       role="button"
@@ -47,10 +55,11 @@ export default function ProfileImage({
     >
       <Image
         className="rounded-full object-cover"
-        src={src || defaultProfile}
+        src={!src || hasError ? defaultProfile : src}
         alt="사용자 프로필 이미지"
         fill
         unoptimized
+        onError={() => setHasError(true)}
       />
     </div>
   );
